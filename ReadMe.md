@@ -1,1 +1,1 @@
-# Stephanie's Animal Rescue - Secret Island - Game development
+Stephanie's Animal Rescue - Secret Island - Game development
