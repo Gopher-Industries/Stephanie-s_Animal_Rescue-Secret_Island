@@ -167,6 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c223f0a22c3b5934997f315b445549d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groundBlockPrefab: {fileID: 1979290889500462, guid: 98dd8e405a3f26848b63e1b78dfb7c5b, type: 3}
+  gridWidth: 50
+  gridHeight: 50
+  blockScale: {x: 10, y: 1, z: 10}
 --- !u!1 &235461541
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,12 +256,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 235461541}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 15, z: 40}
+  m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
+  m_LocalPosition: {x: 0.31999993, y: 19.24, z: -16.899998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 793672643}
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!1 &278738461
 GameObject:
@@ -458,7 +462,6 @@ GameObject:
   - component: {fileID: 793672641}
   - component: {fileID: 793672640}
   - component: {fileID: 793672644}
-  - component: {fileID: 793672645}
   - component: {fileID: 793672646}
   - component: {fileID: 793672647}
   m_Layer: 0
@@ -548,10 +551,11 @@ Transform:
   m_GameObject: {fileID: 793672639}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.2055898, y: 36.187355, z: 48.8}
+  m_LocalPosition: {x: -2.62, y: 5.59, z: 49.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 235461544}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &793672644
@@ -579,23 +583,8 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &793672645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 793672639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 919cad43610bad940b2ac0849176f849, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathfinding: {fileID: 0}
-  gridManager: {fileID: 0}
-  moveSpeed: 5
 --- !u!114 &793672646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -625,7 +614,6 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 235461544}
   - {fileID: 299254206}
   - {fileID: 278738464}
   - {fileID: 69770454}
