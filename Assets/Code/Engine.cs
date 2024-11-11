@@ -118,29 +118,30 @@ public class Engine : MonoBehaviour
 
         for (int x = 0; x < gridWidth; x++)
         {
-            // Create a parent GameObject for each row
+            // Create a parent GameObject for each row and set its layer to "Ground"
             GameObject rowParent = new GameObject($"Row_{x}");
             rowParent.transform.parent = this.transform;
+            rowParent.layer = LayerMask.NameToLayer("Ground");  // Set layer for rowParent
 
             for (int z = 0; z < gridHeight; z++)
             {
                 // Calculate the position for each instance based on the offset
                 Vector3 position = centerPosition + startOffset + new Vector3(x, 0, z);
 
-                // Instantiate the prefab at the calculated position
+                // Instantiate the prefab at the calculated position and assign to rowParent
                 GameObject instance = Instantiate(prefab, position, Quaternion.identity, rowParent.transform);
 
                 // Set name for organization in the hierarchy
                 instance.name = $"{prefab.name}_{x}_{z}";
 
-                // Optionally, add a Box Collider if necessary (Removed to prevent individual colliders)
+                // Set the layer for each block instance to "Ground"
+                instance.layer = LayerMask.NameToLayer("Ground");
+
+                // Optionally, add a Box Collider if necessary (removed for optimized row collider)
                 // if (instance.GetComponent<BoxCollider>() == null)
                 // {
                 //     instance.AddComponent<BoxCollider>();
                 // }
-
-                // Optionally, disable rendering or physics for distant chunks
-                // instance.SetActive(false); // Example: Disable for manual activation
             }
 
             // After instantiating all blocks in the row, add a single BoxCollider to the row parent
@@ -153,12 +154,10 @@ public class Engine : MonoBehaviour
 
             // Optionally, mark the row as static for optimization
             rowParent.isStatic = true;
-
-            // Optionally, adjust the layer or other properties as needed
-            // rowParent.layer = LayerMask.NameToLayer("Ground");
         }
 
         Debug.Log($"Successfully created a {gridWidth}x{gridHeight} grid of '{prefab.name}' instances with stripped colliders.");
     }
+
 
 }
