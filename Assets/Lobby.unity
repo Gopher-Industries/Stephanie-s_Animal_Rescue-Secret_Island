@@ -171,6 +171,58 @@ MonoBehaviour:
   gridWidth: 50
   gridHeight: 50
   blockScale: {x: 10, y: 1, z: 10}
+--- !u!1 &135403488
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 135403490}
+  - component: {fileID: 135403489}
+  m_Layer: 0
+  m_Name: forest1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &135403489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135403488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a431b09abb120bd4daf0f7127bdc3f8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  treePrefabs:
+  - {fileID: 9101712351409513215, guid: f1c0a4b0fe7c66743ac89b708e6fcfe1, type: 3}
+  numberOfTrees: 100
+  areaSize: 50
+  minScale: 0.8
+  maxScale: 5
+  minRotationY: 0
+  maxRotationY: 0
+--- !u!4 &135403490
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135403488}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10, y: 1, z: 55}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &235461541
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,7 +603,7 @@ Transform:
   m_GameObject: {fileID: 793672639}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.62, y: 5.59, z: 49.46}
+  m_LocalPosition: {x: -2.62, y: 5.98, z: 49.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -618,3 +670,4 @@ SceneRoots:
   - {fileID: 278738464}
   - {fileID: 69770454}
   - {fileID: 793672643}
+  - {fileID: 135403490}
