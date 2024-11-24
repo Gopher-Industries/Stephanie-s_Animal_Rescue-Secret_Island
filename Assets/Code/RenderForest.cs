@@ -69,6 +69,9 @@ public class RenderForest : MonoBehaviour
             // Apply scaling
             treeInstance.transform.localScale *= randomScale;
 
+            // Set the tag of the tree to "Tree"
+            treeInstance.tag = "Tree";
+
             // Adjust Y position to keep the base at ground level
             AdjustTreePosition(treeInstance);
         }
