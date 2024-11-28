@@ -8,6 +8,8 @@ TagManager:
   - Tree
   - Buffalo
   - Chicken
+  - Crocodile
+  - FetchObject
   layers:
   - Default
   - TransparentFX
