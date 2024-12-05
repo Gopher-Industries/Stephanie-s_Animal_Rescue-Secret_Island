@@ -35,7 +35,7 @@ public class SavePlayerPos : MonoBehaviour
 
     public void PlayerPosLoad()
     {
-        PlayerPrefs.SetInt("TimeToLoad", 1);
-        PlayerPrefs.Save();
+        //PlayerPrefs.SetInt("TimeToLoad", 1);
+        //PlayerPrefs.Save();
     }
 }
