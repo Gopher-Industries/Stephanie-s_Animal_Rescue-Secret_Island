@@ -2911,7 +2911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7254ad82f61090641a77040150b85f35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerPoint: {x: -1.4, y: 13, z: 52}
+  centerPoint: {x: -1.4, y: 42, z: 52}
   radius: 2
   speed: 2
   groundHeight: 10
