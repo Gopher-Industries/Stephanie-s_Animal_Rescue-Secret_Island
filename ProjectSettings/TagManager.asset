@@ -11,6 +11,7 @@ TagManager:
   - Crocodile
   - FetchObject
   - Water
+  - Teleporter1
   layers:
   - Default
   - TransparentFX
