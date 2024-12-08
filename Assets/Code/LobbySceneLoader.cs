@@ -8,4 +8,9 @@ public class SceneLoader : MonoBehaviour
     {
         SceneManager.LoadScene("Lobby");
     }
+
+    public void LoadSceneByIndex(int sceneIndex)
+    {
+        SceneManager.LoadScene(sceneIndex); // Loads the scene by index
+    }
 }
