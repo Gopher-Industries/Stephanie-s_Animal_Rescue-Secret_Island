@@ -3,7 +3,7 @@ using UnityEngine;
 public class BirdMovement : MonoBehaviour
 {
     // Center point for the circular movement
-    public Vector3 centerPoint = new Vector3(0, 5, 0);
+    public Vector3 centerPoint = new Vector3(0, 45, 0);
 
     // Radius of the circular path
     public float radius = 5.0f;
