@@ -1011,10 +1011,10 @@ MonoBehaviour:
   cellWidth: 132
   cellHeight: 97.5
   gridZPosition: 10
-  material1: {fileID: 0}
-  material2: {fileID: 0}
-  material3: {fileID: 0}
-  material4: {fileID: 0}
+  material1: {fileID: 2100000, guid: 52123437340cafd4cb027531cd0bbb0e, type: 2}
+  material2: {fileID: 2100000, guid: 433d16b08f5f39c4988a0ab7f5a425d5, type: 2}
+  material3: {fileID: 2100000, guid: a644fc832546f1b47abcff08273654d4, type: 2}
+  material4: {fileID: 2100000, guid: 36cb5a40a5a8f714aad3fa422615934d, type: 2}
 --- !u!210 &1418502741
 SortingGroup:
   m_ObjectHideFlags: 0
