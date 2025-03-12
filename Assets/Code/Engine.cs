@@ -38,7 +38,7 @@ public class Engine : MonoBehaviour
         if (groundBlockPrefab != null)
         {
             // Create a 9x9 ground grid centered at (0, 0, 0)
-            SingleColliderPrintGround(groundBlockPrefab, gridWidth, gridHeight, Vector3.zero);
+            //SingleColliderPrintGround(groundBlockPrefab, gridWidth, gridHeight, Vector3.zero);
         }
         else
         {

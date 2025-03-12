@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Level/Scenes/New Scene.unity
+    path: Assets/Level/Scenes/MainMenu.unity
     guid: d440d4a7a2c77ae46a43d6b72a8bea89
   - enabled: 1
     path: Assets/Level/Scenes/FindTheAnimals.unity
@@ -24,3 +24,4 @@ EditorBuildSettings:
     path: Assets/Level/Scenes/Zoo.unity
     guid: e4598547b5cec00439d9cd3e6c845c52
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
