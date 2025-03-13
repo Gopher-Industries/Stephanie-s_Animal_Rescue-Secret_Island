@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Level/Scenes/FindTheAnimals.unity
     guid: 19ccbb3035393d448bd755b0a569d162
   - enabled: 1
-    path: Assets/Level/Scenes/Game.unity
+    path: Assets/Level/Scenes/Game Level 1.unity
     guid: 6e9100de0e176f84dacf0d2ac433cbc6
   - enabled: 1
     path: Assets/Level/Scenes/island.unity
