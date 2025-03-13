@@ -31,10 +31,10 @@ To get everyone up to speed and ready to contribute to the project, please follo
 
 - Go to the Unity Hub download page and install Unity Hub on your system.
 
-**2. Install Unity Version 2022.3.22f1**
+**2. Install Unity Version 6000.0.41f1**
 
 - Open Unity Hub and go to the **Installs** tab.
-- Click on **Add**, then select version **2022.3.22f1** (LTS).
+- Click on **Add**, then select version **6000.0.41f1** (LTS).
 - Ensure you include the **Windows Build Support** and **Mac Build Support** modules (depending on your operating system).
 
 **3. Upskilling Task**
@@ -87,10 +87,10 @@ To get everyone up to speed and ready to contribute to the project, please follo
 
 - Go to the Unity Hub download page and install Unity Hub on your system.
 
-### 2. Install Unity Version 2022.3.22f1
+### 2. Install Unity Version 6000.0.41f1
 
 - Open Unity Hub and go to the **Installs** tab.
-- Click on **Add**, then select version **2022.3.22f1** (LTS).
+- Click on **Add**, then select version **6000.0.41f1** (LTS).
 - Ensure you include the **Windows Build Support** and **Mac Build Support** modules (depending on your operating system).
 
 ### 3. Upskilling Task
