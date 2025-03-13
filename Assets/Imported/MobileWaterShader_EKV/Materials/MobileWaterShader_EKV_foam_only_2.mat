@@ -9,9 +9,12 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: MobileWaterShader_EKV_foam_only_2
   m_Shader: {fileID: 4800000, guid: cac645c54d47a224c9b34364a0f004bd, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - FOAM
   - INVERT
+  - LIGHTING
   - RENDERING
   m_InvalidKeywords:
   - BLENDING
@@ -21,6 +24,7 @@ Material:
   m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -432,7 +436,7 @@ Material:
     - _RimAlpha: 0
     - _RimDropOff: 0
     - _RimPower: 0
-    - _SECTIONLIGHTING: 0
+    - _SECTIONLIGHTING: 1
     - _SECTIONREFLECTION: 0
     - _SECTIONTEXTURES: 0
     - _SECTIONWAVES: 0
@@ -515,3 +519,4 @@ Material:
     - _SpecularColor: {r: 0.5808823, g: 0.5808823, b: 0.5808823, a: 1}
     - _WaterFogColor: {r: 0.07155571, g: 0.07351371, b: 0.0754717, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
