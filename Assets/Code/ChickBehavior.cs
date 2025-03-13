@@ -96,13 +96,13 @@ public class ChickBehavior : MonoBehaviour
     private void HandleFloating()
     {
         // Gradually slow the descent to simulate floating
-        if (chickRigidbody.velocity.y < 0)
+        if (chickRigidbody.linearVelocity.y < 0)
         {
-            chickRigidbody.velocity = new Vector3(chickRigidbody.velocity.x, -floatDownSpeed, chickRigidbody.velocity.z);
+            chickRigidbody.linearVelocity = new Vector3(chickRigidbody.linearVelocity.x, -floatDownSpeed, chickRigidbody.linearVelocity.z);
         }
 
         // Check if the chick has landed
-        if (chickRigidbody.velocity.y == 0)
+        if (chickRigidbody.linearVelocity.y == 0)
         {
             isJumping = false;
             Debug.Log("Chick has landed.");

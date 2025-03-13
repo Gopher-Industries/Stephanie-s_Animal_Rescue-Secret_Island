@@ -80,7 +80,7 @@ public class CrocodileBehavior : MonoBehaviour
         Vector3 lungeDirection = (target.transform.position - transform.position).normalized;
 
         // Lunge towards the target
-        crocodileRigidbody.velocity = lungeDirection * lungeSpeed;
+        crocodileRigidbody.linearVelocity = lungeDirection * lungeSpeed;
         Debug.Log("Crocodile lunging at target!");
 
         // End lunge after the duration
@@ -90,14 +90,14 @@ public class CrocodileBehavior : MonoBehaviour
     private void EndLunge()
     {
         isLunging = false;
-        crocodileRigidbody.velocity = Vector3.zero; // Stop moving after lunge
+        crocodileRigidbody.linearVelocity = Vector3.zero; // Stop moving after lunge
         Debug.Log("Crocodile ended lunge.");
     }
 
     private void StartResting()
     {
         isResting = true;
-        crocodileRigidbody.velocity = Vector3.zero; // Stop movement during rest
+        crocodileRigidbody.linearVelocity = Vector3.zero; // Stop movement during rest
         Debug.Log("Crocodile is resting.");
         Invoke(nameof(EndResting), restDuration);
     }

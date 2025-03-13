@@ -41,11 +41,13 @@ public class DogBehavior : MonoBehaviour
         followTimer += Time.deltaTime;
         if (followTimer >= followDuration)
         {
-            DashBehavior();
-            return;
+            if(player != null)
+                DashBehavior();
+                return;
         }
 
-        FollowPlayer();
+        if(player != null)
+            FollowPlayer();
     }
 
     private void FollowPlayer()
