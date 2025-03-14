@@ -16,8 +16,8 @@ public class Engine : MonoBehaviour
     [SerializeField] private GameObject groundBlockPrefab;
 
     // Optional parameters for grid size
-    [SerializeField] private int gridWidth = 10;
-    [SerializeField] private int gridHeight = 10;
+    //[SerializeField] private int gridWidth = 10;  
+    //[SerializeField] private int gridHeight = 10;
     //[SerializeField] private Vector3 blockScale = Vector3.one; // Adjust based on your prefab's scale
     [SerializeField] private Vector3 blockScale = new Vector3(10, 1, 10); // Increased to make blocks 10x larger
 
