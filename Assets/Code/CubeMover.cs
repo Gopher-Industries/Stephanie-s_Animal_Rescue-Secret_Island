@@ -11,7 +11,9 @@ public class CubeMover : MonoBehaviour
 
     private void Awake()
     {
-        playerPosData = FindObjectOfType<SavePlayerPos>();
+        //playerPosData = FindObjectOfType<SavePlayerPos>();    //Obsolete
+        playerPosData = FindFirstObjectByType<SavePlayerPos>();
+
         playerPosData.PlayerPosLoad();
     }
 
