@@ -7,12 +7,17 @@ public class CubeMover : MonoBehaviour
     private Vector3 targetPosition; // The position to move towards
     private bool isMoving = false; // Whether the cube should be moving
 
-    SavePlayerPos playerPosData;
+    public Animator animator;
+    private SavePlayerPos playerPosData;
 
+    private SpriteRenderer spriteRenderer; //referencing sprite renderer
+
+    
     private void Awake()
     {
         playerPosData = FindObjectOfType<SavePlayerPos>();
         playerPosData.PlayerPosLoad();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -57,6 +62,8 @@ public class CubeMover : MonoBehaviour
             targetPosition = hit.point;
             isMoving = true;
 
+            FlipSprite(targetPosition);
+
             // Optional: Draw a debug line from the cube to the target position
             Debug.DrawLine(transform.position, targetPosition, Color.green, 2f);
 
@@ -82,13 +89,31 @@ public class CubeMover : MonoBehaviour
 
         // Move towards the destination
         transform.position = Vector3.MoveTowards(currentPosition, destination, moveSpeed * Time.deltaTime);
-
+        
         // Check if the cube has reached the destination
         if (Vector3.Distance(currentPosition, destination) < 0.1f)
         {
             isMoving = false;
             Debug.Log("Reached the destination.");
             playerPosData.PlayerPosSave();
+        }
+
+        animator.SetBool("IsMoving", isMoving);
+        
+    }
+
+    /// <summary>
+    /// Flip the 2D sprite based on the direction
+    /// </summary>
+    void FlipSprite(Vector3 targetPos)
+    {
+        if (spriteRenderer != null)
+        {
+            if (spriteRenderer !=null)
+            {
+                // If left of the player is clicked flip the sprite
+                spriteRenderer.flipX = targetPos.x < transform.position.x;
+            }
         }
     }
 }
