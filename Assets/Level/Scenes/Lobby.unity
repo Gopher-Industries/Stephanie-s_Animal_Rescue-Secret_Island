@@ -811,6 +811,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: dd5b0d683dbc0fc4f9f6f51a19735140, type: 2}
+    - target: {fileID: 5866666021909216657, guid: c96a2731c8e1ed940b03be97b4b8fa54, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -836,9 +840,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c96a2731c8e1ed940b03be97b4b8fa54, type: 3}
       insertIndex: -1
       addedObject: {fileID: 805146061}
-    - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: c96a2731c8e1ed940b03be97b4b8fa54, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 710199299}
   m_SourcePrefab: {fileID: 100100000, guid: c96a2731c8e1ed940b03be97b4b8fa54, type: 3}
 --- !u!1 &278738461
 GameObject:
@@ -1820,27 +1821,6 @@ MonoBehaviour:
   dashDuration: 1
   playerTag: Player
   fetchTag: FetchObject
---- !u!1 &710199297 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: c96a2731c8e1ed940b03be97b4b8fa54, type: 3}
-  m_PrefabInstance: {fileID: 225430139}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &710199299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 710199297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f957e3ed485bf4d0384796bb6ef4a95d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  musicSource: {fileID: 0}
-  sfxSource: {fileID: 0}
-  musicClips: []
-  sfxClips: []
 --- !u!1001 &755814273
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2015,7 +1995,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   is2D: 0
-  rotationSpeed: 5
 --- !u!114 &805146062
 MonoBehaviour:
   m_ObjectHideFlags: 0
