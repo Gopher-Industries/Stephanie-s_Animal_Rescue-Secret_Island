@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Art/Images/NumberLinksImages/Level-1.meta
 guid: e686971a82512804bbb5b1c42de99204
+========
+guid: 59520008b116361409a4d904d0b927d9
+>>>>>>>> de710cb403ff3ff5d1240f715bae463ea01cbff6:Assets/Art/Animation.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
