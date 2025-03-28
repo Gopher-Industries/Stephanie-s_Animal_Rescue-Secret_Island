@@ -12,7 +12,7 @@ public class ConfigData
 
 public class TTSManager : MonoBehaviour
 {
-    private string apiKey = "sk_bbbcdf8007afc946e14b66b073fa9497d005a265f538fa41"; 
+    private string apiKey = "";
     private string voiceId = "Xb7hH8MSUJpSbSDYk0k2";   // Default voice ID
     public TMP_Text displayText;
     public AudioSource audioSource;
