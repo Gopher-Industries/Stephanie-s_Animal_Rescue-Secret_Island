@@ -4,15 +4,43 @@ using UnityEngine.Networking;
 using TMPro;
 using System;
 using UnityEngine.UI;
+[System.Serializable]
+public class ConfigData
+{
+    public string apiKey;
+}
 
 public class TTSManager : MonoBehaviour
 {
-    public string apiKey = "sk_bbbcdf8007afc946e14b66b073fa9497d005a265f538fa41";  // Replace with your API key
-    public string voiceId = "Xb7hH8MSUJpSbSDYk0k2";   // Default voice ID
+    private string apiKey = "sk_bbbcdf8007afc946e14b66b073fa9497d005a265f538fa41"; 
+    private string voiceId = "Xb7hH8MSUJpSbSDYk0k2";   // Default voice ID
     public TMP_Text displayText;
     public AudioSource audioSource;
     public string highlightColor = "FF0000"; // Default color (Red)
     private TTSSettings settings;
+    private APIKeyManager apiKeyManager;
+
+    private void Awake()
+    {
+        string apiKey;
+        if (this.apiKey != "")
+        {
+            apiKey = this.apiKey;
+            APIKeyManager.SaveSettings(apiKey);
+        }
+        else
+        {
+            apiKey = APIKeyManager.LoadSettings();
+            if (apiKey == "")
+            {
+                Debug.LogError("API Key not found. Please enter your API Key in the Config window.");
+            }
+            else
+            {
+                this.apiKey = apiKey;
+            }
+        }
+    }
     private void Start()
     {
         settings = TTSSettings.LoadSettings();
