@@ -12,6 +12,8 @@ public class CharacterMover : MonoBehaviour
     SavePlayerPos playerPosData;
     public Animator animator;
 
+    static public bool dialogue = false;
+
     private void Awake()
     {
         // Get characterOrientation component
@@ -24,6 +26,14 @@ public class CharacterMover : MonoBehaviour
 
     void Update()
     {
+        // Stop character movement when in dialogue
+        if (dialogue)
+        {
+            isMoving = false;
+            animator.SetBool("IsMoving", false);
+            return;
+        }
+
         HandleInput();
         HandleMovement();
     }
@@ -82,11 +92,11 @@ public class CharacterMover : MonoBehaviour
     {
         if (!isMoving)
             return;
-
+        
         // Keep the cube's Y position (assuming movement on the XZ plane)
         Vector3 currentPosition = transform.position;
         Vector3 destination = new Vector3(targetPosition.x, currentPosition.y, targetPosition.z);
-
+        
         // Move towards the destination
         transform.position = Vector3.MoveTowards(currentPosition, destination, moveSpeed * Time.deltaTime);
 
