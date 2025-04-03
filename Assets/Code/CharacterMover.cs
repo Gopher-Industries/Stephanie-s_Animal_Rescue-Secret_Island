@@ -18,7 +18,7 @@ public class CharacterMover : MonoBehaviour
     {
         // Get characterOrientation component
         characterOrientation = GetComponent<CharacterOrientation>();
-        //playerPosData = FindObjectOfType<SavePlayerPos>();    //Obsolete
+        // PlayerPosData = FindObjectOfType<SavePlayerPos>();    //Obsolete
         playerPosData = FindFirstObjectByType<SavePlayerPos>();
 
         playerPosData.PlayerPosLoad();

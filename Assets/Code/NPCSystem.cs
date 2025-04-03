@@ -11,15 +11,16 @@ public class NPCSystem : MonoBehaviour
     private bool dialogueTriggered = false;
     private GameObject currentDialogue;
     private NewDialogue dialogueScript;
-    // store multiple dialogues for npcs
+    // Store multiple dialogues for npcs
     public List<InteractionDataType> interactionStages = new List<InteractionDataType>();
     private int interactionCount = 0;
+    // Serializable class storing multiple lines of dialogue in the interaction stage
     [System.Serializable]
     public class InteractionDataType{
         public List<string> dialogueLines;
     }
 
-
+    // function to detect if player is detected and no dialogue is playing to start a new dialogue
     void Update()
     {
         if (player_detection && !CharacterMover.dialogue && !dialogueTriggered)
@@ -39,13 +40,13 @@ public class NPCSystem : MonoBehaviour
         {
             Destroy(currentDialogue);
         }
-
+        // Ensure the NPC dialogue is available logging errors
         if (interactionStages.Count == 0)
         {
             Debug.LogError("NPC has no dialogue");
             return;
         }
-
+        // Selecting dialogue stage based on number of interactions
         int stageIndex = Mathf.Clamp(interactionCount, 0, interactionStages.Count - 1);
         List<string> selectedDialogue = interactionStages[stageIndex].dialogueLines;
 
@@ -54,16 +55,16 @@ public class NPCSystem : MonoBehaviour
         currentDialogue.transform.SetParent(canva.transform, false);
 
         dialogueScript = currentDialogue.AddComponent<NewDialogue>();
-
+        // Adding each line of dialogue to dialogue system
         foreach (string line in selectedDialogue)
         {
             dialogueScript.AddDialogue(line, d_template);
         }
-
+        // Display dialogue
         dialogueScript.StartDialogue();
         interactionCount++;
     }
-
+    // Detect when player enters npc bubble
     private void OnTriggerEnter(Collider other)
     {
         if(other.name == "3D Character")
@@ -71,7 +72,7 @@ public class NPCSystem : MonoBehaviour
             player_detection = true;
         }
     }
-
+    
     private void OnTriggerExit(Collider other)
     {
         player_detection = false;
