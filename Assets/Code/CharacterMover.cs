@@ -5,7 +5,8 @@ public class CharacterMover : MonoBehaviour
 {
     public float moveSpeed = 5f; // Speed at which the cube moves
     private Vector3 targetPosition; // The position to move towards
-    private bool isMoving = false; // Whether the cube should be moving
+    public bool isMoving { get; private set; } = false; // Whether the cube should be moving
+
 
     // Referencing CharacterOrientation
     private CharacterOrientation characterOrientation;
