@@ -1,8 +1,7 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
-public class CharacterMover : MonoBehaviour
-{
+public class CharacterMover : MonoBehaviour{
     public float moveSpeed = 5f; // Speed at which the cube moves
     private Vector3 targetPosition; // The position to move towards
     public bool isMoving { get; private set; } = false; // Whether the cube should be moving
@@ -13,28 +12,16 @@ public class CharacterMover : MonoBehaviour
     SavePlayerPos playerPosData;
     public Animator animator;
 
-    static public bool dialogue = false;
-
-    private void Awake()
-    {
+    private void Awake(){
         // Get characterOrientation component
         characterOrientation = GetComponent<CharacterOrientation>();
-        // PlayerPosData = FindObjectOfType<SavePlayerPos>();    //Obsolete
+        //playerPosData = FindObjectOfType<SavePlayerPos>();    //Obsolete
         playerPosData = FindFirstObjectByType<SavePlayerPos>();
 
         playerPosData.PlayerPosLoad();
     }
 
-    void Update()
-    {
-        // Stop character movement when in dialogue
-        if (dialogue)
-        {
-            isMoving = false;
-            animator.SetBool("IsMoving", false);
-            return;
-        }
-
+    void Update(){
         HandleInput();
         HandleMovement();
     }
@@ -42,11 +29,9 @@ public class CharacterMover : MonoBehaviour
     /// <summary>
     /// Handles user input to set the movement destination.
     /// </summary>
-    void HandleInput()
-    {
+    void HandleInput(){
         // Check if the left mouse button was clicked
-        if (Input.GetMouseButtonDown(0))
-        {
+        if (Input.GetMouseButtonDown(0)){
             SetDestination(Input.mousePosition);
         }
 
@@ -64,21 +49,19 @@ public class CharacterMover : MonoBehaviour
     /// <summary>
     /// Sets the target position based on the clicked point.
     /// </summary>
-    void SetDestination(Vector3 screenPosition)
-    {
+    void SetDestination(Vector3 screenPosition){
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         RaycastHit hit;
 
         // Perform the raycast without a layer mask to hit any collider
-        if (Physics.Raycast(ray, out hit))
-        {
+        if (Physics.Raycast(ray, out hit) && !EventSystem.current.IsPointerOverGameObject()){
             targetPosition = hit.point;
             isMoving = true;
 
             // Optional: Draw a debug line from the cube to the target position
-            Debug.DrawLine(transform.position, targetPosition, Color.green, 2f);
+            //Debug.DrawLine(transform.position, targetPosition, Color.green, 2f);
 
-            Debug.Log($"Moving to Position: X={targetPosition.x}, Y={targetPosition.y}, Z={targetPosition.z}");
+            //Debug.Log($"Moving to Position: X={targetPosition.x}, Y={targetPosition.y}, Z={targetPosition.z}");
         }
         else
         {
@@ -93,11 +76,11 @@ public class CharacterMover : MonoBehaviour
     {
         if (!isMoving)
             return;
-        
+
         // Keep the cube's Y position (assuming movement on the XZ plane)
         Vector3 currentPosition = transform.position;
         Vector3 destination = new Vector3(targetPosition.x, currentPosition.y, targetPosition.z);
-        
+
         // Move towards the destination
         transform.position = Vector3.MoveTowards(currentPosition, destination, moveSpeed * Time.deltaTime);
 
