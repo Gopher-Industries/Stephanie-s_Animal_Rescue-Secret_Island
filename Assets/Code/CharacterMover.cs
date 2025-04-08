@@ -11,6 +11,7 @@ public class CharacterMover : MonoBehaviour{
     private CharacterOrientation characterOrientation;
     SavePlayerPos playerPosData;
     public Animator animator;
+    static public bool dialogue = false;
 
     private void Awake(){
         // Get characterOrientation component
@@ -22,6 +23,14 @@ public class CharacterMover : MonoBehaviour{
     }
 
     void Update(){
+        // Stop character movement when in dialogue
+        if (dialogue)
+        {
+            isMoving = false;
+            animator.SetBool("IsMoving", false);
+            return;
+        }
+        
         HandleInput();
         HandleMovement();
     }
