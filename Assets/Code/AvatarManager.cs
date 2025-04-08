@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 public class AvatarManager : MonoBehaviour {
-
+    public string sceneName;
+    public SceneAsset nextSceneToLoad;
     public Transform headLocation;
     private List<GameObject> headParts = new List<GameObject>();
     private int headCount = 0;
@@ -184,6 +186,10 @@ public class AvatarManager : MonoBehaviour {
         }
 
         SetActiveCompanionSprite();
+    }
+
+    public void FinishCustomisationBTN(){
+        GameManager.GameManagerInstance.LoadNewSceneUnloadOldScene(nextSceneToLoad,sceneName);
     }
     #endregion
 }
