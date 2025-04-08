@@ -3,12 +3,11 @@ using UnityEngine;
 public class FixedCamera : MonoBehaviour
 {
     public Transform player; 
-    private float distance = 8f; // Distance camera is from player
-    private float height = 46f; // How heigh camera is
-    private float angle = 30f; // Angle at which the camera looks down at the player (in degrees)
+    private float distance = 10f; // Distance camera is from player
+    private float height = 5f; // How heigh camera is
+    private float angle = 15f; // Angle at which the camera looks down at the player (in degrees)
 
-    private void LateUpdate()
-    {
+    void LateUpdate(){
         // Get the target position for the camera
         Vector3 targetPosition = new Vector3(player.position.x, height, player.position.z - distance);
 

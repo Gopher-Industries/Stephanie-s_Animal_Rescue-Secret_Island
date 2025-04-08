@@ -11,18 +11,17 @@ public class VoicelineManager : MonoBehaviour
     private float lastPlayedTime = 0f;
 
 
-    void Start()
-    {
+    void Start(){
         lastPlayedTime = Time.time - VOICELINE_COOLDOWN;
 
         audioSource = GetComponent<AudioSource>();
 
         if (characterMoverScript == null)
         {
-            Debug.LogError("ClickToMove script not assigned!");
+            //Debug.LogError("ClickToMove script not assigned!");
         }
 
-        PlayInitialVoiceline();
+        //PlayInitialVoiceline();
     }
 
     // Check if the voiceline is on cooldown
