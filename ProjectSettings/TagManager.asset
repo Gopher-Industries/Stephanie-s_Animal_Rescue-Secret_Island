@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags:
   - Ground
   - Tree
@@ -12,14 +12,16 @@ TagManager:
   - FetchObject
   - Water
   - Teleporter1
+  - GrassGround
+  - platform
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - ground
   - Water
   - UI
-  - 
+  - PostProcessing
   - 
   - 
   - 
@@ -55,3 +57,5 @@ TagManager:
   - name: Images
     uniqueID: 1212988473
     locked: 0
+  m_RenderingLayers:
+  - Default

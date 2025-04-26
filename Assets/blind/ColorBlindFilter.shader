@@ -1,64 +1,58 @@
-Shader "Custom/ColorBlindFilter"
+Shader "Hidden/Custom/ColorBlind"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _ColorBlindType ("Color Blind Type", Float) = 0
+        _MainTex ("Base (RGB)", 2D) = "white" {}
+        _Mode ("Color Blind Mode", Float) = 0
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" "Queue"="Overlay" }
-        Cull Off ZWrite Off ZTest Always Blend SrcAlpha OneMinusSrcAlpha
+        Tags { "RenderType"="Opaque" }
+        LOD 100
 
         Pass
         {
             CGPROGRAM
-            #pragma vertex vert
+            #pragma vertex vert_img
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            struct appdata_t
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
-            };
-
             sampler2D _MainTex;
-            float _ColorBlindType;
+            float _Mode;
 
-            v2f vert (appdata_t v)
+            fixed4 frag(v2f_img i) : SV_Target
             {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
-                return o;
-            }
+                fixed4 col = tex2D(_MainTex, i.uv);
+                float3 rgb = col.rgb;
+                float3 result;
 
-            float4 frag (v2f i) : SV_Target
-            {
-                float4 col = tex2D(_MainTex, i.uv);
+                if (_Mode > 0.5 && _Mode < 1.5) {
+                    // Protanopia（红色盲）
+                    result = mul(rgb, float3x3(
+                        0.567, 0.433, 0.0,
+                        0.558, 0.442, 0.0,
+                        0.0,   0.242, 0.758));
+                }
+                else if (_Mode > 1.5 && _Mode < 2.5) {
+                    // Deuteranopia（绿色盲）
+                    result = mul(rgb, float3x3(
+                        0.625, 0.375, 0.0,
+                        0.7,   0.3,   0.0,
+                        0.0,   0.3,   0.7));
+                }
+                else if (_Mode > 2.5 && _Mode < 3.5) {
+                    // Tritanopia（蓝色盲）
+                    result = mul(rgb, float3x3(
+                        0.95, 0.05,  0.0,
+                        0.0,  0.433, 0.567,
+                        0.0,  0.475, 0.525));
+                }
+                else {
+                    // Normal vision
+                    result = rgb;
+                }
 
-                // 色盲模式
-                if (_ColorBlindType == 1) // Deuteranopia
-                {
-                    col.rgb = float3(col.r * 0.8, col.g * 0.5, col.b);
-                }
-                else if (_ColorBlindType == 2) // Protanopia
-                {
-                    col.rgb = float3(col.r * 0.5, col.g * 0.8, col.b);
-                }
-                else if (_ColorBlindType == 3) // Tritanopia
-                {
-                    col.rgb = float3(col.r, col.g * 0.8, col.b * 0.5);
-                }
-
-                return col;
+                return fixed4(result, col.a);
             }
             ENDCG
         }
