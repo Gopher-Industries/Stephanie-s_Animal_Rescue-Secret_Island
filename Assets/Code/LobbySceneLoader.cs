@@ -6,11 +6,12 @@ public class SceneLoader : MonoBehaviour
 {
     public void LoadScene()
     {
-        SceneManager.LoadScene("Lobby");
+        SceneManager.LoadScene("WorldHub");
     }
 
     public void LoadSceneByIndex(int sceneIndex)
     {
+        Debug.LogWarning("Loading scene by index: " + sceneIndex);
         SceneManager.LoadScene(sceneIndex); // Loads the scene by index
     }
 }
