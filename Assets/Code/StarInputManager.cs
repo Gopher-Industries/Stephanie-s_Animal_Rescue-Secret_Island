@@ -148,12 +148,19 @@ public class StarInputManager : MonoBehaviour
     #region Utility Methods
     private GameObject GetObjectUnderMouse()
     {
-        var hit2D = Physics2D.GetRayIntersection(gameCamera.ScreenPointToRay(Input.mousePosition));
-        if (hit2D.collider != null) return hit2D.collider.gameObject;
+        RaycastHit2D hit2D = Physics2D.GetRayIntersection(gameCamera.ScreenPointToRay(Input.mousePosition));
+        if (hit2D.collider != null)
+        {
+            return hit2D.collider.gameObject;
+        }
 
-        return Physics.Raycast(gameCamera.ScreenPointToRay(Input.mousePosition), out var hit3D)
-            ? hit3D.collider.gameObject
-            : null;
+        RaycastHit hit3D;
+        if (Physics.Raycast(gameCamera.ScreenPointToRay(Input.mousePosition), out hit3D))
+        {
+            return hit3D.collider.gameObject;
+        }
+
+        return null;
     }
 
     private Vector3 GetMouseWorldPosition(float zDepth)
