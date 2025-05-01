@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class StarNodeVisual : MonoBehaviour
 {
-    [SerializeField] private Color normalColor = Color.cyan;
+    [SerializeField] private Color normalColor = Color.yellow;
     [SerializeField] private Color solutionColor = Color.green;
-    [SerializeField] private Color highlightColor = Color.yellow;
+    [SerializeField] private Color highlightColor = Color.red;
 
     private Material starMaterial;
     private bool isSolution;
     private bool hasConnections;
+
+    private const float BRIGHTNESS = 2f;
 
     public int nodeId { get; private set; }
 
@@ -49,7 +51,7 @@ public class StarNodeVisual : MonoBehaviour
     private void SetColor(Color color)
     {
         starMaterial.color = color;
-        starMaterial.SetColor("_EmissionColor", color * 2f);
+        starMaterial.SetColor("_EmissionColor", color * BRIGHTNESS);
     }
 }
 

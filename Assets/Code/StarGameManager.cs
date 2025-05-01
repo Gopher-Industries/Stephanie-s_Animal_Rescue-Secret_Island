@@ -4,7 +4,7 @@ public class StarGameManager : MonoBehaviour
 {
     [Header("Dependencies")]
     [SerializeField] private StarLevelGenerator levelGenerator;
-    [SerializeField] private StarGraphVisualizer visualizer;
+    [SerializeField] private StarGraphVisualiser visualiser;
     [SerializeField] private StarInputManager inputManager;
 
     private StarGameState gameState;
@@ -25,7 +25,7 @@ public class StarGameManager : MonoBehaviour
     {
         var newGraph = levelGenerator.GenerateLevel();
         gameState.Initialize(newGraph);
-        visualizer.VisualizeGraph(newGraph);
+        visualiser.VisualizeGraph(newGraph);
     }
 
     private void ValidateCurrentLevel()
@@ -44,7 +44,7 @@ public class StarGameManager : MonoBehaviour
 
         if (gameState.TryAddConnection(nodeAId, nodeBId))
         {
-            visualizer.DrawEdge(nodeA, nodeB);
+            visualiser.DrawEdge(nodeA, nodeB);
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
         }
@@ -57,7 +57,7 @@ public class StarGameManager : MonoBehaviour
 
         if (gameState.TryRemoveConnection(nodeAId, nodeBId))
         {
-            visualizer.RemoveEdge(nodeA, nodeB);
+            visualiser.RemoveEdge(nodeA, nodeB);
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
         }
@@ -78,12 +78,12 @@ public class StarGameManager : MonoBehaviour
         bool hasConnections = node.neighbours.Count > 0;
         bool isHighlighted = node.data.IsSelected;
 
-        visualizer.UpdateNodeHighlight(nodeId, isHighlighted, hasConnections);
+        visualiser.UpdateNodeHighlight(nodeId, isHighlighted, hasConnections);
     }
 
     public (Node<StarData>, Node<StarData>) GetNodesFromEdge(GameObject edgeObject)
     {
-        foreach (var visualPair in visualizer.edgeVisuals)
+        foreach (var visualPair in visualiser.edgeVisuals)
         {
             if (visualPair.Value.gameObject == edgeObject)
             {
@@ -98,7 +98,7 @@ public class StarGameManager : MonoBehaviour
     {
         foreach (var node in gameState.currentGraph.Nodes)
         {
-            if (visualizer.DoesVisualRepresentNode(gameObject, node.id))
+            if (visualiser.DoesVisualRepresentNode(gameObject, node.id))
                 return node;
         }
         return null;

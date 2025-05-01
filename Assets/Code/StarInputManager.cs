@@ -4,7 +4,7 @@ public class StarInputManager : MonoBehaviour
 {
     [Header("Dependencies")]
     [SerializeField] private Camera gameCamera;
-    [SerializeField] private StarGraphVisualizer graphVisualizer;
+    [SerializeField] private StarGraphVisualiser graphVisualiser;
     [SerializeField] private StarGameManager gameManager;
 
     private Node<StarData> startNode = null;
@@ -13,7 +13,7 @@ public class StarInputManager : MonoBehaviour
     private void Awake()
     {
         if (gameCamera == null) Debug.LogError("Game Camera not assigned!");
-        if (graphVisualizer == null) Debug.LogError("Graph Visualizer not assigned!");
+        if (graphVisualiser == null) Debug.LogError("Graph Visualizer not assigned!");
         if (gameManager == null) Debug.LogError("Game Manager not assigned!");
     }
 
@@ -61,7 +61,7 @@ public class StarInputManager : MonoBehaviour
     private void HandleMouseDrag()
     {
         var mouseWorldPos = GetMouseWorldPosition(startNode.position.z);
-        graphVisualizer.UpdatePreviewLine(startNode.position, mouseWorldPos);
+        graphVisualiser.UpdatePreviewLine(startNode.position, mouseWorldPos);
     }
 
     // When the mouse is released: Finalize the edge and connect the nodes in the graph
@@ -93,7 +93,7 @@ public class StarInputManager : MonoBehaviour
             gameManager.UpdateNodeVisualState(node.id);
         }
 
-        graphVisualizer.ClearPreviewLine();
+        graphVisualiser.ClearPreviewLine();
     }
 
     private void CompleteConnection(Node<StarData> start, Node<StarData> end)
@@ -122,7 +122,7 @@ public class StarInputManager : MonoBehaviour
     // dog but works
     private void ResetInteraction()
     {
-        graphVisualizer.ClearPreviewLine();
+        graphVisualiser.ClearPreviewLine();
         startNode = null;
         _isDragging = false;
     }

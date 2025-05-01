@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StarGraphVisualizer : MonoBehaviour
+public class StarGraphVisualiser : MonoBehaviour
 {
     [Header("Prefabs")]
     [SerializeField] private StarNodeVisual starPrefab;
@@ -27,12 +27,13 @@ public class StarGraphVisualizer : MonoBehaviour
 
     private void CreateNodeVisuals(Graph<StarData> graph)
     {
+        int nodeId = 1;
         foreach (var node in graph.Nodes)
         {
             var starVisual = Instantiate(starPrefab, node.position, Quaternion.identity, transform);
-            starVisual.Initialize(node.id, node.data);
+            starVisual.Initialize(nodeId, node.data);
             nodeVisuals[node.id] = starVisual;
-
+            nodeId++;
         }
     }
 
@@ -47,7 +48,7 @@ public class StarGraphVisualizer : MonoBehaviour
             b.position,
             LINE_WIDTH
         );
-        UpdateSolutionEdgeColour(a, b, edge);
+        UpdateEdgeColour(a, b, edge);
         StoreEdge(a.id, b.id, edge);
     }
 
@@ -103,12 +104,15 @@ public class StarGraphVisualizer : MonoBehaviour
         ClearPreviewLine();
     }
 
-    public void UpdateSolutionEdgeColour(Node<StarData> a, Node<StarData> b, StarEdgeVisual edge)
+    public void UpdateEdgeColour(Node<StarData> a, Node<StarData> b, StarEdgeVisual edge)
     {
         Color solutionEdgeColour = Color.green;
+        Color incorrectSolutionColour = Color.red;
 
         if (a.data.IsSolutionNode && b.data.IsSolutionNode)
             edge.SetColour(solutionEdgeColour);
+        else
+            edge.SetColour(incorrectSolutionColour);
     }
     public bool DoesVisualRepresentNode(GameObject gameObject, int nodeId)
     {
