@@ -27,14 +27,14 @@ public class StarEdgeVisual : MonoBehaviour
     // https://youtu.be/BfP0KyOxVWs?t=139
     private void UpdateCollider(Vector3 start, Vector3 end, float width)
     {
-        Vector2 dir = (end - start).normalized;
-        Vector2 perpendicular = 0.5f * width * new Vector2(-dir.y, dir.x);
+        Vector2 lineDirection = (end - start).normalized;
+        Vector2 perpendicularOffset = (width/2) * new Vector2(-lineDirection.y, lineDirection.x);
 
         Vector2[] points = new Vector2[4];
-        points[0] = start + (Vector3)perpendicular;
-        points[1] = start - (Vector3)perpendicular;
-        points[2] = end - (Vector3)perpendicular;
-        points[3] = end + (Vector3)perpendicular;
+        points[0] = start + (Vector3)perpendicularOffset;
+        points[1] = start - (Vector3)perpendicularOffset;
+        points[2] = end - (Vector3)perpendicularOffset;
+        points[3] = end + (Vector3)perpendicularOffset;
 
         polygonCollider.SetPath(0, points);
     }
