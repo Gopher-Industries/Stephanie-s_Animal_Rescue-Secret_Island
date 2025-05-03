@@ -26,5 +26,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Level/Scenes/MiniGameTest.unity
     guid: 9e990e76f813d8a40b8b8a3361e0f7d1
+  - enabled: 1
+    path: Assets/Level/Scenes/Game Level 1.unity
+    guid: 6e9100de0e176f84dacf0d2ac433cbc6
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
