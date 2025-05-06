@@ -17,30 +17,54 @@ public class StarGameManager : MonoBehaviour
         if (inputManager == null) Debug.LogError("Input Manager not assigned to Star Game Manager!");
         if (uiManager == null) Debug.LogError("UI Manager not assigned to Star Game Manager!");
 
-        gameState = new StarGameState();
-        Graph<StarData> starGraph = levelGenerator.GenerateLevel();
-        gameState.Initialize(starGraph);
+        InitializeGame();
     }
 
-    private void Start()
+    private void InitializeGame()
     {
+        gameState = new StarGameState();
         StartNewLevel();
     }
 
     public void StartNewLevel()
     {
-        var newGraph = levelGenerator.GenerateLevel();
+        var newGraph = levelGenerator.GenerateLevel(gameState.CurrentLevel);
         gameState.Initialize(newGraph);
         visualiser.VisualizeGraph(newGraph);
-        uiManager.ShowPreview(ShapeType.Square);
+        uiManager.ShowPreview(GetShapeForLevel(gameState.CurrentLevel));
+
+        Debug.Log($"Started Level {gameState.CurrentLevel}");
+    }
+
+    private ShapeType GetShapeForLevel(int level)
+    {
+        switch(level)
+        {
+            case 1:
+                return ShapeType.Triangle;
+            case 2:
+                return ShapeType.Triangle;
+            case 3:
+                return ShapeType.Square;
+            case 4:
+                return ShapeType.Square;
+            default:
+                return ShapeType.Triangle;
+        }
     }
 
     private void ValidateCurrentLevel()
     {
         if (gameState.isSolutionValid)
         {
-            Debug.Log("Level Complete!");
-            // TODO: Create level 2
+            Debug.Log($"Level {gameState.CurrentLevel} Complete!");
+
+            inputManager.ClearSelection();
+            visualiser.ClearVisuals();
+            uiManager.HidePreview();
+
+            gameState.AdvanceLevel();
+            StartNewLevel();
         }
     }
 
@@ -54,6 +78,8 @@ public class StarGameManager : MonoBehaviour
             visualiser.DrawEdge(nodeA, nodeB);
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
+            gameState.ValidateSolution();
+            ValidateCurrentLevel();
         }
     }
 
@@ -67,6 +93,8 @@ public class StarGameManager : MonoBehaviour
             visualiser.RemoveEdge(nodeA, nodeB);
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
+            gameState.ValidateSolution();
+            ValidateCurrentLevel();
         }
 
     }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class StarGraphVisualiser : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class StarGraphVisualiser : MonoBehaviour
     [SerializeField] private StarNodeVisual starPrefab;
     [SerializeField] private StarEdgeVisual edgePrefab;
     [SerializeField] private LineRenderer previewLinePrefab;
+
+    private Color lineColor = Color.yellow;
 
     private const float LINE_WIDTH = 0.25f;
 
@@ -67,6 +70,8 @@ public class StarGraphVisualiser : MonoBehaviour
         if (previewLine == null)
         {
             previewLine = Instantiate(previewLinePrefab, transform);
+            previewLine.startColor = lineColor;
+            previewLine.endColor = lineColor;
             previewLine.startWidth = LINE_WIDTH;
             previewLine.endWidth = LINE_WIDTH;
             previewLine.widthMultiplier = LINE_WIDTH;
@@ -94,7 +99,7 @@ public class StarGraphVisualiser : MonoBehaviour
         }
     }
 
-        public void ClearVisuals()
+    public void ClearVisuals()
     {
         foreach (var visual in nodeVisuals.Values) Destroy(visual.gameObject);
         foreach (var edge in edgeVisuals.Values) Destroy(edge.gameObject);
@@ -114,6 +119,7 @@ public class StarGraphVisualiser : MonoBehaviour
         else
             edge.SetColour(incorrectSolutionColour);
     }
+
     public bool DoesVisualRepresentNode(GameObject gameObject, int nodeId)
     {
         return nodeVisuals.TryGetValue(nodeId, out var visual) &&

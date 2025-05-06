@@ -20,7 +20,10 @@ public class StarUIManager : MonoBehaviour
     void Awake()
     {
         mainCamera = Camera.main;
-        CreateLineRenderer();
+        if (lineRenderer == null)
+        {
+            CreateLineRenderer();
+        }
     }
 
     private void CreateLineRenderer()
@@ -40,6 +43,11 @@ public class StarUIManager : MonoBehaviour
 
     public void ShowPreview(ShapeType shapeType)
     {
+        if (lineRenderer == null)
+        {
+            CreateLineRenderer();
+        }
+
         ClearPreviousPreview();
 
         StarShapeData shape = ShapeLibrary.GetShape(shapeType);

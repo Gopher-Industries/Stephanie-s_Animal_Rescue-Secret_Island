@@ -6,22 +6,30 @@ public class StarNodeVisual : MonoBehaviour
     [SerializeField] private Color solutionColor = Color.green;
     [SerializeField] private Color invalidColor = Color.red;
 
-
     private Material starMaterial;
     private bool isSolution;
     private bool hasConnections;
 
-    private const float BRIGHTNESS = 2f;
-
     public int nodeId { get; private set; }
+
+    void Awake()
+    {
+        Renderer renderer = GetComponent<Renderer>();
+        starMaterial = new Material(Shader.Find("Unlit/Color"));
+        renderer.material = starMaterial;
+    }
 
     public void Initialize(int nodesId, StarData data)
     {
         nodeId = nodesId;
         isSolution = data.IsSolutionNode;
 
-        starMaterial = GetComponent<Renderer>().material;
-        starMaterial.EnableKeyword("_EMISSION");
+        if (starMaterial == null)
+        {
+            Renderer renderer = GetComponent<Renderer>();
+            starMaterial = renderer.material;
+        }
+
         UpdateHighlightState();
 
         if (isSolution)
@@ -33,7 +41,6 @@ public class StarNodeVisual : MonoBehaviour
     public void UpdateHighlightState(bool isHighlighted = false, bool hasConnections = false)
     {
         this.hasConnections = hasConnections;
-
 
         if (isSolution && hasConnections)
         {
@@ -51,8 +58,12 @@ public class StarNodeVisual : MonoBehaviour
 
     private void SetColor(Color color)
     {
+        if (starMaterial == null)
+        {
+            Debug.LogError("Star material is null!");
+            return;
+        }
+
         starMaterial.color = color;
-        starMaterial.SetColor("_EmissionColor", color * BRIGHTNESS);
     }
 }
-

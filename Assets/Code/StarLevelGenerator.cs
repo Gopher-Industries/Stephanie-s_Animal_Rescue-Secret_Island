@@ -9,18 +9,44 @@ public class StarLevelGenerator : MonoBehaviour
     private const float SHAPE_SIZE = 3f;
 
 
-    public Graph<StarData> GenerateLevel()
+    public Graph<StarData> GenerateLevel(int level)
     {
         Graph<StarData> starGraph = new Graph<StarData>();
-        List<Node<StarData>> solutionNodes = CreateSolutionShape(starGraph);
+        List<Node<StarData>> solutionNodes = CreateSolutionShape(starGraph, level);
         CreateFillerStars(starGraph, solutionNodes);
 
         return starGraph;
     }
 
-    private List<Node<StarData>> CreateSolutionShape(Graph<StarData> starGraph)
+    private List<Node<StarData>> CreateSolutionShape(Graph<StarData> starGraph, int level)
     {
-        var solutionShapePoints = GenerateGameplayShape(ShapeType.Square, 1);
+        ShapeType shapeType;
+        bool applyRotation;
+        switch (level)
+        {
+            case 1: 
+                shapeType = ShapeType.Triangle;
+                applyRotation = false;
+                break;
+            case 2: 
+                shapeType = ShapeType.Triangle;
+                applyRotation = true;
+                break;
+            case 3: 
+                shapeType = ShapeType.Square;
+                applyRotation = false;
+                break;
+            case 4: 
+                shapeType = ShapeType.Square;
+                applyRotation = true;
+                break;
+            default:
+                shapeType = ShapeType.Triangle;
+                applyRotation = false;
+                break;
+        }
+
+        var solutionShapePoints = GenerateGameplayShape(shapeType, applyRotation);
         var solutionNodes = new List<Node<StarData>>();
 
         foreach (var pos in solutionShapePoints)
@@ -59,48 +85,21 @@ public class StarLevelGenerator : MonoBehaviour
         }
     }
 
-    public List<Vector3> GenerateGameplayShape(ShapeType type, int level)
+    public List<Vector3> GenerateGameplayShape(ShapeType type,bool applyRotation)
     {
         StarShapeData shape = ShapeLibrary.GetShape(type);
         float rotation;
 
-        if (level > 1)
-            rotation = Random.Range(0f, 360f);
+        if (applyRotation)
+            rotation = Random.Range(0f, 360f); 
         else
             rotation = 0f;
-  
+
 
         Vector2 offset = Random.insideUnitCircle * 5f;
 
         return shape.GetTransformedVertices(SHAPE_SIZE, offset, rotation);
     }
-
-    //private List<Vector3> GenerateTriangle()
-    //{
-    //    float sideLength = 3f;
-    //    float height = Mathf.Sqrt(3f) / 2f * sideLength;
-
-
-    //    Vector3 p1 = new Vector3(0, height / 2f, 0);
-    //    Vector3 p2 = new Vector3(-sideLength / 2f, -height / 2f, 0);
-    //    Vector3 p3 = new Vector3(sideLength / 2f, -height / 2f, 0);
-
-
-    //    float angle = Random.Range(0f, 360f);
-    //    Quaternion rotation = Quaternion.Euler(0, 0, angle);
-
-    //    Vector2 offset = Random.insideUnitCircle * (RADIUS * 0.5f);
-
-
-    //    List<Vector3> result = new List<Vector3>
-    //{
-    //    rotation * p1 + (Vector3)offset,
-    //    rotation * p2 + (Vector3)offset,
-    //    rotation * p3 + (Vector3)offset
-    //};
-
-    //    return result;
-    //}
 
     // Blue noise without even distribution
     private List<Vector3> GenerateSpacedPositions(int count, List<Vector3> avoidPoints)

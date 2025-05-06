@@ -7,6 +7,13 @@ public class StarGameState
     public List<Node<StarData>> solutionNodes { get; }
     public bool isSolutionValid { get; private set; }
 
+    public int CurrentLevel { get; private set; } = 1;
+
+    public void AdvanceLevel()
+    {
+        CurrentLevel++;
+    }
+
     public StarGameState()
     {
         solutionNodes = new List<Node<StarData>>();
@@ -16,7 +23,14 @@ public class StarGameState
     {
         currentGraph = graph;
         solutionNodes.Clear();
-        ValidateSolution();
+
+        foreach (var node in graph.Nodes)
+        {
+            if (node.data.IsSolutionNode)
+            {
+                solutionNodes.Add(node);
+            }
+        }
     }
 
     public bool TryAddConnection(int nodeAId, int nodeBId)
@@ -28,7 +42,7 @@ public class StarGameState
 
         currentGraph.ConnectNodes(nodeA, nodeB);
 
-        ValidateSolution();
+
         return true;
     }
 
@@ -41,7 +55,7 @@ public class StarGameState
 
         currentGraph.DisconnectNodes(nodeA, nodeB);
 
-        ValidateSolution();
+
         return true;
     }
 
@@ -51,7 +65,6 @@ public class StarGameState
 
         if (node == null)
         {
-            Debug.LogWarning($"Node {nodeId} not found!");
             return false;
         }
 
@@ -61,15 +74,27 @@ public class StarGameState
 
     private Node<StarData> FindNode(int id)
     {
+        if (currentGraph == null)
+        {
+            Debug.LogError("Attempted to find node in null graph!");
+            return null;
+        }
+
         foreach (var node in currentGraph.Nodes)
         {
             if (node.id == id) return node;
         }
+
+        if (Application.isPlaying)
+            Debug.LogWarning($"Node {id} not found in graph");
+
         return null;
     }
 
     public Node<StarData> GetNodeById(int nodeId)
     {
+        if (currentGraph == null) return null;
+
         foreach (var node in currentGraph.Nodes)
         {
             if (node.id == nodeId) return node;
@@ -77,14 +102,14 @@ public class StarGameState
         return null;
     }
 
-    private void ValidateSolution()
+    public void ValidateSolution()
     {
         isSolutionValid = CheckSolution(solutionNodes);
     }
 
     private bool CheckSolution(List<Node<StarData>> solutionNodes)
     {
-        if (solutionNodes.Count < 2)
+        if (solutionNodes.Count < 3)
             return false;
 
         HashSet<Node<StarData>> visited = new HashSet<Node<StarData>>();
@@ -97,16 +122,13 @@ public class StarGameState
 
         foreach (var node in solutionNodes)
         {
-            int solutionNeighbors = 0;
             foreach (var neighbour in node.neighbours)
             {
-                if (neighbour.data.IsSolutionNode)
-                    solutionNeighbors++;
-                else
+                if (!neighbour.data.IsSolutionNode)
                     return false;
             }
 
-            if (solutionNeighbors != 2)
+            if (node.neighbours.Count != 2)
                 return false;
         }
 
@@ -123,7 +145,6 @@ public class StarGameState
             {
                 DFS(neighbour, visited);
             }
-
         }
     }
 }

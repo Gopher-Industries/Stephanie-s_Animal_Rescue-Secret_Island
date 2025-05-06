@@ -8,7 +8,7 @@ public class StarInputManager : MonoBehaviour
     [SerializeField] private StarGameManager gameManager;
 
     private Node<StarData> startNode = null;
-    private bool _isDragging = false;
+    private bool isDragging = false;
 
     private void Awake()
     {
@@ -29,12 +29,12 @@ public class StarInputManager : MonoBehaviour
             HandleMouseDown();
         }
 
-        if (_isDragging && Input.GetMouseButton(0))
+        if (isDragging && Input.GetMouseButton(0))
         {
             HandleMouseDrag();
         }
 
-        if (Input.GetMouseButtonUp(0) && _isDragging)
+        if (Input.GetMouseButtonUp(0) && isDragging)
         {
             HandleMouseRelease();
         }
@@ -67,7 +67,14 @@ public class StarInputManager : MonoBehaviour
     // When the mouse is released: Finalize the edge and connect the nodes in the graph
     private void HandleMouseRelease()
     {
+        if (startNode == null)
+        {
+            CleanUpFailedConnection();
+            return;
+        }
+
         var hitObject = GetObjectUnderMouse();
+
         var releasedNode = hitObject != null ? gameManager.GetNodeFromGameObject(hitObject) : null;
 
         if (releasedNode != null && releasedNode != startNode)
@@ -79,13 +86,13 @@ public class StarInputManager : MonoBehaviour
             CleanUpFailedConnection();
         }
 
-        ResetInteraction();
+        ClearSelection();
     }
 
     private void StartNodeInteraction(Node<StarData> node)
     {
         startNode = node;
-        _isDragging = true;
+        isDragging = true;
 
         if (!node.data.IsSelected)
         {
@@ -112,6 +119,9 @@ public class StarInputManager : MonoBehaviour
         if (startNode == null)
             return;
 
+        graphVisualiser.ClearPreviewLine();
+
+
         if (startNode.neighbours.Count == 0)
         {
             gameManager.SetNodeSelected(startNode.id, false);
@@ -120,11 +130,11 @@ public class StarInputManager : MonoBehaviour
     }
 
     // dog but works
-    private void ResetInteraction()
+    public void ClearSelection()
     {
         graphVisualiser.ClearPreviewLine();
         startNode = null;
-        _isDragging = false;
+        isDragging = false;
     }
 
     
@@ -144,6 +154,7 @@ public class StarInputManager : MonoBehaviour
             gameManager.SetNodeSelected(nodeB.id, false);
             gameManager.UpdateNodeVisualState(nodeB.id);
     }
+
 
     #region Utility Methods
     private GameObject GetObjectUnderMouse()
