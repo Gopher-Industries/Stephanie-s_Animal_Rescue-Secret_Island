@@ -1,0 +1,14 @@
+{
+  "characters": [
+    {
+      "characterID": "Chicken",
+      "displayName": "Small Chicken",
+      "characterImage": "CharacterImages/chick"
+    },
+    {
+      "characterID": "Bear",
+      "displayName": "Big Bear",
+      "characterImage": "CharacterImages/bear"
+    }
+  ]
+}
