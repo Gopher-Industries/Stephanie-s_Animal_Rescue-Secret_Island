@@ -10,7 +10,7 @@ public static class ShapeLibrary
             new StarShapeData()
             {
                 type = ShapeType.Square,
-                normalizedVertices = new Vector2[]
+                normalisedVertices = new Vector2[]
                 {
                     new Vector2(-0.5f, 0.5f),  
                     new Vector2(0.5f, 0.5f),   
@@ -24,7 +24,7 @@ public static class ShapeLibrary
             new StarShapeData()
             {
                 type = ShapeType.Triangle,
-                normalizedVertices = new Vector2[]
+                normalisedVertices = new Vector2[]
                 {
                     new Vector2(0f, 0.577f),    
                     new Vector2(-0.5f, -0.289f),

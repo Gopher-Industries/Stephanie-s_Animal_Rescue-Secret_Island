@@ -302,6 +302,51 @@ MonoBehaviour:
   levelGenerator: {fileID: 469839758}
   visualiser: {fileID: 859162637}
   inputManager: {fileID: 1812004396}
+  uiManager: {fileID: 584767002}
+--- !u!1 &584767000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 584767001}
+  - component: {fileID: 584767002}
+  m_Layer: 0
+  m_Name: StarUIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &584767001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584767000}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 4.9567246, y: 0.354356, z: -5.204774}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1623594841}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &584767002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584767000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfd441d5d0dfb614da6bd5cc6f3a6482, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &792335979
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,6 +505,7 @@ Transform:
   - {fileID: 527333977}
   - {fileID: 859162636}
   - {fileID: 469839757}
+  - {fileID: 584767001}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1812004395

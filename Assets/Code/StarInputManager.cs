@@ -12,9 +12,9 @@ public class StarInputManager : MonoBehaviour
 
     private void Awake()
     {
-        if (gameCamera == null) Debug.LogError("Game Camera not assigned!");
-        if (graphVisualiser == null) Debug.LogError("Graph Visualizer not assigned!");
-        if (gameManager == null) Debug.LogError("Game Manager not assigned!");
+        if (gameCamera == null) Debug.LogError("Game Camera not assigned to Star Input Manager!");
+        if (graphVisualiser == null) Debug.LogError("Graph Visualiser not assigned to Star Input Manager!");
+        if (gameManager == null) Debug.LogError("Game Manager not assigned to Star Input Manager!");
     }
 
     private void Update()
@@ -148,16 +148,16 @@ public class StarInputManager : MonoBehaviour
     #region Utility Methods
     private GameObject GetObjectUnderMouse()
     {
-        RaycastHit2D hit2D = Physics2D.GetRayIntersection(gameCamera.ScreenPointToRay(Input.mousePosition));
-        if (hit2D.collider != null)
-        {
-            return hit2D.collider.gameObject;
-        }
-
         RaycastHit hit3D;
         if (Physics.Raycast(gameCamera.ScreenPointToRay(Input.mousePosition), out hit3D))
         {
             return hit3D.collider.gameObject;
+        }
+
+        RaycastHit2D hit2D = Physics2D.GetRayIntersection(gameCamera.ScreenPointToRay(Input.mousePosition));
+        if (hit2D.collider != null)
+        {
+            return hit2D.collider.gameObject;
         }
 
         return null;

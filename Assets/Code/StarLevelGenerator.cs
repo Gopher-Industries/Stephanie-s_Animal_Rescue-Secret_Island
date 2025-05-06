@@ -20,10 +20,10 @@ public class StarLevelGenerator : MonoBehaviour
 
     private List<Node<StarData>> CreateSolutionShape(Graph<StarData> starGraph)
     {
-        var trianglePoints = GenerateGameplayShape(ShapeType.Triangle, 1);
+        var solutionShapePoints = GenerateGameplayShape(ShapeType.Square, 1);
         var solutionNodes = new List<Node<StarData>>();
 
-        foreach (var pos in trianglePoints)
+        foreach (var pos in solutionShapePoints)
         {
             var node = starGraph.AddNode(pos, new StarData
             {

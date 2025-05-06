@@ -4,7 +4,8 @@ public class StarNodeVisual : MonoBehaviour
 {
     [SerializeField] private Color normalColor = Color.yellow;
     [SerializeField] private Color solutionColor = Color.green;
-    [SerializeField] private Color highlightColor = Color.red;
+    [SerializeField] private Color invalidColor = Color.red;
+
 
     private Material starMaterial;
     private bool isSolution;
@@ -40,7 +41,7 @@ public class StarNodeVisual : MonoBehaviour
         }
         else if (isHighlighted)
         {
-            SetColor(highlightColor);
+            SetColor(invalidColor);
         }
         else
         {

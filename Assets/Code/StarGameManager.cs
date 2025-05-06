@@ -6,11 +6,17 @@ public class StarGameManager : MonoBehaviour
     [SerializeField] private StarLevelGenerator levelGenerator;
     [SerializeField] private StarGraphVisualiser visualiser;
     [SerializeField] private StarInputManager inputManager;
+    [SerializeField] private StarUIManager uiManager;
 
     private StarGameState gameState;
 
     private void Awake()
     {
+        if (levelGenerator == null) Debug.LogError("Level Generator not assigned to Star Game Manager!");
+        if (visualiser == null) Debug.LogError("Visualiser not assigned to Star Game Manager!");
+        if (inputManager == null) Debug.LogError("Input Manager not assigned to Star Game Manager!");
+        if (uiManager == null) Debug.LogError("UI Manager not assigned to Star Game Manager!");
+
         gameState = new StarGameState();
         Graph<StarData> starGraph = levelGenerator.GenerateLevel();
         gameState.Initialize(starGraph);
@@ -26,6 +32,7 @@ public class StarGameManager : MonoBehaviour
         var newGraph = levelGenerator.GenerateLevel();
         gameState.Initialize(newGraph);
         visualiser.VisualizeGraph(newGraph);
+        uiManager.ShowPreview(ShapeType.Square);
     }
 
     private void ValidateCurrentLevel()

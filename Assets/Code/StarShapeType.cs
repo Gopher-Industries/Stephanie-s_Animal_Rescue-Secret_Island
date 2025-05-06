@@ -7,16 +7,16 @@ public enum ShapeType { Square, Triangle}
 public class StarShapeData
 {
     public ShapeType type;
-    public Vector2[] normalizedVertices; 
+    public Vector2[] normalisedVertices; 
     public bool isClosedShape = true;
 
     
     public List<Vector3> GetTransformedVertices(float size, Vector2 offset, float rotationDegrees = 0f)
     {
         Quaternion rotation = Quaternion.Euler(0, 0, rotationDegrees);
-        List<Vector3> vertices = new List<Vector3>(normalizedVertices.Length);
+        List<Vector3> vertices = new List<Vector3>(normalisedVertices.Length);
 
-        foreach (Vector2 vert in normalizedVertices)
+        foreach (Vector2 vert in normalisedVertices)
         {
             vertices.Add(rotation * (vert * size) + (Vector3)offset);
         }
