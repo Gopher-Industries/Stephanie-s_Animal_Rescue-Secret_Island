@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GridClass
 {
@@ -7,8 +7,13 @@ public class GridClass
     private float cellWidth;
     private float cellHeight;
     private Vector3 originPosition;
-    private float zPosition; // Adjustable Z position
-    private GameObject[,] gridVisuals;
+    private float zPosition;
+    private GameObject[,] gridParents;
+    private GameObject[,] backgroundQuads;
+    private SpriteRenderer[,] imageRenderers;
+
+    public float imageWidth = 1f;
+    public float imageHeight = 1f;
 
     public GridClass(int width, int height, float cellWidth, float cellHeight, Vector3 originPosition, float zPosition)
     {
@@ -19,92 +24,118 @@ public class GridClass
         this.originPosition = originPosition;
         this.zPosition = zPosition;
 
-        gridVisuals = new GameObject[width, height];
+        gridParents = new GameObject[width, height];
+        backgroundQuads = new GameObject[width, height];
+        imageRenderers = new SpriteRenderer[width, height];
 
-        // Create visual grid cells
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                Vector3 cellPosition = GetWorldPosition(x, y) + new Vector3(cellWidth, cellHeight) * 0.5f;
-                GameObject cell = CreateCell(cellPosition, cellWidth, cellHeight);
-                gridVisuals[x, y] = cell;
+                CreateCell(x, y);
             }
         }
     }
 
-    private GameObject CreateCell(Vector3 position, float width, float height)
+    private void CreateCell(int x, int y)
     {
-        GameObject cell = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        Vector3 cellPosition = GetWorldPosition(x, y) + new Vector3(cellWidth, cellHeight) * 0.5f;
 
-        // Set the position of the cell
-        cell.transform.position = new Vector3(position.x, position.y, zPosition);
-        cell.transform.localScale = new Vector3(width, height, 1);
+        GameObject parent = new GameObject($"Cell ({x},{y})");
+        parent.transform.position = new Vector3(cellPosition.x, cellPosition.y, zPosition);
 
-        // Initially, make the cell invisible by disabling its Renderer
-        Renderer renderer = cell.GetComponent<Renderer>();
-        renderer.enabled = false;
+        // Create background quad (for dragging colour)
+        GameObject background = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        background.transform.SetParent(parent.transform);
+        background.transform.localPosition = Vector3.zero;
+        background.transform.localScale = new Vector3(cellWidth, cellHeight, 1);
+        Renderer bgRenderer = background.GetComponent<Renderer>();
+        bgRenderer.material = new Material(Shader.Find("Unlit/Color"));
+        bgRenderer.material.color = new Color(1, 1, 1, 1); // White, will be hidden
+        bgRenderer.enabled = false; // Hide at start
+        bgRenderer.sortingOrder = 5;
+        backgroundQuads[x, y] = background;
 
-        // Set sorting order for proper rendering
-        renderer.sortingOrder = 10;
+        // Create image object (SpriteRenderer)
+        GameObject imageObj = new GameObject("Image");
+        imageObj.transform.SetParent(parent.transform);
+        imageObj.transform.localPosition = new Vector3(0, 0, -0.01f);
+        SpriteRenderer imageRenderer = imageObj.AddComponent<SpriteRenderer>();
+        imageRenderer.sortingOrder = 10; // Above background
+        imageObj.transform.localScale = new Vector3(imageWidth, imageHeight, 1f);
 
-        Debug.Log($"Created cell at {position} with Z = {zPosition}");
-        return cell;
+        imageRenderers[x, y] = imageRenderer;
+
+        gridParents[x, y] = parent;
     }
 
-    public Vector3 GetWorldPosition(int x, int y)
+    private Vector3 GetWorldPosition(int x, int y)
     {
         return new Vector3(x * cellWidth, y * cellHeight) + originPosition;
     }
 
+    private bool IsValidPosition(int x, int y)
+    {
+        return x >= 0 && y >= 0 && x < width && y < height;
+    }
+
     public void GetXY(Vector3 worldPosition, out int x, out int y)
     {
-        // Convert world position to grid coordinates
         x = Mathf.FloorToInt((worldPosition.x - originPosition.x) / cellWidth);
         y = Mathf.FloorToInt((worldPosition.y - originPosition.y) / cellHeight);
     }
 
-    public void ToggleCellMaterial(int x, int y, Material material)
+    public void SetCellTexture(int x, int y, Texture2D texture)
     {
-        if (x >= 0 && y >= 0 && x < width && y < height)
+        if (IsValidPosition(x, y))
         {
-            Renderer renderer = gridVisuals[x, y].GetComponent<Renderer>();
+            SpriteRenderer renderer = imageRenderers[x, y];
             if (renderer != null)
             {
-                if (material != null)
+                if (texture != null)
                 {
-                    renderer.enabled = true; // Show the cell
-                    renderer.material = material; // Set the active material
-                    Debug.Log($"Activated cell at ({x}, {y}) with material {material.name}");
+                    Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                    renderer.sprite = sprite;
+                    renderer.transform.localScale = new Vector3(imageWidth, imageHeight, 1f);
                 }
                 else
                 {
-                    renderer.enabled = false; // Hide the cell (reset to default state)
-                    Debug.Log($"Reset cell at ({x}, {y}) to default state.");
+                    renderer.sprite = null; // ✅ this avoids the crash
                 }
-            }
-            else
-            {
-                Debug.LogError($"No Renderer found for cell at ({x}, {y})");
             }
         }
     }
 
 
-    public void ResetAllCells()
+    public void ToggleCellMaterial(int x, int y, Material material)
     {
-        for (int x = 0; x < width; x++)
+        if (IsValidPosition(x, y))
         {
-            for (int y = 0; y < height; y++)
+            Renderer bgRenderer = backgroundQuads[x, y].GetComponent<Renderer>();
+            if (bgRenderer != null)
             {
-                Renderer renderer = gridVisuals[x, y].GetComponent<Renderer>();
-                if (renderer != null)
+                if (material != null)
                 {
-                    renderer.enabled = false; // Reset to default (invisible)
+                    bgRenderer.enabled = true;
+                    bgRenderer.material = material;
+                }
+                else
+                {
+                    bgRenderer.enabled = false;
                 }
             }
         }
-        Debug.Log("All cells reset to default state.");
     }
 
+    public void ResetCell(int x, int y)
+    {
+        if (IsValidPosition(x, y))
+        {
+            Renderer bgRenderer = backgroundQuads[x, y].GetComponent<Renderer>();
+            if (bgRenderer != null)
+            {
+                bgRenderer.enabled = false; // Hide again
+            }
+        }
+    }
 }
