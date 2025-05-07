@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Events;
+using System.Collections;
 
 public class StarGameManager : MonoBehaviour
 {
@@ -8,7 +10,7 @@ public class StarGameManager : MonoBehaviour
     [SerializeField] private StarInputManager inputManager;
     [SerializeField] private StarUIManager uiManager;
 
-    private StarGameState gameState;
+    private StarGameState gameState; 
 
     private void Awake()
     {
@@ -28,6 +30,9 @@ public class StarGameManager : MonoBehaviour
 
     public void StartNewLevel()
     {
+        visualiser.ClearVisuals();
+        inputManager.ClearSelection();
+
         var newGraph = levelGenerator.GenerateLevel(gameState.CurrentLevel);
         gameState.Initialize(newGraph);
         visualiser.VisualizeGraph(newGraph);
@@ -53,19 +58,33 @@ public class StarGameManager : MonoBehaviour
         }
     }
 
+    // delay level transition 1 frame to work around bug that causes last connected nodes to highlight after level transition
     private void ValidateCurrentLevel()
     {
         if (gameState.isSolutionValid)
         {
             Debug.Log($"Level {gameState.CurrentLevel} Complete!");
 
-            inputManager.ClearSelection();
-            visualiser.ClearVisuals();
-            uiManager.HidePreview();
+            foreach (var node in gameState.solutionNodes)
+            {
+                UpdateNodeVisualState(node.id);
+            }
 
-            gameState.AdvanceLevel();
-            StartNewLevel();
+
+            StartCoroutine(TransitionLevel());
         }
+    }
+
+    private IEnumerator TransitionLevel()
+    {
+        yield return null; 
+
+        inputManager.ClearSelection();
+        visualiser.ClearVisuals();
+        uiManager.HidePreview();
+
+        gameState.AdvanceLevel();
+        StartNewLevel();
     }
 
     public void CreateConnection(int nodeAId, int nodeBId)
@@ -106,6 +125,7 @@ public class StarGameManager : MonoBehaviour
 
     public void UpdateNodeVisualState(int nodeId)
     {
+
         var node = gameState.GetNodeById(nodeId);
         if (node == null) 
             return;

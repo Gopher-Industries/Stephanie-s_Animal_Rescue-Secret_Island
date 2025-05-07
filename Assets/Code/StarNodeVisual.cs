@@ -9,6 +9,7 @@ public class StarNodeVisual : MonoBehaviour
     private Material starMaterial;
     private bool isSolution;
     private bool hasConnections;
+    private bool isActive = true;
 
     public int nodeId { get; private set; }
 
@@ -40,6 +41,9 @@ public class StarNodeVisual : MonoBehaviour
 
     public void UpdateHighlightState(bool isHighlighted = false, bool hasConnections = false)
     {
+        if (this == null || !isActive)
+            return;
+
         this.hasConnections = hasConnections;
 
         if (isSolution && hasConnections)
@@ -65,5 +69,10 @@ public class StarNodeVisual : MonoBehaviour
         }
 
         starMaterial.color = color;
+    }
+
+    private void OnDestroy()
+    {
+        isActive = false;
     }
 }

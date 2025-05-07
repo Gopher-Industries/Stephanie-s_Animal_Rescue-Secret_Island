@@ -93,6 +93,9 @@ public class StarGraphVisualiser : MonoBehaviour
 
     public void UpdateNodeHighlight(int nodeId, bool isSelected, bool hasConnections)
     {
+        if (nodeVisuals == null || nodeVisuals.Count == 0)
+            return;
+
         if (nodeVisuals.TryGetValue(nodeId, out var visual))
         {
             visual.UpdateHighlightState(isSelected, hasConnections);

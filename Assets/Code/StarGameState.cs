@@ -21,8 +21,9 @@ public class StarGameState
 
     public void Initialize(Graph<StarData> graph)
     {
-        currentGraph = graph;
+        currentGraph = null;
         solutionNodes.Clear();
+        currentGraph = graph;
 
         foreach (var node in graph.Nodes)
         {
@@ -31,6 +32,8 @@ public class StarGameState
                 solutionNodes.Add(node);
             }
         }
+
+        isSolutionValid = false;
     }
 
     public bool TryAddConnection(int nodeAId, int nodeBId)
@@ -84,9 +87,6 @@ public class StarGameState
         {
             if (node.id == id) return node;
         }
-
-        if (Application.isPlaying)
-            Debug.LogWarning($"Node {id} not found in graph");
 
         return null;
     }
