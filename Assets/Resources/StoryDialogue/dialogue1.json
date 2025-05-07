@@ -1,0 +1,10 @@
+{
+  "interactions": [
+    {
+      "dialogueLines": [
+        {"characterID": "Chicken", "text": "Hey there!"},
+        {"characterID": "Bear", "text": "Hey Chicken!"}
+      ]
+    }
+  ]
+}
