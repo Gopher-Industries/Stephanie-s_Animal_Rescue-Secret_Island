@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class StarLevelGenerator : MonoBehaviour
 {
-    private const int NUM_STARS = 9;
+    private const int NUM_STARS = 15;
     private const float RADIUS = 10f;
     private const float MIN_DIST = 2f;
     private const float SHAPE_SIZE = 3f;

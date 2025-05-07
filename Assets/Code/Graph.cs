@@ -12,11 +12,13 @@ public class Graph<T>
 
     // This property represents the number of nodes in the graph
     public int Count => nodes.Count;
+    // Each graph maintains its own ID counter
+    private int nextNodeId;
 
 
     public Node<T> AddNode(Vector3 position, T data)
     {
-        Node<T> node = new Node<T>(position, data);
+        Node<T> node = new Node<T>(nextNodeId++, position, data);
         nodes.Add(node);
         return node;
     }
@@ -47,5 +49,6 @@ public class Graph<T>
     public void Clear()
     {
         nodes.Clear();
+        nextNodeId = 0;
     }
 }

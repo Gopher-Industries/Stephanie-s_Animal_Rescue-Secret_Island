@@ -148,11 +148,15 @@ public class StarInputManager : MonoBehaviour
 
         //ensure we aren't connected still before updating highlight state
         if (nodeA.neighbours.Count == 0)
+        {
             gameManager.SetNodeSelected(nodeA.id, false);
             gameManager.UpdateNodeVisualState(nodeA.id);
+        }
         if (nodeB.neighbours.Count == 0)
+        {
             gameManager.SetNodeSelected(nodeB.id, false);
             gameManager.UpdateNodeVisualState(nodeB.id);
+        }
     }
 
 
