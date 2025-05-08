@@ -94,7 +94,10 @@ public class StarGameManager : MonoBehaviour
 
         if (gameState.TryAddConnection(nodeAId, nodeBId))
         {
-            visualiser.DrawEdge(nodeA, nodeB);
+            StarEdgeVisual edge = visualiser.DrawEdge(nodeA, nodeB);
+            if (edge == null) return;
+            UpdateEdgeVisualState(edge, nodeAId, nodeBId);
+
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
             gameState.ValidateSolution();
@@ -134,6 +137,26 @@ public class StarGameManager : MonoBehaviour
         bool isHighlighted = node.data.IsSelected;
 
         visualiser.UpdateNodeHighlight(nodeId, isHighlighted, hasConnections);
+    }
+
+    public void UpdateEdgeVisualState(StarEdgeVisual edge, int nodeAId, int nodeBId)
+    {
+        if (edge == null) return;
+
+        Color solutionEdgeColour = Color.green;
+        Color incorrectSolutionColour = Color.red;
+
+        bool isValidEdge = gameState.IsEdgeValid(nodeAId, nodeBId);
+        Debug.Log($"Edge is: {isValidEdge}");
+
+        if (isValidEdge)
+        {
+            edge.SetColour(solutionEdgeColour);
+        }    
+        else
+        {
+            edge.SetColour(incorrectSolutionColour);
+        }
     }
 
     public (Node<StarData>, Node<StarData>) GetNodesFromEdge(GameObject edgeObject)

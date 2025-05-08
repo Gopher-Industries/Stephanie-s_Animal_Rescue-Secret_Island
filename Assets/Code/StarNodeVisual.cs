@@ -9,7 +9,7 @@ public class StarNodeVisual : MonoBehaviour
     private Material starMaterial;
     private bool isSolution;
     private bool hasConnections;
-    private bool isActive = true;
+    private bool isActive;
 
     public int nodeId { get; private set; }
 
@@ -24,7 +24,7 @@ public class StarNodeVisual : MonoBehaviour
     {
         nodeId = nodesId;
         isSolution = data.IsSolutionNode;
-
+        isActive = true;
         if (starMaterial == null)
         {
             Renderer renderer = GetComponent<Renderer>();

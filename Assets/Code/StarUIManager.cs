@@ -1,20 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class StarUIManager : MonoBehaviour
 {
-    private Vector2 previewAnchor = new Vector2(-21.5f, -9f);
+    [Header("Preview Canvas")]
+    [SerializeField] private Canvas worldSpaceCanvas;
+    [SerializeField] private TextMeshProUGUI shapeLabel;
 
+    private Vector2 previewAnchor = new Vector2(-21.5f, -9f);
     private Color lineColor = Color.yellow;
     private Color cubeColor = Color.yellow;
+    private LineRenderer lineRenderer;
+    private Camera mainCamera;
 
     private const float PREVIEW_SCALE = 3f;
     private const float CUBE_SIZE = 0.5f;
     private const float LINE_WIDTH = 0.25f;
 
-
-    private LineRenderer lineRenderer;
-    private Camera mainCamera;
     private List<GameObject> cubeNodes = new List<GameObject>();
 
     void Awake()
@@ -24,6 +28,9 @@ public class StarUIManager : MonoBehaviour
         {
             CreateLineRenderer();
         }
+
+        if (worldSpaceCanvas == null)
+            worldSpaceCanvas = GetComponent<Canvas>();
     }
 
     private void CreateLineRenderer()
@@ -50,6 +57,12 @@ public class StarUIManager : MonoBehaviour
 
         ClearPreviousPreview();
 
+        float orthoScale = Camera.main.orthographicSize / 11f;
+        worldSpaceCanvas.transform.localScale = Vector3.one * 0.05f * orthoScale;
+
+        shapeLabel.text = shapeType.ToString();
+        shapeLabel.fontSize = Mathf.RoundToInt(36 * orthoScale);
+
         StarShapeData shape = ShapeLibrary.GetShape(shapeType);
         Vector3[] vertices = CalculatePreviewVertices(shape.normalisedVertices);
 
@@ -61,7 +74,7 @@ public class StarUIManager : MonoBehaviour
         foreach (Vector3 vertex in vertices)
         {
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.position = vertex;
+            cube.transform.localPosition = new Vector3(vertex.x, vertex.y, 0);
             cube.transform.localScale = Vector3.one * CUBE_SIZE;
 
 

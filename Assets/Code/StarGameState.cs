@@ -58,7 +58,6 @@ public class StarGameState
 
         currentGraph.DisconnectNodes(nodeA, nodeB);
 
-
         return true;
     }
 
@@ -75,7 +74,32 @@ public class StarGameState
         return true;
     }
 
-    private Node<StarData> FindNode(int id)
+    public bool IsEdgeValid(int nodeAId, int nodeBId)
+    {
+        Node<StarData> a = GetNodeById(nodeAId);
+        Node<StarData> b = GetNodeById(nodeBId);
+
+        if (a == null || b == null || !a.data.IsSolutionNode || !b.data.IsSolutionNode)
+            return false;
+
+        int indexA = -1, indexB = -1;
+        for (int i = 0; i < solutionNodes.Count; i++)
+        {
+            if (solutionNodes[i].id == a.id) indexA = i;
+            if (solutionNodes[i].id == b.id) indexB = i;
+        }
+
+        if (indexA == -1 || indexB == -1) return false;
+
+
+        bool isConsecutive = Mathf.Abs(indexA - indexB) == 1;
+        bool isFirstLastPair = (indexA == 0 && indexB == solutionNodes.Count - 1) ||
+                             (indexB == 0 && indexA == solutionNodes.Count - 1);
+
+        return isConsecutive || isFirstLastPair;
+    }
+
+        private Node<StarData> FindNode(int id)
     {
         if (currentGraph == null)
         {

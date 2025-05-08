@@ -40,19 +40,15 @@ public class StarGraphVisualiser : MonoBehaviour
         }
     }
 
-    // Draws edges on request. 
-    public void DrawEdge(Node<StarData> a, Node<StarData> b)
+    public StarEdgeVisual DrawEdge(Node<StarData> a, Node<StarData> b)
     {
-        if (EdgeExists(a.id, b.id)) return;
+        if (EdgeExists(a.id, b.id)) return null;
 
         var edge = Instantiate(edgePrefab, transform);
-        edge.Initialize(
-            a.position,
-            b.position,
-            LINE_WIDTH
-        );
-        UpdateEdgeColour(a, b, edge);
+        edge.Initialize(a.position, b.position, LINE_WIDTH);
         StoreEdge(a.id, b.id, edge);
+
+        return edge;
     }
 
     public void RemoveEdge(Node<StarData> a, Node<StarData> b)
@@ -110,17 +106,6 @@ public class StarGraphVisualiser : MonoBehaviour
         nodeVisuals.Clear();
         edgeVisuals.Clear();
         ClearPreviewLine();
-    }
-
-    public void UpdateEdgeColour(Node<StarData> a, Node<StarData> b, StarEdgeVisual edge)
-    {
-        Color solutionEdgeColour = Color.green;
-        Color incorrectSolutionColour = Color.red;
-
-        if (a.data.IsSolutionNode && b.data.IsSolutionNode)
-            edge.SetColour(solutionEdgeColour);
-        else
-            edge.SetColour(incorrectSolutionColour);
     }
 
     public bool DoesVisualRepresentNode(GameObject gameObject, int nodeId)

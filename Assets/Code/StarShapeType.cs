@@ -16,9 +16,9 @@ public class StarShapeData
         Quaternion rotation = Quaternion.Euler(0, 0, rotationDegrees);
         List<Vector3> vertices = new List<Vector3>(normalisedVertices.Length);
 
-        foreach (Vector2 vert in normalisedVertices)
+        foreach (Vector2 vertex in normalisedVertices)
         {
-            vertices.Add(rotation * (vert * size) + (Vector3)offset);
+            vertices.Add(rotation * (vertex * size) + (Vector3)offset);
         }
         return vertices;
     }
