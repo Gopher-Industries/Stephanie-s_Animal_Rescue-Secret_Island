@@ -9,7 +9,13 @@ public class PlayerPrefsManager : MonoBehaviour {
         Debug.Log("All PlayerPrefs have been deleted.");
     }
 
-    [MenuItem("PlayerPrefs Manager/Delete 'hasPlayed' key")]
+    [MenuItem("PlayerPrefs Manager/Set 'hasPlayed' key", priority = 50)]
+    static void SetHasPlayed(){
+        PlayerPrefs.SetInt("hasPlayer", 1);
+        Debug.Log("Player has finished tutorial. Will begin at World hub.");
+    }
+
+    [MenuItem("PlayerPrefs Manager/Delete 'hasPlayed' key", priority = 51)]
     static void DeleteHasPlayed(){
         if(PlayerPrefs.HasKey("hasPlayed")){
             PlayerPrefs.DeleteKey("hasPlayed");
