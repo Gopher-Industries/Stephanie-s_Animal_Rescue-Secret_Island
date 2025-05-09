@@ -2888,7 +2888,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: AvatarCustomisation
-  nextSceneToLoad: {fileID: 102900000, guid: 71f0d12dd816f8643b765cf8ef7ed2ea, type: 3}
+  nextSceneToLoad: WorldHub
   headLocation: {fileID: 465282904}
   bodyLocation: {fileID: 1741385460}
   feetLocation: {fileID: 157771396}

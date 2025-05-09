@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78107d47199d48f4992e4409c30d3be9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  storyChapter1: {fileID: 102900000, guid: dcab4edb31a2e6343bd1a70854731bd4, type: 3}
-  worldHub: {fileID: 102900000, guid: 71f0d12dd816f8643b765cf8ef7ed2ea, type: 3}
+  storyChapter1: StoryChapter1
+  worldHub: WorldHub
 --- !u!1 &6294454853951191525
 GameObject:
   m_ObjectHideFlags: 0

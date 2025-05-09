@@ -1,17 +1,16 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
-    public static GameManager GameManagerInstance {get; private set;}
-    public SceneAsset storyChapter1;
-    public SceneAsset worldHub;
+    public static GameManager Instance {get; private set;}
+    public string storyChapter1;
+    public string worldHub;
 
     void Awake(){
-        if(GameManagerInstance != null && GameManagerInstance != this){
+        if(Instance != null && Instance != this){
             Destroy(this);
         }else{
-            GameManagerInstance = this;
+            Instance = this;
         }
 
         if(SceneManager.sceneCount == 1){
@@ -26,20 +25,23 @@ public class GameManager : MonoBehaviour {
 
         if(PlayerPrefs.HasKey("hasPlayed")){
             Debug.Log("Player has completed 'tutorial', loading world hub scene.");
-            SceneManager.LoadSceneAsync(worldHub.name, LoadSceneMode.Additive);
+            SceneManager.LoadSceneAsync(worldHub, LoadSceneMode.Additive);
         }else{
             Debug.Log("First time playing. Starting Tutorial");
-            SceneManager.LoadSceneAsync(storyChapter1.name, LoadSceneMode.Additive);
+            SceneManager.LoadSceneAsync(storyChapter1, LoadSceneMode.Additive);
         }
     }
 
-    public void LoadNewSceneUnloadOldScene(SceneAsset sceneToLoad, string sceneToUnload){
-        SceneManager.UnloadSceneAsync(sceneToUnload);
-        SceneManager.LoadSceneAsync(sceneToLoad.name, LoadSceneMode.Additive);
+    public void LoadNewScene(string sceneToLoad){
+        SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
     }
 
-    public void LoadMiniGame(SceneAsset minigameToLoad){
-        SceneManager.LoadSceneAsync(minigameToLoad.name, LoadSceneMode.Additive);
+    public void UnloadScene(string sceneToUnload){
+        SceneManager.UnloadSceneAsync(sceneToUnload);
+    }
+
+    public void LoadMiniGame(string minigameToLoad){
+        SceneManager.LoadSceneAsync(minigameToLoad, LoadSceneMode.Additive);
     }
 
     public void UnloadMiniGame(){

@@ -4,7 +4,7 @@ using UnityEditor;
 
 public class AvatarManager : MonoBehaviour {
     public string sceneName;
-    public SceneAsset nextSceneToLoad;
+    public string nextSceneToLoad;
     public Transform headLocation;
     private List<GameObject> headParts = new List<GameObject>();
     private int headCount = 0;
@@ -188,8 +188,10 @@ public class AvatarManager : MonoBehaviour {
         SetActiveCompanionSprite();
     }
 
-    public void FinishCustomisationBTN(){
-        GameManager.GameManagerInstance.LoadNewSceneUnloadOldScene(nextSceneToLoad,sceneName);
+    public void FinishCustomisationBTN()
+    {
+        GameManager.Instance.LoadNewScene(nextSceneToLoad);
+        GameManager.Instance.UnloadScene(sceneName);
     }
     #endregion
 }

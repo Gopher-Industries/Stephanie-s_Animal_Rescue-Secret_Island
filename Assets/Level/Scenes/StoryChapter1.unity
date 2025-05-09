@@ -1158,8 +1158,8 @@ MonoBehaviour:
   minigameRunning: 0
   autoPlayDialogue: 1
   waitForPlayerInput: 0
-  sceneToLoadOnCompletion: {fileID: 102900000, guid: be038f9cc1fde8b49a0201ddf85b64a6, type: 3}
-  minigameToRun: {fileID: 102900000, guid: 9e990e76f813d8a40b8b8a3361e0f7d1, type: 3}
+  sceneToLoadOnCompletion: AvatarCustomisation
+  minigameToRun: MiniGameTest
 --- !u!1 &1510102097
 GameObject:
   m_ObjectHideFlags: 0
