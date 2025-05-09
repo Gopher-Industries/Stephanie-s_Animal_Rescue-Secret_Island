@@ -328,8 +328,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 371653234}
         m_TargetAssemblyTypeName: SignPost, Assembly-CSharp
-        m_MethodName: TravelTo
-        m_Mode: 5
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1324,8 +1324,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 371653234}
         m_TargetAssemblyTypeName: SignPost, Assembly-CSharp
-        m_MethodName: TravelTo
-        m_Mode: 5
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3252,7 +3252,7 @@ Camera:
   m_GameObject: {fileID: 1048757182}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 4
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -3278,11 +3278,11 @@ Camera:
   far clip plane: 1000
   field of view: 26.991467
   orthographic: 1
-  orthographic size: 60
+  orthographic size: 100
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 183
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 3a422fa136ad6f140a183f70209f5ef9, type: 2}
   m_TargetDisplay: 0
@@ -4430,8 +4430,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 371653234}
         m_TargetAssemblyTypeName: SignPost, Assembly-CSharp
-        m_MethodName: TravelTo
-        m_Mode: 5
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4860,8 +4860,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 2
-    height: 2
+    width: 1
+    height: 1
 --- !u!114 &1994392944
 MonoBehaviour:
   m_ObjectHideFlags: 0
