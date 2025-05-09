@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -51,6 +52,12 @@ public class GameManager : MonoBehaviour {
     public void SetActiveScene(string sceneName){
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
         Debug.Log("Active Scene : " + SceneManager.GetActiveScene().name);
+    }
+
+    IEnumerator SceneFade(bool value)
+    {
+
+        yield return null;
     }
 
 }

@@ -2657,7 +2657,7 @@ GameObject:
   - component: {fileID: 847649140}
   - component: {fileID: 847649139}
   m_Layer: 8
-  m_Name: Image
+  m_Name: Banner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
