@@ -190,8 +190,9 @@ public class AvatarManager : MonoBehaviour {
 
     public void FinishCustomisationBTN()
     {
-        GameManager.Instance.LoadNewScene(nextSceneToLoad);
-        GameManager.Instance.UnloadScene(sceneName);
+        //GameManager.Instance.LoadNewScene(nextSceneToLoad);
+        //GameManager.Instance.UnloadScene(sceneName);
+        GameManager.Instance.LoadSceneWithFade(nextSceneToLoad, sceneName);
     }
     #endregion
 }

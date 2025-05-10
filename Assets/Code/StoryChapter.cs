@@ -32,11 +32,13 @@ public class StoryChapter : MonoBehaviour {
         StartCoroutine(GameLoop());
     }
 
-    IEnumerator GameLoop(){
+    IEnumerator GameLoop()
+    {
         yield return DialogueFeeder();
 
-        GameManager.Instance.LoadNewScene(sceneToLoadOnCompletion);
-        GameManager.Instance.UnloadScene(this.name);
+        //GameManager.Instance.LoadNewScene(sceneToLoadOnCompletion);
+        //GameManager.Instance.UnloadScene(this.name);
+        GameManager.Instance.LoadSceneWithFade(sceneToLoadOnCompletion, name);
     }
 
     IEnumerator DialogueFeeder(){
