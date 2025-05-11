@@ -3617,31 +3617,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644824, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.13861084
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644824, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.4499989
+      value: 0.21999931
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644824, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.5
+      value: -6.2100067
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644824, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.967185
+      value: 0.98788995
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644824, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.2539049
+      value: 0.15515625
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644824, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00894066
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644824, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0023470977
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644824, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3665,7 +3665,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644825, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_Lens.FieldOfView
-      value: 57.8
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 3203261902030644825, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_Lens.FarClipPlane
@@ -3697,7 +3697,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5542111180780342640, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: field of view
-      value: 57.8
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5542111180780342640, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: far clip plane
@@ -3721,31 +3721,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5542111180780342647, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.13861084
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5542111180780342647, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.4499989
+      value: 0.21999931
       objectReference: {fileID: 0}
     - target: {fileID: 5542111180780342647, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.5
+      value: -6.2100067
       objectReference: {fileID: 0}
     - target: {fileID: 5542111180780342647, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.967185
+      value: 0.98788995
       objectReference: {fileID: 0}
     - target: {fileID: 5542111180780342647, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.2539049
+      value: 0.15515625
       objectReference: {fileID: 0}
     - target: {fileID: 5542111180780342647, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00894066
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5542111180780342647, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0023470977
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8047161636021232021, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_Name
@@ -4345,8 +4345,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damping: {x: 0.1, y: 0.2, z: 0.3}
-  ShoulderOffset: {x: 0.66, y: 7.81, z: -8.29}
-  VerticalArmLength: -3.58
+  ShoulderOffset: {x: 0, y: 5, z: -7}
+  VerticalArmLength: -3
   CameraSide: 0.605
   CameraDistance: -0.79
   CameraCollisionFilter:
