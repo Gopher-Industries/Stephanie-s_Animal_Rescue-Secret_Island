@@ -123,10 +123,11 @@ public class NPCStoryDialogue : MonoBehaviour
         {
             Destroy(currentDialogue);
         }
-
+        // Load story dialogue from resource folder
         TextAsset jsontext = Resources.Load<TextAsset>($"StoryDialogue/{JsonFileName}");
         if(jsontext == null)
         {
+            // Log that File isnt found
             Debug.LogError("Story Json file not found");
             return;
         }
