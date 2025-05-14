@@ -4,7 +4,7 @@ public class MiniGameTest : MonoBehaviour {
     public Animator anim;
     
     void Start(){
-        GameManager.GameManagerInstance.SetActiveScene(this.name);
+        GameManager.Instance.SetActiveScene(this.name);
     }
     
     public void FinishMiniGame(){

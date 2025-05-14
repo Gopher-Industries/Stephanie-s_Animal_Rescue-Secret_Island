@@ -19,23 +19,26 @@ public class StoryChapter : MonoBehaviour {
     public bool minigameRunning = false;
     public bool autoPlayDialogue = true;
     public bool waitForPlayerInput = false;
-    public SceneAsset sceneToLoadOnCompletion;
-    public SceneAsset minigameToRun;
+    public string sceneToLoadOnCompletion;
+    public string minigameToRun;
     
 
 
     void Start(){
         PlayerPrefs.SetInt("hasPlayed", 1);
 
-        GameManager.GameManagerInstance.SetActiveScene(name);
+        GameManager.Instance.SetActiveScene(name);
 
         StartCoroutine(GameLoop());
     }
 
-    IEnumerator GameLoop(){
+    IEnumerator GameLoop()
+    {
         yield return DialogueFeeder();
 
-        GameManager.GameManagerInstance.LoadNewSceneUnloadOldScene(sceneToLoadOnCompletion, name);
+        //GameManager.Instance.LoadNewScene(sceneToLoadOnCompletion);
+        //GameManager.Instance.UnloadScene(this.name);
+        GameManager.Instance.LoadSceneWithFade(sceneToLoadOnCompletion, name);
     }
 
     IEnumerator DialogueFeeder(){
@@ -80,13 +83,13 @@ public class StoryChapter : MonoBehaviour {
                     Debug.Log("Playing minigame");
                     dialogueCanvas.SetActive(false);
                     minigameRunning = true;
-                    GameManager.GameManagerInstance.LoadMiniGame(minigameToRun);
+                    GameManager.Instance.LoadMiniGame(minigameToRun);
                     ClearDialogue();
                     ClearBackground();
                     yield return new WaitUntil(() => !minigameRunning);
 
                     dialogueCanvas.SetActive(true);
-                    GameManager.GameManagerInstance.UnloadMiniGame();
+                    GameManager.Instance.UnloadMiniGame();
                     yield return new WaitForSeconds(1.0f);
                 }
 
