@@ -8,16 +8,15 @@ public class Node<T>
     // The position of this star node,
     // The list of neighbouring nodes directly connected to this node,
     // Generic data to be passed in
-    private static int nextId;
     public int id { get; }
     public Vector3 position { get; private set; }
     public List<Node<T>> neighbours { get; private set; }
     public T data { get; private set; }
 
 
-    public Node(Vector3 pos, T nodeData)
+    public Node(int nodeId, Vector3 pos, T nodeData)
     {
-        id = nextId++;
+        id = nodeId;
         position = pos;
         data = nodeData;
         neighbours = new List<Node<T>>();

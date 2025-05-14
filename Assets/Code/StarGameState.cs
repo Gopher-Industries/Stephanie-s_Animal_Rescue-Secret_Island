@@ -3,20 +3,39 @@ using UnityEngine;
 
 public class StarGameState
 {
+    public bool isSolutionValid { get; private set; }
+    public int CurrentLevel { get; private set; } = 1;
+
     public Graph<StarData> currentGraph { get; private set; }
     public List<Node<StarData>> solutionNodes { get; }
-    public bool isSolutionValid { get; private set; }
+
+    public void AdvanceLevel()
+    {
+        CurrentLevel++;
+    }
 
     public StarGameState()
     {
         solutionNodes = new List<Node<StarData>>();
     }
 
+    // clear previous graph before initialising
+    // cache solution nodes
     public void Initialize(Graph<StarData> graph)
     {
-        currentGraph = graph;
+        currentGraph = null;
         solutionNodes.Clear();
-        ValidateSolution();
+        currentGraph = graph;
+
+        foreach (var node in graph.Nodes)
+        {
+            if (node.data.IsSolutionNode)
+            {
+                solutionNodes.Add(node);
+            }
+        }
+
+        isSolutionValid = false;
     }
 
     public bool TryAddConnection(int nodeAId, int nodeBId)
@@ -28,7 +47,7 @@ public class StarGameState
 
         currentGraph.ConnectNodes(nodeA, nodeB);
 
-        ValidateSolution();
+
         return true;
     }
 
@@ -41,35 +60,58 @@ public class StarGameState
 
         currentGraph.DisconnectNodes(nodeA, nodeB);
 
-        ValidateSolution();
         return true;
     }
 
-    public bool ToggleNodeSelection(int nodeId, bool selected)
+    // an edge is considered valid if 
+    // both nodes are part of the solution nodes
+    // the nodes are consecutive in the solution node list
+    // or the nodes form the first and last pair in list (to form a closed shapes)
+    public bool IsEdgeValid(int nodeAId, int nodeBId)
     {
-        Node<StarData> node = FindNode(nodeId);
+        Node<StarData> a = GetNodeById(nodeAId);
+        Node<StarData> b = GetNodeById(nodeBId);
 
-        if (node == null)
-        {
-            Debug.LogWarning($"Node {nodeId} not found!");
+        if (a == null || b == null || !a.data.IsSolutionNode || !b.data.IsSolutionNode)
             return false;
+
+        int indexA = -1, indexB = -1;
+        for (int i = 0; i < solutionNodes.Count; i++)
+        {
+            if (solutionNodes[i].id == a.id) 
+                indexA = i;
+            if (solutionNodes[i].id == b.id) 
+                indexB = i;
         }
 
-        node.data.IsSelected = selected;
-        return true;
+        if (indexA == -1 || indexB == -1) return false;
+
+        bool isConsecutive = Mathf.Abs(indexA - indexB) == 1;
+        bool isFirstLastPair = (indexA == 0 && indexB == solutionNodes.Count - 1) || (indexB == 0 && indexA == solutionNodes.Count - 1);
+
+        return isConsecutive || isFirstLastPair;
     }
 
-    private Node<StarData> FindNode(int id)
+        private Node<StarData> FindNode(int id)
     {
+        if (currentGraph == null)
+        {
+            Debug.LogError("Attempted to find node in null graph!");
+            return null;
+        }
+
         foreach (var node in currentGraph.Nodes)
         {
             if (node.id == id) return node;
         }
+
         return null;
     }
 
     public Node<StarData> GetNodeById(int nodeId)
     {
+        if (currentGraph == null) return null;
+
         foreach (var node in currentGraph.Nodes)
         {
             if (node.id == nodeId) return node;
@@ -77,14 +119,25 @@ public class StarGameState
         return null;
     }
 
-    private void ValidateSolution()
+    public void ValidateSolution()
     {
         isSolutionValid = CheckSolution(solutionNodes);
     }
 
+
+    // validates the current solution as a single closed loop of solution nodes
+    // atleast 3 nodes (smallest shape is triangle)
+    // starting solution node must reach all solutions nodes via DFS
+    // each node must connect to exactly 2 other solution node neighbours
+    //
+    // this works for simple polygons
+    // it doesn't validate the order of nodes
+    // it doesn't validate more complex shapes (big dipper constellation) with branches and no cycles
+    //
+    // TODO: validate 2 shapes on the one level 
     private bool CheckSolution(List<Node<StarData>> solutionNodes)
     {
-        if (solutionNodes.Count < 2)
+        if (solutionNodes.Count < 3)
             return false;
 
         HashSet<Node<StarData>> visited = new HashSet<Node<StarData>>();
@@ -97,33 +150,34 @@ public class StarGameState
 
         foreach (var node in solutionNodes)
         {
-            int solutionNeighbors = 0;
             foreach (var neighbour in node.neighbours)
             {
-                if (neighbour.data.IsSolutionNode)
-                    solutionNeighbors++;
-                else
+                if (!neighbour.data.IsSolutionNode)
                     return false;
             }
 
-            if (solutionNeighbors != 2)
+            if (node.neighbours.Count != 2)
                 return false;
         }
 
         return true;
     }
 
+    // Ensure all solution nodes are connected as a shape
+    // DFS won't visit all nodes if they don't connect the shape
+    // TODO: validate 2 shapes on the one level 
     private void DFS(Node<StarData> currentNode, HashSet<Node<StarData>> visited)
     {
+        if (currentNode == null || visited.Contains(currentNode)) return;
+
         visited.Add(currentNode);
 
         foreach (var neighbour in currentNode.neighbours)
         {
-            if (neighbour.data.IsSolutionNode && !visited.Contains(neighbour))
+            if (neighbour.data.IsSolutionNode)
             {
                 DFS(neighbour, visited);
             }
-
         }
     }
 }

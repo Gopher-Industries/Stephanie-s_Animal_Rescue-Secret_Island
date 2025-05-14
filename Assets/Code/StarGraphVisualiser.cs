@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class StarGraphVisualiser : MonoBehaviour
 {
@@ -8,50 +9,51 @@ public class StarGraphVisualiser : MonoBehaviour
     [SerializeField] private StarEdgeVisual edgePrefab;
     [SerializeField] private LineRenderer previewLinePrefab;
 
+    private Color lineColor = Color.yellow;
+
     private const float LINE_WIDTH = 0.25f;
 
-    // Maps Node<StarData> to its corresponding GameObject
-    public Dictionary<int, StarNodeVisual> nodeVisuals = new Dictionary<int, StarNodeVisual>();
+    // Maps a nodes Id to their visual representation in the scene
+    public Dictionary<int, StarNodeVisual> nodeVisualDict = new Dictionary<int, StarNodeVisual>();
 
-    // Tracks if we have drawn an edge and stores it's GameObject, the key is the a and b node.
-    public Dictionary<(int, int), StarEdgeVisual> edgeVisuals = new Dictionary<(int, int), StarEdgeVisual>();
+    // Maps node id pairs (undirected edge) to their visual repesented edge in the scene
+    public Dictionary<(int, int), StarEdgeVisual> edgeVisualDict = new Dictionary<(int, int), StarEdgeVisual>();
 
 
     private LineRenderer previewLine;
 
+    // clears then re-renders all node visuals based on the input graph
     public void VisualizeGraph(Graph<StarData> graph)
     {
         ClearVisuals();
         CreateNodeVisuals(graph);
     }
 
+    // Instantiates node GameObjects from graph data and stores them in the dictionary
+    // Node IDs increment from 0 to Graph.Count-1
     private void CreateNodeVisuals(Graph<StarData> graph)
     {
-        int nodeId = 1;
         foreach (var node in graph.Nodes)
         {
             var starVisual = Instantiate(starPrefab, node.position, Quaternion.identity, transform);
-            starVisual.Initialize(nodeId, node.data);
-            nodeVisuals[node.id] = starVisual;
-            nodeId++;
+            starVisual.Initialize(node.id, node.data);
+            nodeVisualDict[node.id] = starVisual;
         }
     }
 
-    // Draws edges on request. 
-    public void DrawEdge(Node<StarData> a, Node<StarData> b)
+    // Instantiates and renders an edge between two nodes
+    public StarEdgeVisual DrawEdge(Node<StarData> a, Node<StarData> b)
     {
-        if (EdgeExists(a.id, b.id)) return;
+        if (EdgeExists(a.id, b.id)) return null;
 
         var edge = Instantiate(edgePrefab, transform);
-        edge.Initialize(
-            a.position,
-            b.position,
-            LINE_WIDTH
-        );
-        UpdateEdgeColour(a, b, edge);
-        StoreEdge(a.id, b.id, edge);
+        edge.Initialize(a.position, b.position, LINE_WIDTH);
+        AddEdgeToDict(a.id, b.id, edge);
+
+        return edge;
     }
 
+    // Removes the visual connection between two nodes
     public void RemoveEdge(Node<StarData> a, Node<StarData> b)
     {
         if (!TryGetEdge(a.id, b.id, out var edge)) 
@@ -62,11 +64,14 @@ public class StarGraphVisualiser : MonoBehaviour
         
     }
 
+    // Displays a temporary line between the start node and mouse position when player is dragging mouse
     public void UpdatePreviewLine(Vector3 startPos, Vector3 endPos)
     {
         if (previewLine == null)
         {
             previewLine = Instantiate(previewLinePrefab, transform);
+            previewLine.startColor = lineColor;
+            previewLine.endColor = lineColor;
             previewLine.startWidth = LINE_WIDTH;
             previewLine.endWidth = LINE_WIDTH;
             previewLine.widthMultiplier = LINE_WIDTH;
@@ -76,7 +81,7 @@ public class StarGraphVisualiser : MonoBehaviour
         previewLine.SetPositions(new Vector3[] { startPos, endPos });
     }
 
-    // Clear any existing preview line
+    // Clears the existing preview line used during drag interaction
     public void ClearPreviewLine()
     {
         if (previewLine != null)
@@ -86,73 +91,73 @@ public class StarGraphVisualiser : MonoBehaviour
         }
     }
 
-    public void UpdateNodeHighlight(int nodeId, bool isSelected, bool hasConnections)
+    public void UpdateNodeColour(int nodeId, bool hasConnections)
     {
-        if (nodeVisuals.TryGetValue(nodeId, out var visual))
+        if (nodeVisualDict == null || nodeVisualDict.Count == 0)
+            return;
+
+        if (nodeVisualDict.TryGetValue(nodeId, out var nodeVisual))
         {
-            visual.UpdateHighlightState(isSelected, hasConnections);
+            nodeVisual.UpdateColourState(hasConnections);
         }
     }
 
-        public void ClearVisuals()
+    // Removes all node and edge visuals from the scene and resets tracking dictionaries
+    public void ClearVisuals()
     {
-        foreach (var visual in nodeVisuals.Values) Destroy(visual.gameObject);
-        foreach (var edge in edgeVisuals.Values) Destroy(edge.gameObject);
+        foreach (var visual in nodeVisualDict.Values) Destroy(visual.gameObject);
+        foreach (var edge in edgeVisualDict.Values) Destroy(edge.gameObject);
 
-        nodeVisuals.Clear();
-        edgeVisuals.Clear();
+        nodeVisualDict.Clear();
+        edgeVisualDict.Clear();
         ClearPreviewLine();
     }
 
-    public void UpdateEdgeColour(Node<StarData> a, Node<StarData> b, StarEdgeVisual edge)
-    {
-        Color solutionEdgeColour = Color.green;
-        Color incorrectSolutionColour = Color.red;
-
-        if (a.data.IsSolutionNode && b.data.IsSolutionNode)
-            edge.SetColour(solutionEdgeColour);
-        else
-            edge.SetColour(incorrectSolutionColour);
-    }
+    // Returns true if the given GameObject matches the visual of the specified node ID
     public bool DoesVisualRepresentNode(GameObject gameObject, int nodeId)
     {
-        return nodeVisuals.TryGetValue(nodeId, out var visual) &&
-               visual.gameObject == gameObject;
+        return nodeVisualDict.TryGetValue(nodeId, out var nodeVisual) &&
+               nodeVisual.gameObject == gameObject;
     }
 
     #region Helper Methods
+
+    // Checks if an undirected edge already exists between two node IDs
     private bool EdgeExists(int idA, int idB)
     {
-        if (edgeVisuals.ContainsKey((idA, idB)))
+        if (edgeVisualDict.ContainsKey((idA, idB)))
             return true;
 
-        if (edgeVisuals.ContainsKey((idB, idA)))
+        if (edgeVisualDict.ContainsKey((idB, idA)))
             return true;
 
         return false;
     }
 
+    // Attempts to retrieve the visual edge between two nodes, regardless of direction
     private bool TryGetEdge(int idA, int idB, out StarEdgeVisual edge)
     {
-        if (edgeVisuals.TryGetValue((idA, idB), out edge)) 
+        if (edgeVisualDict.TryGetValue((idA, idB), out edge)) 
             return true;
 
-        if (edgeVisuals.TryGetValue((idB, idA), out edge)) 
+        if (edgeVisualDict.TryGetValue((idB, idA), out edge)) 
             return true;
 
         return false;
     }
 
-    private void StoreEdge(int idA, int idB, StarEdgeVisual edge)
+    // Adds the edge to the dictionary in both directions for bidirectional lookup
+    private void AddEdgeToDict(int idA, int idB, StarEdgeVisual edge)
     {
-        edgeVisuals[(idA, idB)] = edge;
-        edgeVisuals[(idB, idA)] = edge; 
+        edgeVisualDict[(idA, idB)] = edge;
+        edgeVisualDict[(idB, idA)] = edge; 
     }
 
+    // Removes both directional keys for an edge from the dictionary
     private void RemoveEdgeFromDict(int idA, int idB)
     {
-        edgeVisuals.Remove((idA, idB));
-        edgeVisuals.Remove((idB, idA));
+        edgeVisualDict.Remove((idA, idB));
+        edgeVisualDict.Remove((idB, idA));
     }
     #endregion
 }
