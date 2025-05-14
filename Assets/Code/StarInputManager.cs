@@ -40,13 +40,15 @@ public class StarInputManager : MonoBehaviour
         }
     }
 
-    // Start dragging: Find the clicked node and initialize the preview line
+    // Find the clicked node or edge via RayCast
+    // Clicking a node highlights the node & initialises isDragging flag
+    // Clicking on an edge deletes the edge and it's connection
     private void HandleMouseDown()
     {
         var hitObject = GetObjectUnderMouse();
         if (hitObject == null) return;
 
-        if (IsEdgeObject(hitObject))
+        if (HasPolygonCollider2D(hitObject))
         {
             HandleEdgeClick(hitObject);
             return;
@@ -58,6 +60,7 @@ public class StarInputManager : MonoBehaviour
         StartNodeInteraction(clickedNode);
     }
 
+    // While holding left mouse button down update the preview line positon to track mouse positon
     private void HandleMouseDrag()
     {
         var mouseWorldPos = GetMouseWorldPosition(startNode.position.z);
@@ -65,6 +68,7 @@ public class StarInputManager : MonoBehaviour
     }
 
     // When the mouse is released: Finalize the edge and connect the nodes in the graph
+    // Won't connect an edge if they release on the same node or released over empty spac
     private void HandleMouseRelease()
     {
         if (startNode == null)
@@ -126,6 +130,7 @@ public class StarInputManager : MonoBehaviour
     }
 
     // dog but works
+    // resets the isDragging state and visual highlight
     public void ClearSelection()
     {
         if (startNode != null && graphVisualiser.nodeVisualDict.TryGetValue(startNode.id, out var visual))
@@ -139,7 +144,8 @@ public class StarInputManager : MonoBehaviour
         isDragging = false;
     }
 
-    
+    // Handles removal of existing edge connection when hide is clicked
+    // Only update node visual state if node has no remaining neighbors
     private void HandleEdgeClick(GameObject edgeObject)
     {
         var (nodeA, nodeB) = gameManager.GetNodesFromEdge(edgeObject);
@@ -161,6 +167,11 @@ public class StarInputManager : MonoBehaviour
 
 
     #region Utility Methods
+
+    // Raycast for object under mouse
+    // supports both 3D and 2D colliders
+    // prioritises 3D as star node is 3D
+    // might break if we change to sprites
     private GameObject GetObjectUnderMouse()
     {
         RaycastHit hit3D;
@@ -183,7 +194,9 @@ public class StarInputManager : MonoBehaviour
         return gameCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zDepth));
     }
 
-    private bool IsEdgeObject(GameObject obj)
+    // Edges only use the PolygonCollider2D 
+    // Nodes use the Box Collider
+    private bool HasPolygonCollider2D(GameObject obj)
     {
         return obj.GetComponent<PolygonCollider2D>() != null;
     }

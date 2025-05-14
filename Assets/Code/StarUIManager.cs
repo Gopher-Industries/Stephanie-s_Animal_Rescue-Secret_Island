@@ -30,9 +30,12 @@ public class StarUIManager : MonoBehaviour
         }
 
         if (worldSpaceCanvas == null)
+        {
             worldSpaceCanvas = GetComponent<Canvas>();
+        }
     }
 
+    // LineRenderer for preview shape
     private void CreateLineRenderer()
     {
         GameObject lrObject = new GameObject("ShapePreviewLines");
@@ -48,6 +51,7 @@ public class StarUIManager : MonoBehaviour
         lrObject.transform.position = new Vector3(0, 0, 0);
     }
 
+    // displays a visual preview of the given shape type in the corner of the screen
     public void ShowPreview(ShapeType shapeType)
     {
         if (lineRenderer == null)
@@ -88,6 +92,7 @@ public class StarUIManager : MonoBehaviour
         }
     }
 
+    // Converts normalised shape positions to world space positons anchored to the previewAnchor
     private Vector3[] CalculatePreviewVertices(Vector2[] normalisedVertices)
     {
         Vector3[] vertices = new Vector3[normalisedVertices.Length];
@@ -102,6 +107,7 @@ public class StarUIManager : MonoBehaviour
         return vertices;
     }
 
+    // Clears the shape preview
     private void ClearPreviousPreview()
     {
         lineRenderer.positionCount = 0;

@@ -22,6 +22,7 @@ public class StarNodeVisual : MonoBehaviour
         renderer.material = starMaterial;
     }
 
+    // Set node ID and visual state based on data from the graph class
     public void Initialize(int nodesId, StarData data)
     {
         nodeId = nodesId;
@@ -49,6 +50,11 @@ public class StarNodeVisual : MonoBehaviour
         UpdateColourState();
     }
 
+    // Updates node colours based on interaction and game state based on priority
+    // highlighted node: turns cyan when player is clicking and dragging a node
+    // connected solution node: turns green
+    // connected non-soltuon node: turns red
+    // no connections: default colour yellow
     public void UpdateColourState(bool hasConnections = false)
     {
         if (this == null || !isActive)
@@ -85,6 +91,7 @@ public class StarNodeVisual : MonoBehaviour
         starMaterial.color = color;
     }
 
+    // logic to deactivate to prevent updates on destroyed nodes
     private void OnDestroy()
     {
         isActive = false;

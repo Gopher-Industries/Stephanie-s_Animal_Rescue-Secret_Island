@@ -8,9 +8,9 @@ public class StarShapeData
 {
     public ShapeType type;
     public Vector2[] normalisedVertices; 
-    public bool isClosedShape = true;
 
-    
+
+    // Tranforms the shapes vertices via scaling, translating and rotating
     public List<Vector3> GetTransformedVertices(float size, Vector2 offset, float rotationDegrees = 0f)
     {
         Quaternion rotation = Quaternion.Euler(0, 0, rotationDegrees);
@@ -23,7 +23,7 @@ public class StarShapeData
         return vertices;
     }
 
-    
+    // gets the preview vertices for the shape without rotation
     public List<Vector3> GetPreviewVertices(float size, Vector2 screenAnchor)
     {
         return GetTransformedVertices(

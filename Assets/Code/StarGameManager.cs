@@ -57,8 +57,9 @@ public class StarGameManager : MonoBehaviour
                 return ShapeType.Triangle;
         }
     }
-
-    // delay level transition 1 frame to work around bug that causes last connected nodes to highlight after level transition
+    
+    // delay level transition by 1 frame to prevent node colour state updates during the transation
+    // potentially fixed when there is a transition/reward between each level.
     private void ValidateCurrentLevel()
     {
         if (gameState.isSolutionValid)
@@ -154,6 +155,7 @@ public class StarGameManager : MonoBehaviour
         }
     }
 
+    // looks up node pair associated with the given edge gameobject
     public (Node<StarData>, Node<StarData>) GetNodesFromEdge(GameObject edgeObject)
     {
         foreach (var visualPair in visualiser.edgeVisualDict)

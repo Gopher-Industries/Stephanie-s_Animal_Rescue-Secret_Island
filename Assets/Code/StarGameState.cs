@@ -19,6 +19,8 @@ public class StarGameState
         solutionNodes = new List<Node<StarData>>();
     }
 
+    // clear previous graph before initialising
+    // cache solution nodes
     public void Initialize(Graph<StarData> graph)
     {
         currentGraph = null;
@@ -61,7 +63,10 @@ public class StarGameState
         return true;
     }
 
-
+    // an edge is considered valid if 
+    // both nodes are part of the solution nodes
+    // the nodes are consecutive in the solution node list
+    // or the nodes form the first and last pair in list (to form a closed shapes)
     public bool IsEdgeValid(int nodeAId, int nodeBId)
     {
         Node<StarData> a = GetNodeById(nodeAId);
@@ -80,7 +85,6 @@ public class StarGameState
         }
 
         if (indexA == -1 || indexB == -1) return false;
-
 
         bool isConsecutive = Mathf.Abs(indexA - indexB) == 1;
         bool isFirstLastPair = (indexA == 0 && indexB == solutionNodes.Count - 1) || (indexB == 0 && indexA == solutionNodes.Count - 1);
@@ -120,6 +124,17 @@ public class StarGameState
         isSolutionValid = CheckSolution(solutionNodes);
     }
 
+
+    // validates the current solution as a single closed loop of solution nodes
+    // atleast 3 nodes (smallest shape is triangle)
+    // starting solution node must reach all solutions nodes via DFS
+    // each node must connect to exactly 2 other solution node neighbours
+    //
+    // this works for simple polygons
+    // it doesn't validate the order of nodes
+    // it doesn't validate more complex shapes (big dipper constellation) with branches and no cycles
+    //
+    // TODO: validate 2 shapes on the one level 
     private bool CheckSolution(List<Node<StarData>> solutionNodes)
     {
         if (solutionNodes.Count < 3)
@@ -148,6 +163,9 @@ public class StarGameState
         return true;
     }
 
+    // Ensure all solution nodes are connected as a shape
+    // DFS won't visit all nodes if they don't connect the shape
+    // TODO: validate 2 shapes on the one level 
     private void DFS(Node<StarData> currentNode, HashSet<Node<StarData>> visited)
     {
         if (currentNode == null || visited.Contains(currentNode)) return;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public static class ShapeLibrary
 {
+    // A static dictionary that maps ShapeType to it's corresponding hard coded normalised shape data
     private static readonly Dictionary<ShapeType, StarShapeData> shapes = new Dictionary<ShapeType, StarShapeData>()
     {
         {
@@ -34,5 +35,6 @@ public static class ShapeLibrary
         }
     };
 
+    // gets the shape data associated with a specific shape type
     public static StarShapeData GetShape(ShapeType type) => shapes[type];
 }

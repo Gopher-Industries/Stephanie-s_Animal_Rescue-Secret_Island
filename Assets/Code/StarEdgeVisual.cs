@@ -23,8 +23,14 @@ public class StarEdgeVisual : MonoBehaviour
         UpdateCollider(start, end, width);
     }
 
-    // This video helped me form the correct shape for the lr collision:
+    // This video helped me form the correct shape for the LineRenderer collider box:
     // https://youtu.be/BfP0KyOxVWs?t=139
+    // creates a rectangle collider hit box around the LineRenderer
+    // start is x1,y1 and end is x2,y2
+    // line direction is used to calculate the perpendicular of the line
+    // the offset (half of the desired hitbox width) is applied along the perpendicular 
+    // applying the offset on both ends of the line (above and below each end) we form the points for the box
+    // setpath uses the 4 points (corners) of to draw the polygon collider box
     private void UpdateCollider(Vector3 start, Vector3 end, float width)
     {
         Vector2 lineDirection = (end - start).normalized;

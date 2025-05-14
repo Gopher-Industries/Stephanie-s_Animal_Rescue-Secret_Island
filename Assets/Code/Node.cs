@@ -16,7 +16,7 @@ public class Node<T>
 
     public Node(int nodeId, Vector3 pos, T nodeData)
     {
-        id = nodeId++;
+        id = nodeId;
         position = pos;
         data = nodeData;
         neighbours = new List<Node<T>>();
