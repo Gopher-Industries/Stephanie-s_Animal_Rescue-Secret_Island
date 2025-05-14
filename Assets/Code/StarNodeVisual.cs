@@ -5,11 +5,13 @@ public class StarNodeVisual : MonoBehaviour
     [SerializeField] private Color normalColor = Color.yellow;
     [SerializeField] private Color solutionColor = Color.green;
     [SerializeField] private Color invalidColor = Color.red;
+    [SerializeField] private Color highlightedColor = Color.cyan;
 
     private Material starMaterial;
+    private bool isActive;
     private bool isSolution;
     private bool hasConnections;
-    private bool isActive;
+    private bool isHighlighted;
 
     public int nodeId { get; private set; }
 
@@ -25,13 +27,15 @@ public class StarNodeVisual : MonoBehaviour
         nodeId = nodesId;
         isSolution = data.IsSolutionNode;
         isActive = true;
+        isHighlighted = false;
+
         if (starMaterial == null)
         {
             Renderer renderer = GetComponent<Renderer>();
             starMaterial = renderer.material;
         }
 
-        UpdateHighlightState();
+        UpdateColourState();
 
         if (isSolution)
             name = $"SolutionStar_{nodeId}";
@@ -39,18 +43,28 @@ public class StarNodeVisual : MonoBehaviour
             name = $"Star_{nodeId}";
     }
 
-    public void UpdateHighlightState(bool isHighlighted = false, bool hasConnections = false)
+    public void SetHighlightedState(bool highlighted)
+    {
+        isHighlighted = highlighted;
+        UpdateColourState();
+    }
+
+    public void UpdateColourState(bool hasConnections = false)
     {
         if (this == null || !isActive)
             return;
 
         this.hasConnections = hasConnections;
 
-        if (isSolution && hasConnections)
+        if (isHighlighted)
+        {
+            SetColor(highlightedColor);
+        }
+        else if (isSolution && hasConnections)
         {
             SetColor(solutionColor);
         }
-        else if (isHighlighted)
+        else if (hasConnections)
         {
             SetColor(invalidColor);
         }

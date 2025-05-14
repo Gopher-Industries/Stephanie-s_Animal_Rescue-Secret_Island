@@ -94,10 +94,9 @@ public class StarInputManager : MonoBehaviour
         startNode = node;
         isDragging = true;
 
-        if (!node.data.IsSelected)
+        if (graphVisualiser.nodeVisualDict.TryGetValue(node.id, out var visual))
         {
-            gameManager.SetNodeSelected(node.id, true);
-            gameManager.UpdateNodeVisualState(node.id);
+            visual.SetHighlightedState(true);
         }
 
         graphVisualiser.ClearPreviewLine();
@@ -106,9 +105,6 @@ public class StarInputManager : MonoBehaviour
     private void CompleteConnection(Node<StarData> start, Node<StarData> end)
     {
         gameManager.CreateConnection(start.id, end.id);
-
-        gameManager.SetNodeSelected(start.id, true);
-        gameManager.SetNodeSelected(end.id, true);
 
         gameManager.UpdateNodeVisualState(end.id);
         gameManager.UpdateNodeVisualState(start.id);
@@ -119,19 +115,25 @@ public class StarInputManager : MonoBehaviour
         if (startNode == null)
             return;
 
+        if (graphVisualiser.nodeVisualDict.TryGetValue(startNode.id, out var nodeVisual))
+        {
+            nodeVisual.SetHighlightedState(false);
+            nodeVisual.UpdateColourState(startNode.neighbours.Count > 0);
+        }
+
         graphVisualiser.ClearPreviewLine();
 
-
-        if (startNode.neighbours.Count == 0)
-        {
-            gameManager.SetNodeSelected(startNode.id, false);
-        }
-        gameManager.UpdateNodeVisualState(startNode.id);
     }
 
     // dog but works
     public void ClearSelection()
     {
+        if (startNode != null && graphVisualiser.nodeVisualDict.TryGetValue(startNode.id, out var visual))
+        {
+            visual.SetHighlightedState(false);
+            visual.UpdateColourState(startNode.neighbours.Count > 0);
+        }
+
         graphVisualiser.ClearPreviewLine();
         startNode = null;
         isDragging = false;
@@ -149,12 +151,10 @@ public class StarInputManager : MonoBehaviour
         //ensure we aren't connected still before updating highlight state
         if (nodeA.neighbours.Count == 0)
         {
-            gameManager.SetNodeSelected(nodeA.id, false);
             gameManager.UpdateNodeVisualState(nodeA.id);
         }
         if (nodeB.neighbours.Count == 0)
         {
-            gameManager.SetNodeSelected(nodeB.id, false);
             gameManager.UpdateNodeVisualState(nodeB.id);
         }
     }

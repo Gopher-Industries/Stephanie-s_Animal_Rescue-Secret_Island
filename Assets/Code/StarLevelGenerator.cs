@@ -53,8 +53,7 @@ public class StarLevelGenerator : MonoBehaviour
         {
             var node = starGraph.AddNode(pos, new StarData
             {
-                IsSolutionNode = true,
-                IsSelected = false
+                IsSolutionNode = true
             });
             solutionNodes.Add(node);
         }
@@ -79,8 +78,7 @@ public class StarLevelGenerator : MonoBehaviour
         {
             graph.AddNode(pos, new StarData
             {
-                IsSolutionNode = false,
-                IsSelected = false
+                IsSolutionNode = false
             });
         }
     }

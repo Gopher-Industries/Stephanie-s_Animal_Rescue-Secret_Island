@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class StarGameState
 {
+    public bool isSolutionValid { get; private set; }
+    public int CurrentLevel { get; private set; } = 1;
+
     public Graph<StarData> currentGraph { get; private set; }
     public List<Node<StarData>> solutionNodes { get; }
-    public bool isSolutionValid { get; private set; }
-
-    public int CurrentLevel { get; private set; } = 1;
 
     public void AdvanceLevel()
     {
@@ -61,18 +61,6 @@ public class StarGameState
         return true;
     }
 
-    public bool ToggleNodeSelection(int nodeId, bool selected)
-    {
-        Node<StarData> node = FindNode(nodeId);
-
-        if (node == null)
-        {
-            return false;
-        }
-
-        node.data.IsSelected = selected;
-        return true;
-    }
 
     public bool IsEdgeValid(int nodeAId, int nodeBId)
     {
@@ -85,16 +73,17 @@ public class StarGameState
         int indexA = -1, indexB = -1;
         for (int i = 0; i < solutionNodes.Count; i++)
         {
-            if (solutionNodes[i].id == a.id) indexA = i;
-            if (solutionNodes[i].id == b.id) indexB = i;
+            if (solutionNodes[i].id == a.id) 
+                indexA = i;
+            if (solutionNodes[i].id == b.id) 
+                indexB = i;
         }
 
         if (indexA == -1 || indexB == -1) return false;
 
 
         bool isConsecutive = Mathf.Abs(indexA - indexB) == 1;
-        bool isFirstLastPair = (indexA == 0 && indexB == solutionNodes.Count - 1) ||
-                             (indexB == 0 && indexA == solutionNodes.Count - 1);
+        bool isFirstLastPair = (indexA == 0 && indexB == solutionNodes.Count - 1) || (indexB == 0 && indexA == solutionNodes.Count - 1);
 
         return isConsecutive || isFirstLastPair;
     }
@@ -161,11 +150,13 @@ public class StarGameState
 
     private void DFS(Node<StarData> currentNode, HashSet<Node<StarData>> visited)
     {
+        if (currentNode == null || visited.Contains(currentNode)) return;
+
         visited.Add(currentNode);
 
         foreach (var neighbour in currentNode.neighbours)
         {
-            if (neighbour.data.IsSolutionNode && !visited.Contains(neighbour))
+            if (neighbour.data.IsSolutionNode)
             {
                 DFS(neighbour, visited);
             }

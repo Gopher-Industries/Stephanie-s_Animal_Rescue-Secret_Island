@@ -14,10 +14,10 @@ public class StarGraphVisualiser : MonoBehaviour
     private const float LINE_WIDTH = 0.25f;
 
     // Maps Node<StarData> to its corresponding GameObject
-    public Dictionary<int, StarNodeVisual> nodeVisuals = new Dictionary<int, StarNodeVisual>();
+    public Dictionary<int, StarNodeVisual> nodeVisualDict = new Dictionary<int, StarNodeVisual>();
 
     // Tracks if we have drawn an edge and stores it's GameObject, the key is the a and b node.
-    public Dictionary<(int, int), StarEdgeVisual> edgeVisuals = new Dictionary<(int, int), StarEdgeVisual>();
+    public Dictionary<(int, int), StarEdgeVisual> edgeVisualDict = new Dictionary<(int, int), StarEdgeVisual>();
 
 
     private LineRenderer previewLine;
@@ -35,7 +35,7 @@ public class StarGraphVisualiser : MonoBehaviour
         {
             var starVisual = Instantiate(starPrefab, node.position, Quaternion.identity, transform);
             starVisual.Initialize(nodeId, node.data);
-            nodeVisuals[node.id] = starVisual;
+            nodeVisualDict[node.id] = starVisual;
             nodeId++;
         }
     }
@@ -87,40 +87,40 @@ public class StarGraphVisualiser : MonoBehaviour
         }
     }
 
-    public void UpdateNodeHighlight(int nodeId, bool isSelected, bool hasConnections)
+    public void UpdateNodeColour(int nodeId, bool hasConnections)
     {
-        if (nodeVisuals == null || nodeVisuals.Count == 0)
+        if (nodeVisualDict == null || nodeVisualDict.Count == 0)
             return;
 
-        if (nodeVisuals.TryGetValue(nodeId, out var visual))
+        if (nodeVisualDict.TryGetValue(nodeId, out var nodeVisual))
         {
-            visual.UpdateHighlightState(isSelected, hasConnections);
+            nodeVisual.UpdateColourState(hasConnections);
         }
     }
 
     public void ClearVisuals()
     {
-        foreach (var visual in nodeVisuals.Values) Destroy(visual.gameObject);
-        foreach (var edge in edgeVisuals.Values) Destroy(edge.gameObject);
+        foreach (var visual in nodeVisualDict.Values) Destroy(visual.gameObject);
+        foreach (var edge in edgeVisualDict.Values) Destroy(edge.gameObject);
 
-        nodeVisuals.Clear();
-        edgeVisuals.Clear();
+        nodeVisualDict.Clear();
+        edgeVisualDict.Clear();
         ClearPreviewLine();
     }
 
     public bool DoesVisualRepresentNode(GameObject gameObject, int nodeId)
     {
-        return nodeVisuals.TryGetValue(nodeId, out var visual) &&
-               visual.gameObject == gameObject;
+        return nodeVisualDict.TryGetValue(nodeId, out var nodeVisual) &&
+               nodeVisual.gameObject == gameObject;
     }
 
     #region Helper Methods
     private bool EdgeExists(int idA, int idB)
     {
-        if (edgeVisuals.ContainsKey((idA, idB)))
+        if (edgeVisualDict.ContainsKey((idA, idB)))
             return true;
 
-        if (edgeVisuals.ContainsKey((idB, idA)))
+        if (edgeVisualDict.ContainsKey((idB, idA)))
             return true;
 
         return false;
@@ -128,10 +128,10 @@ public class StarGraphVisualiser : MonoBehaviour
 
     private bool TryGetEdge(int idA, int idB, out StarEdgeVisual edge)
     {
-        if (edgeVisuals.TryGetValue((idA, idB), out edge)) 
+        if (edgeVisualDict.TryGetValue((idA, idB), out edge)) 
             return true;
 
-        if (edgeVisuals.TryGetValue((idB, idA), out edge)) 
+        if (edgeVisualDict.TryGetValue((idB, idA), out edge)) 
             return true;
 
         return false;
@@ -139,14 +139,14 @@ public class StarGraphVisualiser : MonoBehaviour
 
     private void StoreEdge(int idA, int idB, StarEdgeVisual edge)
     {
-        edgeVisuals[(idA, idB)] = edge;
-        edgeVisuals[(idB, idA)] = edge; 
+        edgeVisualDict[(idA, idB)] = edge;
+        edgeVisualDict[(idB, idA)] = edge; 
     }
 
     private void RemoveEdgeFromDict(int idA, int idB)
     {
-        edgeVisuals.Remove((idA, idB));
-        edgeVisuals.Remove((idB, idA));
+        edgeVisualDict.Remove((idA, idB));
+        edgeVisualDict.Remove((idB, idA));
     }
     #endregion
 }

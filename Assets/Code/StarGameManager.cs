@@ -121,10 +121,6 @@ public class StarGameManager : MonoBehaviour
 
     }
 
-    public void SetNodeSelected(int nodeId, bool selected)
-    {
-        gameState.ToggleNodeSelection(nodeId, selected);
-    }
 
     public void UpdateNodeVisualState(int nodeId)
     {
@@ -134,9 +130,8 @@ public class StarGameManager : MonoBehaviour
             return;
 
         bool hasConnections = node.neighbours.Count > 0;
-        bool isHighlighted = node.data.IsSelected;
 
-        visualiser.UpdateNodeHighlight(nodeId, isHighlighted, hasConnections);
+        visualiser.UpdateNodeColour(nodeId, hasConnections);
     }
 
     public void UpdateEdgeVisualState(StarEdgeVisual edge, int nodeAId, int nodeBId)
@@ -161,7 +156,7 @@ public class StarGameManager : MonoBehaviour
 
     public (Node<StarData>, Node<StarData>) GetNodesFromEdge(GameObject edgeObject)
     {
-        foreach (var visualPair in visualiser.edgeVisuals)
+        foreach (var visualPair in visualiser.edgeVisualDict)
         {
             if (visualPair.Value.gameObject == edgeObject)
             {
