@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using System.Collections;
 
 public class StarGameManager : MonoBehaviour
@@ -33,8 +32,9 @@ public class StarGameManager : MonoBehaviour
         visualiser.ClearVisuals();
         inputManager.ClearSelection();
 
-        var newGraph = levelGenerator.GenerateLevel(gameState.CurrentLevel);
-        gameState.Initialize(newGraph);
+        // gives graph and solution edges to gamestate
+        var (newGraph, solutionEdges) = levelGenerator.GenerateLevel(gameState.CurrentLevel);
+        gameState.Initialize(newGraph, solutionEdges);
         visualiser.VisualizeGraph(newGraph);
         //uiManager.ShowPreview(GetShapeForLevel(gameState.CurrentLevel));
 
@@ -122,7 +122,6 @@ public class StarGameManager : MonoBehaviour
 
     }
 
-
     public void UpdateNodeVisualState(int nodeId)
     {
 
@@ -143,7 +142,7 @@ public class StarGameManager : MonoBehaviour
         Color incorrectSolutionColour = Color.red;
 
         bool isValidEdge = gameState.IsEdgeValid(nodeAId, nodeBId);
-        Debug.Log($"Edge is: {isValidEdge}");
+        //Debug.Log($"Edge is: {isValidEdge}");
 
         if (isValidEdge)
         {

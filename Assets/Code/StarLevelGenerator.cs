@@ -14,24 +14,32 @@ public class StarLevelGenerator : MonoBehaviour
     // Size multiplier for shape generation
     private const float SHAPE_SIZE = 3f;
 
-
-    public Graph<StarData> GenerateLevel(int level)
+    // Generates the graph and caches solution edges
+    // TODO: Refactor when you figure out a better level system.
+    public (Graph<StarData>, List<(int, int)>) GenerateLevel(int level)
     {
         Graph<StarData> starGraph = new Graph<StarData>();
-        List<Node<StarData>> solutionNodes = CreateSolutionShapes(starGraph, level);
+        List<(int, int)> solutionEdges = new List<(int, int)>();
+        List<Node<StarData>> solutionNodes = new List<Node<StarData>>();
+
+
+        (solutionNodes, solutionEdges) = CreateSolutionShapes(starGraph, level);
         CreateFillerStars(starGraph, solutionNodes);
 
-        return starGraph;
+        return (starGraph, solutionEdges);
     }
-
-    private List<Node<StarData>> CreateSolutionShapes(Graph<StarData> starGraph, int level)
+    
+    // TODO: Refactor when you figure out a better level system as this function became extremely bloated
+    // TODO: Increase/decrease filler stars based on amount of shapes
+    private (List<Node<StarData>>, List<(int, int)>) CreateSolutionShapes(Graph<StarData> starGraph, int level)
     {
         List<Node<StarData>> allSolutionNodes = new();
         List<Vector3> occupiedPositions = new();
+        List<(int, int)> solutionEdges = new List<(int, int)>();
 
         // Hardcoded shapes for each level
         Dictionary<int, List<(ShapeType type, bool rotated)>> levelShapes = new()
-    {
+        {
         { 1, new() { (ShapeType.Triangle, false) } },
         { 2, new() { (ShapeType.Triangle, true) } },
         { 3, new() { (ShapeType.Square, false) } },
@@ -39,8 +47,9 @@ public class StarLevelGenerator : MonoBehaviour
         { 5, new() { (ShapeType.Triangle, false), (ShapeType.Square, false) } },
         { 6, new() { (ShapeType.Triangle, true), (ShapeType.Square, true) } }
         // Add more levels as needed
-    };
+         };
 
+        // Triggers when game is out of levels
         if (!levelShapes.TryGetValue(level, out var shapesForLevel))
         {
             shapesForLevel = new() { (ShapeType.Triangle, false) }; // TODO: this should transition to exit game
@@ -49,35 +58,54 @@ public class StarLevelGenerator : MonoBehaviour
         foreach (var (shapeType, applyRotation) in shapesForLevel)
         {
             var shapePoints = GenerateNonOverlappingShape(shapeType, applyRotation, occupiedPositions);
-
-            foreach (var pos in shapePoints)
+            List<Node<StarData>> shapeNodes = new();
+            foreach (Vector3 position in shapePoints)
             {
-                var node = starGraph.AddNode(pos, new StarData
-                {
-                    IsSolutionNode = true
-                });
-
+                var node = starGraph.AddNode(position, new StarData { IsSolutionNode = true });
+                shapeNodes.Add(node);
                 allSolutionNodes.Add(node);
-                occupiedPositions.Add(pos);
+                occupiedPositions.Add(position);
+            }
+
+            // Cache edge data between consecutive shape nodes (including closing the loop)
+            for (int i = 0; i < shapeNodes.Count; i++)
+            {
+                int nextIndex = (i + 1) % shapeNodes.Count;
+                solutionEdges.Add((shapeNodes[i].id, shapeNodes[nextIndex].id));
             }
         }
 
-        return allSolutionNodes;
+        return (allSolutionNodes, solutionEdges);
     }
 
-    // ensures the shapes don't overlap
+    // Ensures the shapes don't overlap by bruteforce
+    // TODO: Might be better to set up a grid and place the shapes on a random tile
     private List<Vector3> GenerateNonOverlappingShape(ShapeType shapeType, bool applyRotation, List<Vector3> occupiedPositions)
     {
         List<Vector3> newShape;
         int maxAttempts = 50;
 
+        // Check that every point in the new shape is far enough away from all existing occupied positions
         for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
             newShape = GenerateGameplayShape(shapeType, applyRotation);
 
-            bool isFarEnough = newShape.All(p =>
-                occupiedPositions.All(existing =>
-                    Vector3.Distance(existing, p) >= MIN_DIST));
+            bool isFarEnough = true;
+
+            foreach (Vector3 newPoint in newShape)
+            {
+                foreach (Vector3 existing in occupiedPositions)
+                {
+                    if (Vector3.Distance(existing, newPoint) < MIN_DIST)
+                    {
+                        isFarEnough = false;
+                        break;
+                    }
+                }
+
+                if (!isFarEnough)
+                    break;
+            }
 
             if (isFarEnough)
                 return newShape;
@@ -103,10 +131,7 @@ public class StarLevelGenerator : MonoBehaviour
 
         foreach (var pos in fillerPositions)
         {
-            graph.AddNode(pos, new StarData
-            {
-                IsSolutionNode = false
-            });
+            graph.AddNode(pos, new StarData {IsSolutionNode = false});
         }
     }
 
