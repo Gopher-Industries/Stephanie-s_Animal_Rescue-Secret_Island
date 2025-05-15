@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -17,56 +18,75 @@ public class StarLevelGenerator : MonoBehaviour
     public Graph<StarData> GenerateLevel(int level)
     {
         Graph<StarData> starGraph = new Graph<StarData>();
-        List<Node<StarData>> solutionNodes = CreateSolutionShape(starGraph, level);
+        List<Node<StarData>> solutionNodes = CreateSolutionShapes(starGraph, level);
         CreateFillerStars(starGraph, solutionNodes);
 
         return starGraph;
     }
 
-    // Selects the shape to be generated based on the current level
-    private List<Node<StarData>> CreateSolutionShape(Graph<StarData> starGraph, int level)
+    private List<Node<StarData>> CreateSolutionShapes(Graph<StarData> starGraph, int level)
     {
-        ShapeType shapeType;
-        bool applyRotation;
+        List<Node<StarData>> allSolutionNodes = new();
+        List<Vector3> occupiedPositions = new();
 
-        switch (level)
+        // Hardcoded shapes for each level
+        Dictionary<int, List<(ShapeType type, bool rotated)>> levelShapes = new()
+    {
+        { 1, new() { (ShapeType.Triangle, false) } },
+        { 2, new() { (ShapeType.Triangle, true) } },
+        { 3, new() { (ShapeType.Square, false) } },
+        { 4, new() { (ShapeType.Square, true) } },
+        { 5, new() { (ShapeType.Triangle, false), (ShapeType.Square, false) } },
+        { 6, new() { (ShapeType.Triangle, true), (ShapeType.Square, true) } }
+        // Add more levels as needed
+    };
+
+        if (!levelShapes.TryGetValue(level, out var shapesForLevel))
         {
-            case 1: 
-                shapeType = ShapeType.Triangle;
-                applyRotation = false;
-                break;
-            case 2: 
-                shapeType = ShapeType.Triangle;
-                applyRotation = true;
-                break;
-            case 3: 
-                shapeType = ShapeType.Square;
-                applyRotation = false;
-                break;
-            case 4: 
-                shapeType = ShapeType.Square;
-                applyRotation = true;
-                break;
-            default:
-                shapeType = ShapeType.Triangle;
-                applyRotation = false;
-                break;
+            shapesForLevel = new() { (ShapeType.Triangle, false) }; // TODO: this should transition to exit game
         }
 
-        var solutionShapePoints = GenerateGameplayShape(shapeType, applyRotation);
-        var solutionNodes = new List<Node<StarData>>();
-
-        foreach (var pos in solutionShapePoints)
+        foreach (var (shapeType, applyRotation) in shapesForLevel)
         {
-            var node = starGraph.AddNode(pos, new StarData
+            var shapePoints = GenerateNonOverlappingShape(shapeType, applyRotation, occupiedPositions);
+
+            foreach (var pos in shapePoints)
             {
-                IsSolutionNode = true
-            });
-            solutionNodes.Add(node);
+                var node = starGraph.AddNode(pos, new StarData
+                {
+                    IsSolutionNode = true
+                });
+
+                allSolutionNodes.Add(node);
+                occupiedPositions.Add(pos);
+            }
         }
 
-        return solutionNodes;
+        return allSolutionNodes;
     }
+
+    // ensures the shapes don't overlap
+    private List<Vector3> GenerateNonOverlappingShape(ShapeType shapeType, bool applyRotation, List<Vector3> occupiedPositions)
+    {
+        List<Vector3> newShape;
+        int maxAttempts = 50;
+
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            newShape = GenerateGameplayShape(shapeType, applyRotation);
+
+            bool isFarEnough = newShape.All(p =>
+                occupiedPositions.All(existing =>
+                    Vector3.Distance(existing, p) >= MIN_DIST));
+
+            if (isFarEnough)
+                return newShape;
+        }
+        Debug.Log("If you see this GenerateNonOverlappingShape in the Level Generator somehow to spawn multiple shapes spread out. Even though at this point it only has to avoid other shapes and not filler stars");
+        // just return the shape anyway we're cooked if this happens
+        return GenerateGameplayShape(shapeType, applyRotation);
+    }
+
 
     // Generates filler stars surrounding the solution nodes
     // Avoids positions where solution nodes were already pre placed

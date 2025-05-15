@@ -7,6 +7,7 @@ public class StarGameState
     public int CurrentLevel { get; private set; } = 1;
 
     public Graph<StarData> currentGraph { get; private set; }
+
     public List<Node<StarData>> solutionNodes { get; }
 
     public void AdvanceLevel()
@@ -78,9 +79,9 @@ public class StarGameState
         int indexA = -1, indexB = -1;
         for (int i = 0; i < solutionNodes.Count; i++)
         {
-            if (solutionNodes[i].id == a.id) 
+            if (solutionNodes[i].id == a.id)
                 indexA = i;
-            if (solutionNodes[i].id == b.id) 
+            if (solutionNodes[i].id == b.id)
                 indexB = i;
         }
 
@@ -92,7 +93,7 @@ public class StarGameState
         return isConsecutive || isFirstLastPair;
     }
 
-        private Node<StarData> FindNode(int id)
+    private Node<StarData> FindNode(int id)
     {
         if (currentGraph == null)
         {
@@ -124,38 +125,49 @@ public class StarGameState
         isSolutionValid = CheckSolution(solutionNodes);
     }
 
-
-    // validates the current solution as a single closed loop of solution nodes
-    // atleast 3 nodes (smallest shape is triangle)
-    // starting solution node must reach all solutions nodes via DFS
-    // each node must connect to exactly 2 other solution node neighbours
-    //
-    // this works for simple polygons
-    // it doesn't validate the order of nodes
-    // it doesn't validate more complex shapes (big dipper constellation) with branches and no cycles
-    //
-    // TODO: validate 2 shapes on the one level 
     private bool CheckSolution(List<Node<StarData>> solutionNodes)
     {
         if (solutionNodes.Count < 3)
             return false;
 
-        HashSet<Node<StarData>> visited = new HashSet<Node<StarData>>();
-        DFS(solutionNodes[0], visited);
+        var visited = new HashSet<Node<StarData>>();
+        var resultComponents = new List<List<Node<StarData>>>();
 
+        foreach (var node in solutionNodes)
+        {
+            if (!visited.Contains(node))
+            {
+                var component = new List<Node<StarData>>();
+                DFS(node, visited, component);
+                resultComponents.Add(component);
+            }
+        }
 
-        if (visited.Count != solutionNodes.Count)
+        // Validate each component as a proper closed shape
+        foreach (var component in resultComponents)
+        {
+            if (!IsClosedShape(component))
+                return false;
+        }
+
+        return true;
+    }
+
+    // Adapted old solution checker for 1 shape,
+    // check each component (closed loop shape) of the graph individually
+    private bool IsClosedShape(List<Node<StarData>> shapeNodes)
+    {
+        if (shapeNodes.Count < 3)
             return false;
 
 
-        foreach (var node in solutionNodes)
+        foreach (var node in shapeNodes)
         {
             foreach (var neighbour in node.neighbours)
             {
                 if (!neighbour.data.IsSolutionNode)
                     return false;
             }
-
             if (node.neighbours.Count != 2)
                 return false;
         }
@@ -165,18 +177,18 @@ public class StarGameState
 
     // Ensure all solution nodes are connected as a shape
     // DFS won't visit all nodes if they don't connect the shape
-    // TODO: validate 2 shapes on the one level 
-    private void DFS(Node<StarData> currentNode, HashSet<Node<StarData>> visited)
+    private void DFS(Node<StarData> currentNode, HashSet<Node<StarData>> visited, List<Node<StarData>> component)
     {
         if (currentNode == null || visited.Contains(currentNode)) return;
 
         visited.Add(currentNode);
+        component.Add(currentNode);
 
         foreach (var neighbour in currentNode.neighbours)
         {
             if (neighbour.data.IsSolutionNode)
             {
-                DFS(neighbour, visited);
+                DFS(neighbour, visited, component);
             }
         }
     }

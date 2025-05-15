@@ -36,7 +36,7 @@ public class StarGameManager : MonoBehaviour
         var newGraph = levelGenerator.GenerateLevel(gameState.CurrentLevel);
         gameState.Initialize(newGraph);
         visualiser.VisualizeGraph(newGraph);
-        uiManager.ShowPreview(GetShapeForLevel(gameState.CurrentLevel));
+        //uiManager.ShowPreview(GetShapeForLevel(gameState.CurrentLevel));
 
         Debug.Log($"Started Level {gameState.CurrentLevel}");
     }
@@ -82,7 +82,7 @@ public class StarGameManager : MonoBehaviour
 
         inputManager.ClearSelection();
         visualiser.ClearVisuals();
-        uiManager.HidePreview();
+        //uiManager.HidePreview();
 
         gameState.AdvanceLevel();
         StartNewLevel();
