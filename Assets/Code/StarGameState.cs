@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class StarGameState
@@ -8,6 +9,7 @@ public class StarGameState
 
     public Graph<StarData> currentGraph { get; private set; }
     public List<Node<StarData>> solutionNodes { get; }
+    private HashSet<(int, int)> solutionEdges = new HashSet<(int, int)>();
 
     public void AdvanceLevel()
     {
@@ -17,15 +19,26 @@ public class StarGameState
     public StarGameState()
     {
         solutionNodes = new List<Node<StarData>>();
+        solutionEdges = new HashSet<(int, int)>();  
     }
 
     // clear previous graph before initialising
     // cache solution nodes
-    public void Initialize(Graph<StarData> graph)
+    public void Initialize(Graph<StarData> graph, List<(int, int)> edges)
     {
         currentGraph = null;
         solutionNodes.Clear();
+        solutionEdges.Clear();
         currentGraph = graph;
+
+        solutionEdges.Clear();
+
+        foreach (var edge in edges)
+        {
+            int smallEdge = Mathf.Min(edge.Item1, edge.Item2);
+            int largeEdge = Mathf.Max(edge.Item1, edge.Item2);
+            solutionEdges.Add((smallEdge, largeEdge));
+        }
 
         foreach (var node in graph.Nodes)
         {
@@ -63,36 +76,15 @@ public class StarGameState
         return true;
     }
 
-    // an edge is considered valid if 
-    // both nodes are part of the solution nodes
-    // the nodes are consecutive in the solution node list
-    // or the nodes form the first and last pair in list (to form a closed shapes)
+    // An edge is considered valid if  both nodes are part of the solution edges
     public bool IsEdgeValid(int nodeAId, int nodeBId)
     {
-        Node<StarData> a = GetNodeById(nodeAId);
-        Node<StarData> b = GetNodeById(nodeBId);
-
-        if (a == null || b == null || !a.data.IsSolutionNode || !b.data.IsSolutionNode)
-            return false;
-
-        int indexA = -1, indexB = -1;
-        for (int i = 0; i < solutionNodes.Count; i++)
-        {
-            if (solutionNodes[i].id == a.id) 
-                indexA = i;
-            if (solutionNodes[i].id == b.id) 
-                indexB = i;
-        }
-
-        if (indexA == -1 || indexB == -1) return false;
-
-        bool isConsecutive = Mathf.Abs(indexA - indexB) == 1;
-        bool isFirstLastPair = (indexA == 0 && indexB == solutionNodes.Count - 1) || (indexB == 0 && indexA == solutionNodes.Count - 1);
-
-        return isConsecutive || isFirstLastPair;
+        int min = Mathf.Min(nodeAId, nodeBId);
+        int max = Mathf.Max(nodeAId, nodeBId);
+        return solutionEdges.Contains((min, max));
     }
 
-        private Node<StarData> FindNode(int id)
+    private Node<StarData> FindNode(int id)
     {
         if (currentGraph == null)
         {
@@ -121,41 +113,50 @@ public class StarGameState
 
     public void ValidateSolution()
     {
-        isSolutionValid = CheckSolution(solutionNodes);
+        // Find all connected components first
+        var components = FindConnectedComponents(solutionNodes);
+
+        // Then validate each component
+        isSolutionValid = components.All(IsClosedShape);
     }
 
-
-    // validates the current solution as a single closed loop of solution nodes
-    // atleast 3 nodes (smallest shape is triangle)
-    // starting solution node must reach all solutions nodes via DFS
-    // each node must connect to exactly 2 other solution node neighbours
-    //
-    // this works for simple polygons
-    // it doesn't validate the order of nodes
-    // it doesn't validate more complex shapes (big dipper constellation) with branches and no cycles
-    //
-    // TODO: validate 2 shapes on the one level 
-    private bool CheckSolution(List<Node<StarData>> solutionNodes)
+    // Finds all connected components (shapes) within the cached set of solution nodes via DFS
+    // Reference: https://www.geeksforgeeks.org/connected-components-in-an-undirected-graph/
+    private List<List<Node<StarData>>> FindConnectedComponents(List<Node<StarData>> solutionNodes)
     {
-        if (solutionNodes.Count < 3)
-            return false;
-
-        HashSet<Node<StarData>> visited = new HashSet<Node<StarData>>();
-        DFS(solutionNodes[0], visited);
-
-
-        if (visited.Count != solutionNodes.Count)
-            return false;
-
+        var visited = new HashSet<Node<StarData>>();
+        // list of connected components (shapes)
+        var components = new List<List<Node<StarData>>>(); 
 
         foreach (var node in solutionNodes)
+        {
+            // if node hasn't been visited its a new component
+            if (!visited.Contains(node))
+            {
+                var component = new List<Node<StarData>>();
+                DFS(node, visited, component);
+                components.Add(component);
+            }
+        }
+
+        return components;
+    }
+
+    // Validates the current component as a single closed loop of solution nodes
+    private bool IsClosedShape(List<Node<StarData>> shapeNodes)
+    {
+        // Complete shapes require atleast 3 nodes
+        if (shapeNodes.Count < 3)
+            return false;
+
+        // Each node must have exactly 2 solution node connections to form a loop
+        foreach (var node in shapeNodes)
         {
             foreach (var neighbour in node.neighbours)
             {
                 if (!neighbour.data.IsSolutionNode)
                     return false;
             }
-
             if (node.neighbours.Count != 2)
                 return false;
         }
@@ -165,18 +166,18 @@ public class StarGameState
 
     // Ensure all solution nodes are connected as a shape
     // DFS won't visit all nodes if they don't connect the shape
-    // TODO: validate 2 shapes on the one level 
-    private void DFS(Node<StarData> currentNode, HashSet<Node<StarData>> visited)
+    private void DFS(Node<StarData> currentNode, HashSet<Node<StarData>> visited, List<Node<StarData>> component)
     {
         if (currentNode == null || visited.Contains(currentNode)) return;
 
         visited.Add(currentNode);
+        component.Add(currentNode);
 
         foreach (var neighbour in currentNode.neighbours)
         {
             if (neighbour.data.IsSolutionNode)
             {
-                DFS(neighbour, visited);
+                DFS(neighbour, visited, component);
             }
         }
     }
