@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 
 public class TeleportPortalsManagement : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class TeleportPortalsManagement : MonoBehaviour
     public Transform buttonContainer;
     public Transform portalsParent;
     public GameObject buttonPrefab;
+    public string findFlashPrompt;
+    public float destinationX;
+    public float destinationY;
+    public float destinationZ;
 
     private List<TeleportPortal> portals = new List<TeleportPortal>();
     private TeleportPortal selectedPortal;
@@ -35,7 +40,7 @@ public class TeleportPortalsManagement : MonoBehaviour
 
     public void OnPortalClicked(TeleportPortal portal)
     {
-        if (!playerHasFlash) return;
+        //if (!playerHasFlash) return;
 
         selectedPortal = portal;
         ShowTeleportOptions();
@@ -51,25 +56,36 @@ public class TeleportPortalsManagement : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-
-        // Create buttons for other portals
-        foreach (var portal in portals)
+        if (playerHasFlash)
         {
-            if (portal != selectedPortal)
+            // Create buttons for other portals
+            foreach (var portal in portals)
             {
-                // Create a button for each portal
-                GameObject buttonObj = Instantiate(buttonPrefab, buttonContainer);
-                buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = portal.portalName;
+                if (portal != selectedPortal)
+                {
+                    // Create a button for each portal
+                    GameObject buttonObj = Instantiate(buttonPrefab, buttonContainer);
+                    buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = portal.portalName;
 
-                TeleportPortal destination = portal;
-                buttonObj.GetComponent<Button>().onClick.AddListener(() => TeleportTo(destination));
+                    TeleportPortal destination = portal;
+                    buttonObj.GetComponent<Button>().onClick.AddListener(() => TeleportTo(destination));
+                }
             }
         }
+        else
+        {
+            GameObject buttonObj = Instantiate(buttonPrefab, buttonContainer);
+            buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = findFlashPrompt;
+        }
+
+
+
     }
 
     private void TeleportTo(TeleportPortal destination)
     {
-        player.transform.position = destination.transform.position;
+        //player.transform.position = destination.transform.position;
+        player.transform.position = new Vector3(destination.transform.position.x + destinationX, destination.transform.position.y + destinationY, destination.transform.position.z + destinationZ);
         teleportUI.SetActive(false);
     }
 }
