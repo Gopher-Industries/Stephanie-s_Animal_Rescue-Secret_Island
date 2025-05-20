@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AvatarColor : MonoBehaviour
+public class ApplyingAvatarColor : MonoBehaviour
 {
     [Header("Color Settings")]
     public bool toggleColor = false;
@@ -18,16 +18,18 @@ public class AvatarColor : MonoBehaviour
 
     public void ToggleAndApplyColor()
     {
-        if (Object == null) return;  // Ensure hairObject is assigned
+        if (Object == null) return; 
 
         Renderer rend = Object.GetComponent<Renderer>();
-        if (rend == null) return;  // Ensure it has a Renderer
+        if (rend == null) return;
 
-        rend.GetPropertyBlock(propBlock);  // Get the current material properties
-        toggleColor = !toggleColor;  // Toggle between the two colors
-
-        Color targetColor = toggleColor ? colorOn : colorOff;  // Set the color
-        propBlock.SetColor("_Color", targetColor);  // Apply the new color
-        rend.SetPropertyBlock(propBlock);  // Set the updated material properties
+        rend.GetPropertyBlock(propBlock); 
+        // Toggle between the two colors for now as a prototype (just toggling between turning selected color on and off)
+        toggleColor = !toggleColor; 
+        // Seting new color
+        Color targetColor = toggleColor ? colorOn : colorOff; 
+        // Apply the new color
+        propBlock.SetColor("_Color", targetColor); 
+        rend.SetPropertyBlock(propBlock);
     }
 }
