@@ -28,11 +28,11 @@ public class NPCDialogueSystem : MonoBehaviour
     // Function to detect if player is detected and no dialogue is playing to start a new dialogue
     void Update()
     {
-        if (player_detection && !CharacterMover.dialogue && !dialogueTriggered)
+        if (player_detection && !CharacterMover.isInteracting && !dialogueTriggered)
         {
             dialogueTriggered = true;
             canva.SetActive(true);
-            CharacterMover.dialogue = true;
+            CharacterMover.isInteracting = true;
             StartDialogue();
         }
 

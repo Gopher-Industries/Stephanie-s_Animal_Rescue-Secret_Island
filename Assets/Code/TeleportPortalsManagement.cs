@@ -82,10 +82,16 @@ public class TeleportPortalsManagement : MonoBehaviour
 
     }
 
+    public void CloseTeleportUI()
+    {
+        teleportUI.SetActive(false);
+        CharacterMover.isInteracting = false;
+    }
+
     private void TeleportTo(TeleportPortal destination)
     {
         //player.transform.position = destination.transform.position;
         player.transform.position = new Vector3(destination.transform.position.x + destinationX, destination.transform.position.y + destinationY, destination.transform.position.z + destinationZ);
-        teleportUI.SetActive(false);
+        CloseTeleportUI();
     }
 }

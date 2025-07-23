@@ -59,7 +59,7 @@ public class NewDialogue : MonoBehaviour
             else
             // IF all dialogue are displayed end dialogue and destroy dialogue from scene
             {
-                CharacterMover.dialogue = false;
+                CharacterMover.isInteracting = false;
                 Destroy(gameObject);
             }
         }

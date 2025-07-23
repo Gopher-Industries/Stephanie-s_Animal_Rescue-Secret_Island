@@ -5,11 +5,18 @@ public class TeleportPortal : MonoBehaviour
     public string portalName;
     public TeleportPortalsManagement manager;
 
-    private void OnMouseDown()
+    private void OnTriggerEnter(Collider other)
     {
-        if (manager != null)
+        if (other.CompareTag("Player"))
         {
-            manager.OnPortalClicked(this);
+            // Stop the player's movement
+            CharacterMover.isInteracting = true;
+
+            // Tell the manager to open the UI
+            if (manager != null)
+            {
+                manager.OnPortalClicked(this);
+            }
         }
     }
 }
