@@ -13,11 +13,14 @@ TagManager:
   - Water
   - Teleporter1
   - CinemachineTarget
+  - GrassGround
+  - Wall
+  - platform
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - InventorySlot
   - Water
   - UI
   - Post Processing
