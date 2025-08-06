@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour {
     public float fadeTime = 1.0f;
     public TextMeshProUGUI loadPercentText;
 
+    private bool isLoadingScene = false;
+
     void Awake(){
         if(Instance != null && Instance != this){
             Destroy(this);
@@ -72,6 +74,13 @@ public class GameManager : MonoBehaviour {
 
     public void LoadSceneWithFade(string sceneToLoad, string sceneToUnload)
     {
+        if (isLoadingScene)
+        {
+            return;
+        }
+
+        // lock the coroutine until it completes
+        isLoadingScene = true;
         StartCoroutine(LoadSceneWithFadeRoutine(sceneToLoad, sceneToUnload));
     }
 
@@ -104,6 +113,9 @@ public class GameManager : MonoBehaviour {
         }   
         UnloadScene(sceneToUnload);
         yield return SceneFade(false);
+
+        // reset the flag
+        isLoadingScene = false;
     }
 
 
