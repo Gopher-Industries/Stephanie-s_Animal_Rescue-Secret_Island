@@ -86,8 +86,8 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator LoadSceneWithFadeRoutine(string sceneToLoad, string sceneToUnload){
         loadingBar.value = 0f;
-        yield return SceneFade(true);
-        
+        yield return StartCoroutine(SceneFade(true));
+
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
         async.allowSceneActivation = false;
         
@@ -100,8 +100,9 @@ public class GameManager : MonoBehaviour {
 
         // Wait 0.2s to finish bar fill
         // This is a fake wait time.
-        yield return new WaitForSeconds(0.2f);
         loadingBar.value = 1f;
+        loadPercentText.text = "100";
+        yield return new WaitForSeconds(0.2f);
 
         async.allowSceneActivation = true;
         yield return new WaitUntil(() => async.isDone);
@@ -110,9 +111,15 @@ public class GameManager : MonoBehaviour {
         Scene newlyLoadedScene = SceneManager.GetSceneByName(sceneToLoad);
         if (newlyLoadedScene.IsValid()){
             SceneManager.SetActiveScene(newlyLoadedScene);
-        }   
-        UnloadScene(sceneToUnload);
-        yield return SceneFade(false);
+        }
+
+        if (!string.IsNullOrEmpty(sceneToUnload))
+        {
+            yield return SceneManager.UnloadSceneAsync(sceneToUnload);
+        }
+
+
+        yield return StartCoroutine(SceneFade(false));
 
         // reset the flag
         isLoadingScene = false;
