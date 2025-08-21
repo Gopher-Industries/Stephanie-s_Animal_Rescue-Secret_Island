@@ -169,21 +169,36 @@ public class StarInputManager : MonoBehaviour
     #region Utility Methods
 
     // Raycast for object under mouse
-    // supports both 3D and 2D colliders
-    // prioritises 3D as star node is 3D
-    // might break if we change to sprites
+    // prioritises nodes over edges
     private GameObject GetObjectUnderMouse()
     {
-        RaycastHit hit3D;
-        if (Physics.Raycast(gameCamera.ScreenPointToRay(Input.mousePosition), out hit3D))
+        RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(gameCamera.ScreenPointToRay(Input.mousePosition));
+
+        GameObject nodeHit = null;
+        GameObject edgeHit = null;
+
+        foreach (RaycastHit2D hit in hits)
         {
-            return hit3D.collider.gameObject;
+            if (hit.collider is CircleCollider2D && nodeHit == null)
+            {
+                nodeHit = hit.collider.gameObject;
+            }
+            else if (hit.collider is PolygonCollider2D && edgeHit == null)
+            {
+                edgeHit = hit.collider.gameObject;
+            }
         }
 
-        RaycastHit2D hit2D = Physics2D.GetRayIntersection(gameCamera.ScreenPointToRay(Input.mousePosition));
-        if (hit2D.collider != null)
+        // If player clicked node return it first 
+        if (nodeHit != null)
         {
-            return hit2D.collider.gameObject;
+            return nodeHit;
+        }
+        // Otherwise they must be deleting an edge
+        if (edgeHit != null)
+        {
+ 
+            return edgeHit;
         }
 
         return null;
