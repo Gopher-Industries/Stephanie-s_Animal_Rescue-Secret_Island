@@ -1,4 +1,5 @@
 ﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,8 +32,10 @@ public class NumberLinksLevel : MonoBehaviour
 
     private Dictionary<Vector2Int, int> cellToPairId;
 
-    void Start()
+    IEnumerator Start()
     {
+        yield return null;
+
         grid = new GridClass(gridWidth, gridHeight, cellWidth, cellHeight, gridOriginPosition, gridZPosition);
         grid.imageWidth = imageWidth;
         grid.imageHeight = imageHeight;
