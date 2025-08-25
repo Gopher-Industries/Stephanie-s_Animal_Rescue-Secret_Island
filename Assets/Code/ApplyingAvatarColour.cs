@@ -24,11 +24,11 @@ public class ApplyingAvatarColor : MonoBehaviour
         if (rend == null) return;
 
         rend.GetPropertyBlock(propBlock); 
-        // Toggle between the two colors for now as a prototype (just toggling between turning selected color on and off)
+        //Toggle between the two colors for now as a prototype (just toggling between turning selected color on and off)
         toggleColor = !toggleColor; 
-        // Seting new color
+        //Seting new color
         Color targetColor = toggleColor ? colorOn : colorOff; 
-        // Apply the new color
+        //Apply the new color
         propBlock.SetColor("_Color", targetColor); 
         rend.SetPropertyBlock(propBlock);
     }

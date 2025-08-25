@@ -13,6 +13,7 @@ TagManager:
   - Water
   - Teleporter1
   - CinemachineTarget
+  - ToCustomize
   - GrassGround
   - Wall
   - platform
