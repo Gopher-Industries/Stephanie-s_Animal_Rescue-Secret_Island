@@ -8,6 +8,39 @@ public class DemoScript : MonoBehaviour
     public void PickupItem(int id)
     {
         Debug.Log("Spawning an Item");
-        inventoryManager.AddItem(itemsToPickup[id]);
+        bool result = inventoryManager.AddItem(itemsToPickup[id]);
+        if (result==true)
+        {
+            Debug.Log("Item added");
+        } else
+        {
+            Debug.Log("Item NOT added");
+        }
+    }
+
+    public void GetSelectedItem()
+    {
+        Item recievedItem = inventoryManager.GetSelectedItem(false);
+        if (recievedItem != null)
+        {
+            Debug.Log("Item recieved");
+        }
+        else
+        {
+            Debug.Log("Can't recieve item");
+        }
+    }
+
+    public void UseSelectedItem()
+    {
+        Item recievedItem = inventoryManager.GetSelectedItem(true);
+        if (recievedItem != null)
+        {
+            Debug.Log("Item used");
+        }
+        else
+        {
+            Debug.Log("Can't use item");
+        }
     }
 }

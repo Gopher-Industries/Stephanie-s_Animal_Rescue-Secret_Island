@@ -9,14 +9,24 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     [Header("UI")]
     public Image image;
+    public Text countText;
 
     [HideInInspector] public Item item; // This will hold the item data, which should be set in the inspector or through code
+    [HideInInspector] public int count = 1;
     [HideInInspector] public Transform parentAfterDrag; // This will hold the parent transform after dragging
 
     public void InitialiseItem(Item newItem)
     {
         item = newItem; // Set the item data
         image.sprite = newItem.image;
+        RefreshCount();
+    }
+
+    public void RefreshCount()
+    {
+        countText.text = count.ToString();
+        bool textActive = count > 1;
+        countText.gameObject.SetActive(textActive);
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
