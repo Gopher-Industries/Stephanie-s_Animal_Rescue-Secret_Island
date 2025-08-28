@@ -9,6 +9,11 @@ public class AvatarManager : MonoBehaviour {
     private List<GameObject> headParts = new List<GameObject>();
     private int headCount = 0;
 
+
+    public Transform avatarHeadLocation;
+    private List<GameObject> avatarHeadParts = new List<GameObject>();
+    private int avatarHeadCount = 0;
+
     public Transform bodyLocation;
     private List<GameObject> bodyParts = new List<GameObject>();
     private int bodyCount = 0;
@@ -31,7 +36,8 @@ public class AvatarManager : MonoBehaviour {
 
     void Init(){
         GetAllSprites();
-        SetActiveHeadSprite();
+        InitialiseHair();
+        //SetActiveHeadSprite();
         SetActiveBodySprite();
         SetActiveFeetSprite();
         SetActiveAvatarSprite();
@@ -48,7 +54,11 @@ public class AvatarManager : MonoBehaviour {
             GameObject g = headLocation.GetChild(i).gameObject;
             headParts.Add(g);
         }
-        for(int j = 0; j < bodyLocation.childCount; j++){
+        for (int i = 0; i < avatarHeadLocation.childCount; i++){
+            GameObject g = avatarHeadLocation.GetChild(i).gameObject;
+            avatarHeadParts.Add(g);
+        }
+        for (int j = 0; j < bodyLocation.childCount; j++){
             GameObject g = bodyLocation.GetChild(j).gameObject;
             bodyParts.Add(g);
         }
@@ -68,17 +78,33 @@ public class AvatarManager : MonoBehaviour {
     #endregion
 
     #region SET CURRENT SPRITE
+    private void InitialiseHair(){
+        if (PlayerPrefs.HasKey("hairSelection")){
+            int hair = PlayerPrefs.GetInt("hairSelection");
+            headLocation.GetChild(hair).gameObject.SetActive(true);
+            headCount = hair;
+        }
+        else{
+            headLocation.GetChild(0).gameObject.SetActive(true);
+        }
+    }
     /// <summary>
     /// Sets sprite at the current count index to display,
     /// Turns off all other sprites.
     /// </summary>
-    private void SetActiveHeadSprite(){
-        for(int j = 0; j < headParts.Count; j++){
-            if(j == headCount){
+    private void SetActiveHeadSprite()
+    {
+        for (int j = 0; j < headParts.Count; j++)
+        {
+            if (j == headCount)
+            {
                 headParts[j].SetActive(true);
+                avatarHeadParts[j].SetActive(true);
+                PlayerPrefs.SetInt("hairSelection", j);
                 continue;
             }
             headParts[j].SetActive(false);
+            avatarHeadParts[j].SetActive(false);
         }
     }
 
@@ -130,12 +156,17 @@ public class AvatarManager : MonoBehaviour {
     /// <param name="count"></param>
     public void CycleHeadBTN(int count){
         headCount += count;
-
-        if(headCount >= headParts.Count){
+        
+        if (headCount >= headParts.Count)
+        {
             headCount = 0;
-        }else if(headCount <= -1){
-            headCount = headParts.Count -1;
         }
+        else if (headCount <= -1)
+        {
+            headCount = headParts.Count - 1;
+        }
+
+        avatarHeadCount = headCount;
 
         SetActiveHeadSprite();
     }

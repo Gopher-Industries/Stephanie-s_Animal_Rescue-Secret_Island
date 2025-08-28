@@ -3795,6 +3795,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 192928587328709047, guid: 212907312655a4443a025a304442c17c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1930730994869574111, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -4002,6 +4006,10 @@ PrefabInstance:
     - target: {fileID: 8047161636021232021, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_Name
       value: NestedParentCapsule_Unpack
+      objectReference: {fileID: 0}
+    - target: {fileID: 8284990506359655154, guid: 212907312655a4443a025a304442c17c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8769038803525259336, guid: 212907312655a4443a025a304442c17c, type: 3}
       propertyPath: m_LocalScale.x
