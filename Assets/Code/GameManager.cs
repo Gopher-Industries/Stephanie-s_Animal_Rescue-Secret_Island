@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour {
         
         while (async.progress < 0.9f){
             loadingBar.value = async.progress;
-            Debug.Log(async.progress * 100);
+            //Debug.Log(async.progress * 100);
             loadPercentText.text = (async.progress * 100).ToString("F0");
             yield return null;
         }
@@ -151,6 +151,5 @@ public class GameManager : MonoBehaviour {
             loadingScreenGroup.blocksRaycasts = false;
         }
     }
-        
         
 }

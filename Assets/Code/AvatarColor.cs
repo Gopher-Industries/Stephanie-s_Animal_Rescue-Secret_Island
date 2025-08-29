@@ -10,6 +10,7 @@ public class AvatarColorController : MonoBehaviour
     private MaterialPropertyBlock propBlock;
 
     public GameObject Object;
+    public GameObject demoHair;
 
     void Start()
     {
@@ -20,12 +21,14 @@ public class AvatarColorController : MonoBehaviour
     {
         Color targetColor;
         //Check for object (hair)
-        if (Object == null) return; 
+        if (Object == null) return;
         //Check for renderer component
         Renderer rend = Object.GetComponent<Renderer>();
+        Renderer rend2 = demoHair.GetComponent<Renderer>();
+
         if (rend == null) return;
         //Get the current material properties
-        rend.GetPropertyBlock(propBlock); 
+        rend.GetPropertyBlock(propBlock);
         if (Change)
         {
             //Set the color
@@ -37,8 +40,9 @@ public class AvatarColorController : MonoBehaviour
             targetColor = colorOff;
         }
         //Apply colour to object
-        propBlock.SetColor("_Color", targetColor); 
+        propBlock.SetColor("_Color", targetColor);
         rend.SetPropertyBlock(propBlock);
+        rend2.SetPropertyBlock(propBlock);
     }
 
     public void ChildRenderChange()
@@ -47,6 +51,8 @@ public class AvatarColorController : MonoBehaviour
         //Get all renderer component of parent object and its children
         Renderer[] renderers = Object.GetComponentsInChildren<Renderer>();
         if (renderers.Length == 0) return;
+
+        Renderer[] renderers2 = demoHair.GetComponentsInChildren<Renderer>();
 
         Color targetColor = Change ? colorOn : colorOff;
         //Loop through all objects in hierarchy (objects with renderer)
@@ -59,6 +65,17 @@ public class AvatarColorController : MonoBehaviour
                 rend.GetPropertyBlock(propBlock);
                 propBlock.SetColor("_Color", targetColor);
                 rend.SetPropertyBlock(propBlock);
+            }
+        }
+
+        foreach (Renderer rend2 in renderers2)
+        { 
+            if (rend2.gameObject.CompareTag("ToCustomize"))
+            {
+                //Get material property for rendere and change to updated colour
+                rend2.GetPropertyBlock(propBlock);
+                propBlock.SetColor("_Color", targetColor);
+                rend2.SetPropertyBlock(propBlock);
             }
         }
     }
