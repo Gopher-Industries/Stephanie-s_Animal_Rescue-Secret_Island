@@ -464,7 +464,8 @@ MonoBehaviour:
   Change: 0
   colorOn: {r: 1, g: 0, b: 0, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
-  Object: {fileID: 1689822303}
+  Object: {fileID: 1288453305}
+  demoHair: {fileID: 465282903}
 --- !u!65 &41560787
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -550,7 +551,7 @@ GameObject:
   - component: {fileID: 45509916}
   m_Layer: 0
   m_Name: HairDefault
-  m_TagString: Untagged
+  m_TagString: ToCustomize
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1290,7 +1291,8 @@ MonoBehaviour:
   Change: 1
   colorOn: {r: 0, g: 0, b: 0, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
-  Object: {fileID: 1689822303}
+  Object: {fileID: 1288453305}
+  demoHair: {fileID: 465282903}
 --- !u!65 &114893942
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2270,6 +2272,7 @@ MonoBehaviour:
   colorOn: {r: 1, g: 0, b: 0, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 1947127633}
+  demoHair: {fileID: 0}
 --- !u!65 &244591967
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4939,7 +4942,8 @@ MonoBehaviour:
   Change: 1
   colorOn: {r: 1, g: 0, b: 0.9294118, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
-  Object: {fileID: 1689822303}
+  Object: {fileID: 1288453305}
+  demoHair: {fileID: 465282903}
 --- !u!65 &606895750
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5916,6 +5920,7 @@ MonoBehaviour:
   colorOn: {r: 1, g: 0, b: 0, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 0}
+  demoHair: {fileID: 0}
 --- !u!65 &732572155
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6816,6 +6821,7 @@ MonoBehaviour:
   colorOn: {r: 0, g: 0.16470589, b: 1, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 650176008}
+  demoHair: {fileID: 0}
 --- !u!65 &797829172
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7627,7 +7633,7 @@ GameObject:
   - component: {fileID: 967671054}
   m_Layer: 0
   m_Name: Hair_4
-  m_TagString: Untagged
+  m_TagString: ToCustomize
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7710,7 +7716,7 @@ GameObject:
   - component: {fileID: 1014871299}
   m_Layer: 0
   m_Name: Hair_2
-  m_TagString: Untagged
+  m_TagString: ToCustomize
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7782,6 +7788,7 @@ MonoBehaviour:
   colorOn: {r: 0.007843138, g: 0.007843138, b: 0.007843138, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 650176008}
+  demoHair: {fileID: 0}
 --- !u!65 &1050379508
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7994,6 +8001,7 @@ MonoBehaviour:
   colorOn: {r: 0.007843138, g: 0.007843138, b: 0.007843138, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 1947127633}
+  demoHair: {fileID: 0}
 --- !u!65 &1088803658
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8241,6 +8249,7 @@ MonoBehaviour:
   colorOn: {r: 0.9921569, g: 0.007843138, b: 0.9843138, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 650176008}
+  demoHair: {fileID: 0}
 --- !u!65 &1100773743
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8540,6 +8549,7 @@ MonoBehaviour:
   colorOn: {r: 1, g: 0, b: 0, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 1947127633}
+  demoHair: {fileID: 0}
 --- !u!65 &1166277723
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8649,7 +8659,8 @@ MonoBehaviour:
   Change: 1
   colorOn: {r: 1, g: 0, b: 0, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
-  Object: {fileID: 465282903}
+  Object: {fileID: 1288453305}
+  demoHair: {fileID: 1455445723}
 --- !u!65 &1179229822
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9485,6 +9496,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 995140187}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1288453305 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7843323553935364897, guid: cfb50462964ec5e428049cb38c400ff1, type: 3}
+  m_PrefabInstance: {fileID: 6842165192909932577}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1313718784
 GameObject:
   m_ObjectHideFlags: 0
@@ -10445,7 +10461,7 @@ GameObject:
   - component: {fileID: 1455445724}
   m_Layer: 0
   m_Name: Hair_1
-  m_TagString: Untagged
+  m_TagString: ToCustomize
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10517,6 +10533,7 @@ MonoBehaviour:
   colorOn: {r: 0, g: 0.16470589, b: 1, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 1947127633}
+  demoHair: {fileID: 0}
 --- !u!65 &1465193894
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11148,6 +11165,7 @@ MonoBehaviour:
   colorOn: {r: 1, g: 0, b: 0, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 650176008}
+  demoHair: {fileID: 0}
 --- !u!65 &1609140143
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11406,6 +11424,7 @@ MonoBehaviour:
   colorOn: {r: 1, g: 0, b: 0.9921569, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 1947127633}
+  demoHair: {fileID: 0}
 --- !u!65 &1642164388
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11672,7 +11691,8 @@ MonoBehaviour:
   Change: 1
   colorOn: {r: 0, g: 0.03137255, b: 1, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
-  Object: {fileID: 1689822303}
+  Object: {fileID: 1288453305}
+  demoHair: {fileID: 465282903}
 --- !u!65 &1678218328
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11798,6 +11818,7 @@ MonoBehaviour:
   colorOn: {r: 1, g: 0, b: 0, a: 1}
   colorOff: {r: 1, g: 1, b: 1, a: 1}
   Object: {fileID: 650176008}
+  demoHair: {fileID: 0}
 --- !u!65 &1688260169
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13547,7 +13568,7 @@ GameObject:
   - component: {fileID: 1905114130}
   m_Layer: 0
   m_Name: Hair_3
-  m_TagString: Untagged
+  m_TagString: ToCustomize
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
