@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StarLevelGenerator : MonoBehaviour
 {
-    // Max number of stars per level (solution + filler stars)
+    // Max number of filler stars per level 
     private const int NUM_STARS = 15;
     // Max distance from center for star placement
     private const float RADIUS = 10f;
@@ -45,8 +45,9 @@ public class StarLevelGenerator : MonoBehaviour
         { 3, new() { (ShapeType.Square, false) } },
         { 4, new() { (ShapeType.Square, true) } },
         { 5, new() { (ShapeType.Triangle, false), (ShapeType.Square, false) } },
-        { 6, new() { (ShapeType.Triangle, true), (ShapeType.Square, true) } }
-        // Add more levels as needed
+        { 6, new() { (ShapeType.Triangle, true), (ShapeType.Square, true) } },
+        {7, new() { (ShapeType.Pentagon, false) } },
+        { 8, new() { (ShapeType.Hexagon, false) } }
          };
 
         // Triggers when game is out of levels
@@ -121,7 +122,7 @@ public class StarLevelGenerator : MonoBehaviour
     private void CreateFillerStars(Graph<StarData> graph, List<Node<StarData>> avoidNodes)
     {
         var avoidPositions = new List<Vector3>();
-        int numFillerStars = NUM_STARS - avoidNodes.Count;
+        int numFillerStars = NUM_STARS;
 
         foreach (var node in avoidNodes)
             avoidPositions.Add(node.position);

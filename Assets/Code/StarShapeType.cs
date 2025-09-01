@@ -1,7 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ShapeType { Square, Triangle}
+public enum ShapeType { 
+    Square, 
+    Triangle,
+    Pentagon,
+    Hexagon
+}
 
 [System.Serializable]
 public class StarShapeData
