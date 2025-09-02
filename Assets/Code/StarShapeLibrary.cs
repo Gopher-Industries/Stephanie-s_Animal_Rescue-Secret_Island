@@ -32,6 +32,38 @@ public static class ShapeLibrary
                     new Vector2(0.5f, -0.289f)  
                 }
             }
+        },
+        {
+            ShapeType.Pentagon,
+            new StarShapeData()
+            {
+                type = ShapeType.Pentagon,
+                normalisedVertices = new Vector2[]
+                {
+                    new Vector2( 0f,  0.851f),
+                    new Vector2( 0.809f,  0.263f),
+                    new Vector2( 0.5f, -0.688f),
+                    new Vector2(-0.5f, -0.688f),
+                    new Vector2(-0.809f,  0.263f)
+
+                }
+            }
+        },
+        {
+            ShapeType.Hexagon,
+            new StarShapeData()
+            {
+                type = ShapeType.Hexagon,
+                normalisedVertices = new Vector2[]
+                {
+                    new Vector2( 1f,  0),
+                    new Vector2( 0.5f,  0.866f),
+                    new Vector2(-0.5f,  0.866f),
+                    new Vector2(-1f,  0f),
+                    new Vector2(-0.5f, -0.866f),
+                    new Vector2( 0.5f, -0.866f)
+                }
+            }
         }
     };
 

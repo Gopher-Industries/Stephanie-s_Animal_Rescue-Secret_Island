@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class StarGameManager : MonoBehaviour
 {
@@ -9,37 +8,111 @@ public class StarGameManager : MonoBehaviour
     [SerializeField] private StarInputManager inputManager;
     [SerializeField] private StarUIManager uiManager;
 
-    private StarGameState gameState; 
+    private StarGameState gameState;
+    private GameState currentState;
 
+    private const int MAX_LEVELS = 8;
+
+    private enum GameState
+    {
+        None = 0,
+        GameInitialise,
+        Playing,
+        LevelComplete,
+        GameComplete
+    }
+
+#if UNITY_EDITOR
     private void Awake()
     {
+
         if (levelGenerator == null) Debug.LogError("Level Generator not assigned to Star Game Manager!");
         if (visualiser == null) Debug.LogError("Visualiser not assigned to Star Game Manager!");
         if (inputManager == null) Debug.LogError("Input Manager not assigned to Star Game Manager!");
         if (uiManager == null) Debug.LogError("UI Manager not assigned to Star Game Manager!");
-
-        InitializeGame();
     }
+#endif
 
-    private void InitializeGame()
+    private void Start()
     {
         gameState = new StarGameState();
-        StartNewLevel();
+        StateSet(GameState.GameInitialise);
     }
 
-    public void StartNewLevel()
+    private void Update()
+    {
+        if (currentState == GameState.Playing)
+        {
+            GameRun();
+        }
+    }
+
+    // This runs the initialisation logic for each state
+    private void StateSet(GameState newState)
+    {
+        if (currentState == newState) return;
+
+        currentState = newState;
+
+        switch (currentState)
+        {
+            case GameState.GameInitialise:
+                GameLevelInitialise();
+                break;
+            case GameState.Playing:
+                // No setup needed
+                break;
+            case GameState.LevelComplete:
+                GameLevelComplete(); 
+                break;
+            case GameState.GameComplete:
+                GameComplete();
+                break;
+        }
+    }
+
+
+    private void GameLevelInitialise()
     {
         visualiser.ClearVisuals();
         inputManager.ClearSelection();
-
-        // gives graph and solution edges to gamestate
         var (newGraph, solutionEdges) = levelGenerator.GenerateLevel(gameState.CurrentLevel);
         gameState.Initialize(newGraph, solutionEdges);
         visualiser.VisualizeGraph(newGraph);
         //uiManager.ShowPreview(GetShapeForLevel(gameState.CurrentLevel));
 
         Debug.Log($"Started Level {gameState.CurrentLevel}");
+        StateSet(GameState.Playing);
     }
+
+    // This runs every frame
+    private void GameRun()
+    {
+        inputManager.HandleInput();
+
+        if (gameState.isSolutionValid)
+        {
+            if (gameState.CurrentLevel == MAX_LEVELS)
+            {
+                StateSet(GameState.GameComplete);
+            }
+            else
+            {
+                StateSet(GameState.LevelComplete);
+            }
+        }
+    }
+
+    private void GameLevelComplete()
+    {
+        uiManager.LevelCompleteShow(gameState.CurrentLevel);
+    }
+
+    private void GameComplete()
+    {
+        uiManager.ShowGameCompleteScreen();
+    }
+
 
     private ShapeType GetShapeForLevel(int level)
     {
@@ -57,35 +130,16 @@ public class StarGameManager : MonoBehaviour
                 return ShapeType.Triangle;
         }
     }
-    
-    // delay level transition by 1 frame to prevent node colour state updates during the transation
-    // potentially fixed when there is a transition/reward between each level.
-    private void ValidateCurrentLevel()
+
+    public void TransitionLevel()
     {
-        if (gameState.isSolutionValid)
-        {
-            Debug.Log($"Level {gameState.CurrentLevel} Complete!");
-
-            foreach (var node in gameState.solutionNodes)
-            {
-                UpdateNodeVisualState(node.id);
-            }
-
-
-            StartCoroutine(TransitionLevel());
-        }
-    }
-
-    private IEnumerator TransitionLevel()
-    {
-        yield return null; 
-
         inputManager.ClearSelection();
         visualiser.ClearVisuals();
         //uiManager.HidePreview();
+        uiManager.LevelCompleteHide();
 
         gameState.AdvanceLevel();
-        StartNewLevel();
+        StateSet(GameState.GameInitialise);
     }
 
     public void CreateConnection(int nodeAId, int nodeBId)
@@ -102,7 +156,6 @@ public class StarGameManager : MonoBehaviour
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
             gameState.ValidateSolution();
-            ValidateCurrentLevel();
         }
     }
 
@@ -117,7 +170,6 @@ public class StarGameManager : MonoBehaviour
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
             gameState.ValidateSolution();
-            ValidateCurrentLevel();
         }
 
     }

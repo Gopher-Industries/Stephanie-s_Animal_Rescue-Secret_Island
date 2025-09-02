@@ -17,12 +17,7 @@ public class StarInputManager : MonoBehaviour
         if (gameManager == null) Debug.LogError("Game Manager not assigned to Star Input Manager!");
     }
 
-    private void Update()
-    {
-        HandleInput();
-    }
-
-    private void HandleInput()
+    public void HandleInput()
     {
         if (Input.GetMouseButtonDown(0))
         {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 
 public class StarGraphVisualiser : MonoBehaviour
 {
@@ -11,7 +10,7 @@ public class StarGraphVisualiser : MonoBehaviour
 
     private Color lineColor = Color.yellow;
 
-    private const float LINE_WIDTH = 0.25f;
+    private const float LINE_WIDTH = 0.2f;
 
     // Maps a nodes Id to their visual representation in the scene
     public Dictionary<int, StarNodeVisual> nodeVisualDict = new Dictionary<int, StarNodeVisual>();
