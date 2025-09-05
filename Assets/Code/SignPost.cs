@@ -1,13 +1,21 @@
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class SignPost : MonoBehaviour{
-    public string sceneName;
+public class SignPost : MonoBehaviour
+{
+    private string sceneName;
+
+    private void Start() 
+    {
+        // get current scene on load
+        sceneName = gameObject.scene.name;
+    }
 
     public void TravelTo(string sceneToLoad)
     {
-        //GameManager.Instance.LoadNewScene(sceneToLoad);
-        //GameManager.Instance.UnloadScene("WorldHub");
-        GameManager.Instance.LoadSceneWithFade(sceneToLoad, "WorldHub");
+        if (sceneToLoad != sceneName)
+        {
+            GameManager.Instance.LoadSceneWithFade(sceneToLoad, sceneName);
+        }
     }
 }

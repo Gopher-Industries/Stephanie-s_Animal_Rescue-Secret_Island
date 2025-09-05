@@ -3,13 +3,14 @@ using UnityEngine;
 public class AvatarColorController : MonoBehaviour
 {
     [Header("Color Settings")]
-    public bool toggleColor = false;
+    public bool Change = false;
     public Color colorOn = Color.red;
     public Color colorOff = Color.white;
 
     private MaterialPropertyBlock propBlock;
 
     public GameObject Object;
+    public GameObject demoHair;
 
     void Start()
     {
@@ -18,16 +19,64 @@ public class AvatarColorController : MonoBehaviour
 
     public void ToggleAndApplyColor()
     {
-        if (Object == null) return;  // Ensure hairObject is assigned
-
+        Color targetColor;
+        //Check for object (hair)
+        if (Object == null) return;
+        //Check for renderer component
         Renderer rend = Object.GetComponent<Renderer>();
-        if (rend == null) return;  // Ensure it has a Renderer
+        Renderer rend2 = demoHair.GetComponent<Renderer>();
 
-        rend.GetPropertyBlock(propBlock);  // Get the current material properties
-        toggleColor = !toggleColor;  // Toggle between the two colors
+        if (rend == null) return;
+        //Get the current material properties
+        rend.GetPropertyBlock(propBlock);
+        if (Change)
+        {
+            //Set the color
+            targetColor = colorOn;
+        }
+        else
+        {
+            //reverse to second colour option (white for default)
+            targetColor = colorOff;
+        }
+        //Apply colour to object
+        propBlock.SetColor("_Color", targetColor);
+        rend.SetPropertyBlock(propBlock);
+        rend2.SetPropertyBlock(propBlock);
+    }
 
-        Color targetColor = toggleColor ? colorOn : colorOff;  // Set the color
-        propBlock.SetColor("_Color", targetColor);  // Apply the new color
-        rend.SetPropertyBlock(propBlock);  // Set the updated material properties
+    public void ChildRenderChange()
+    {
+        if (Object == null) return;
+        //Get all renderer component of parent object and its children
+        Renderer[] renderers = Object.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0) return;
+
+        Renderer[] renderers2 = demoHair.GetComponentsInChildren<Renderer>();
+
+        Color targetColor = Change ? colorOn : colorOff;
+        //Loop through all objects in hierarchy (objects with renderer)
+        foreach (Renderer rend in renderers)
+        {
+            //Only apply colour to children with "ToCustomize" tag
+            if (rend.gameObject.CompareTag("ToCustomize"))
+            {
+                //Get material property for rendere and change to updated colour
+                rend.GetPropertyBlock(propBlock);
+                propBlock.SetColor("_Color", targetColor);
+                rend.SetPropertyBlock(propBlock);
+            }
+        }
+
+        foreach (Renderer rend2 in renderers2)
+        { 
+            if (rend2.gameObject.CompareTag("ToCustomize"))
+            {
+                //Get material property for rendere and change to updated colour
+                rend2.GetPropertyBlock(propBlock);
+                propBlock.SetColor("_Color", targetColor);
+                rend2.SetPropertyBlock(propBlock);
+            }
+        }
     }
 }

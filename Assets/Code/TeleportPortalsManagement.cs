@@ -31,7 +31,7 @@ public class TeleportPortalsManagement : MonoBehaviour
             {
                 portal.manager = this;
                 portals.Add(portal);
-                Debug.Log("Found portal: " + portal.portalName);
+                //Debug.Log("Found portal: " + portal.portalName);
             }
         }
 

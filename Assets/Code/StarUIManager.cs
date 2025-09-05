@@ -9,6 +9,13 @@ public class StarUIManager : MonoBehaviour
     [SerializeField] private Canvas worldSpaceCanvas;
     [SerializeField] private TextMeshProUGUI shapeLabel;
 
+    [Header("Level Complete Panel")]
+    [SerializeField] private GameObject levelCompletePanel;
+    [SerializeField] private TextMeshProUGUI levelCompleteText;
+
+    [Header("Game Over Panel")]
+    [SerializeField] private GameObject gameCompletePanel;
+
     private Vector2 previewAnchor = new Vector2(-21.5f, -9f);
     private Color lineColor = Color.yellow;
     private Color cubeColor = Color.yellow;
@@ -123,4 +130,34 @@ public class StarUIManager : MonoBehaviour
     {
         ClearPreviousPreview();
     }
+
+    public void LevelCompleteShow(int level)
+    {
+        if (levelCompletePanel != null)
+        {
+            levelCompletePanel.SetActive(true);
+            if (levelCompleteText != null)
+            {
+                levelCompleteText.text = $"Level {level} Complete!";
+            }
+        }
+    }
+
+    public void LevelCompleteHide()
+    {
+        if (levelCompletePanel != null)
+        {
+            levelCompletePanel.SetActive(false);
+        }
+    }
+
+    public void ShowGameCompleteScreen()
+    {
+        if (gameCompletePanel != null)
+        {
+            gameCompletePanel.SetActive(true);
+        }
+    }
+
+
 }

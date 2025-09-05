@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour {
     public float fadeTime = 1.0f;
     public TextMeshProUGUI loadPercentText;
 
+    private bool isLoadingScene = false;
+
     void Awake(){
         if(Instance != null && Instance != this){
             Destroy(this);
@@ -72,27 +74,35 @@ public class GameManager : MonoBehaviour {
 
     public void LoadSceneWithFade(string sceneToLoad, string sceneToUnload)
     {
+        if (isLoadingScene)
+        {
+            return;
+        }
+
+        // lock the coroutine until it completes
+        isLoadingScene = true;
         StartCoroutine(LoadSceneWithFadeRoutine(sceneToLoad, sceneToUnload));
     }
 
     IEnumerator LoadSceneWithFadeRoutine(string sceneToLoad, string sceneToUnload){
         loadingBar.value = 0f;
-        yield return SceneFade(true);
-        
+        yield return StartCoroutine(SceneFade(true));
+
         AsyncOperation async = SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
         async.allowSceneActivation = false;
         
         while (async.progress < 0.9f){
             loadingBar.value = async.progress;
-            Debug.Log(async.progress * 100);
+            //Debug.Log(async.progress * 100);
             loadPercentText.text = (async.progress * 100).ToString("F0");
             yield return null;
         }
 
         // Wait 0.2s to finish bar fill
         // This is a fake wait time.
-        yield return new WaitForSeconds(0.2f);
         loadingBar.value = 1f;
+        loadPercentText.text = "100";
+        yield return new WaitForSeconds(0.2f);
 
         async.allowSceneActivation = true;
         yield return new WaitUntil(() => async.isDone);
@@ -101,9 +111,18 @@ public class GameManager : MonoBehaviour {
         Scene newlyLoadedScene = SceneManager.GetSceneByName(sceneToLoad);
         if (newlyLoadedScene.IsValid()){
             SceneManager.SetActiveScene(newlyLoadedScene);
-        }   
-        UnloadScene(sceneToUnload);
-        yield return SceneFade(false);
+        }
+
+        if (!string.IsNullOrEmpty(sceneToUnload))
+        {
+            yield return SceneManager.UnloadSceneAsync(sceneToUnload);
+        }
+
+
+        yield return StartCoroutine(SceneFade(false));
+
+        // reset the flag
+        isLoadingScene = false;
     }
 
 
@@ -132,6 +151,5 @@ public class GameManager : MonoBehaviour {
             loadingScreenGroup.blocksRaycasts = false;
         }
     }
-        
         
 }
