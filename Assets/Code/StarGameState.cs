@@ -31,8 +31,6 @@ public class StarGameState
         solutionEdges.Clear();
         currentGraph = graph;
 
-        solutionEdges.Clear();
-
         foreach (var edge in edges)
         {
             int smallEdge = Mathf.Min(edge.Item1, edge.Item2);

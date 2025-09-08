@@ -18,6 +18,7 @@ public class StarGameManager : MonoBehaviour
         None = 0,
         GameInitialise,
         Playing,
+        ShowPreview,
         LevelComplete,
         GameComplete
     }
@@ -25,7 +26,6 @@ public class StarGameManager : MonoBehaviour
 #if UNITY_EDITOR
     private void Awake()
     {
-
         if (levelGenerator == null) Debug.LogError("Level Generator not assigned to Star Game Manager!");
         if (visualiser == null) Debug.LogError("Visualiser not assigned to Star Game Manager!");
         if (inputManager == null) Debug.LogError("Input Manager not assigned to Star Game Manager!");
@@ -60,7 +60,7 @@ public class StarGameManager : MonoBehaviour
                 GameLevelInitialise();
                 break;
             case GameState.Playing:
-                // No setup needed
+                // No setup needed handled in update
                 break;
             case GameState.LevelComplete:
                 GameLevelComplete(); 
@@ -76,13 +76,15 @@ public class StarGameManager : MonoBehaviour
     {
         visualiser.ClearVisuals();
         inputManager.ClearSelection();
-        var (newGraph, solutionEdges) = levelGenerator.GenerateLevel(gameState.CurrentLevel);
+        var (newGraph, solutionEdges, shapes) = levelGenerator.GenerateLevel(gameState.CurrentLevel);
         gameState.Initialize(newGraph, solutionEdges);
         visualiser.VisualizeGraph(newGraph);
-        //uiManager.ShowPreview(GetShapeForLevel(gameState.CurrentLevel));
+        uiManager.DisplayShapePreviews(shapes);
+        uiManager.SetPreviewButtonVisibility(true);
 
         Debug.Log($"Started Level {gameState.CurrentLevel}");
         StateSet(GameState.Playing);
+
     }
 
     // This runs every frame
@@ -103,40 +105,38 @@ public class StarGameManager : MonoBehaviour
         }
     }
 
+    public void TogglePreviewState()
+    {
+        if (currentState == GameState.Playing)
+        {
+            StateSet(GameState.ShowPreview);
+            uiManager.ToggleShapePreview();
+        }
+        else if (currentState == GameState.ShowPreview)
+        {
+            StateSet(GameState.Playing);
+            uiManager.ToggleShapePreview();
+        }
+    }
+
     private void GameLevelComplete()
     {
         uiManager.LevelCompleteShow(gameState.CurrentLevel);
+        uiManager.SetPreviewButtonVisibility(false);
     }
 
     private void GameComplete()
     {
         uiManager.ShowGameCompleteScreen();
-    }
-
-
-    private ShapeType GetShapeForLevel(int level)
-    {
-        switch(level)
-        {
-            case 1:
-                return ShapeType.Triangle;
-            case 2:
-                return ShapeType.Triangle;
-            case 3:
-                return ShapeType.Square;
-            case 4:
-                return ShapeType.Square;
-            default:
-                return ShapeType.Triangle;
-        }
+        uiManager.SetPreviewButtonVisibility(false);
     }
 
     public void TransitionLevel()
     {
         inputManager.ClearSelection();
         visualiser.ClearVisuals();
-        //uiManager.HidePreview();
         uiManager.LevelCompleteHide();
+        uiManager.SetPreviewButtonVisibility(false);
 
         gameState.AdvanceLevel();
         StateSet(GameState.GameInitialise);

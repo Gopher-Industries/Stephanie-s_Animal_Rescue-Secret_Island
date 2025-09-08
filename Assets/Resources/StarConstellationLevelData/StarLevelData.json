@@ -1,0 +1,84 @@
+{
+  "levels": [
+    {
+      "levelNumber": 1,
+      "shapes": [
+        {
+          "shapeType": "Triangle",
+          "rotated": false
+        }
+      ]
+    },
+    {
+      "levelNumber": 2,
+      "shapes": [
+        {
+          "shapeType": "Triangle",
+          "rotated": true
+        }
+      ]
+    },
+    {
+      "levelNumber": 3,
+      "shapes": [
+        {
+          "shapeType": "Square",
+          "rotated": false
+        }
+      ]
+    },
+    {
+      "levelNumber": 4,
+      "shapes": [
+        {
+          "shapeType": "Square",
+          "rotated": true
+        }
+      ]
+    },
+    {
+      "levelNumber": 5,
+      "shapes": [
+        {
+          "shapeType": "Triangle",
+          "rotated": false
+        },
+        {
+          "shapeType": "Square",
+          "rotated": false
+        }
+      ]
+    },
+    {
+      "levelNumber": 6,
+      "shapes": [
+        {
+          "shapeType": "Triangle",
+          "rotated": true
+        },
+        {
+          "shapeType": "Square",
+          "rotated": true
+        }
+      ]
+    },
+    {
+      "levelNumber": 7,
+      "shapes": [
+        {
+          "shapeType": "Pentagon",
+          "rotated": false
+        }
+      ]
+    },
+    {
+      "levelNumber": 8,
+      "shapes": [
+        {
+          "shapeType": "Hexagon",
+          "rotated": false
+        }
+      ]
+    }
+  ]
+}
