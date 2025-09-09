@@ -27,9 +27,9 @@ public static class ShapeLibrary
                 type = ShapeType.Triangle,
                 normalisedVertices = new Vector2[]
                 {
-                    new Vector2(0f, 0.577f),    
-                    new Vector2(-0.5f, -0.289f),
-                    new Vector2(0.5f, -0.289f)  
+                    new Vector2(0f, 0.5f),
+                    new Vector2(-0.577f, -0.5f),
+                    new Vector2(0.577f, -0.5f)
                 }
             }
         },
