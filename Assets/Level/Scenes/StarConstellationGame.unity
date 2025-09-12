@@ -214,6 +214,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 824701287}
+        m_TargetAssemblyTypeName: StarAudioManager, Assembly-CSharp
+        m_MethodName: PlayButtonClickedSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8829733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,7 +354,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -790,6 +802,7 @@ MonoBehaviour:
   visualiser: {fileID: 859162637}
   inputManager: {fileID: 1812004396}
   uiManager: {fileID: 584767002}
+  audioManager: {fileID: 824701287}
 --- !u!1 &584767000
 GameObject:
   m_ObjectHideFlags: 0
@@ -951,6 +964,56 @@ Transform:
   - {fileID: 967728137}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &824701285
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 824701286}
+  - component: {fileID: 824701287}
+  m_Layer: 0
+  m_Name: StarAudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &824701286
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824701285}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 952.9532, y: 631.3108, z: 4.7834587}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1623594841}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &824701287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824701285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5530188b62b15294a9ff923b65acd4e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  starConstellationMusic: {fileID: 8300000, guid: cfea806367ee6d64d9f41816b6d48feb, type: 3}
+  nodeClickedSFX: {fileID: 8300000, guid: 8b0c5f90d1daa7f4c9e4b36800f33360, type: 3}
+  connectionSFX: {fileID: 8300000, guid: 0a41a68b08fd7fe4694e7516acdacbbc, type: 3}
+  disconnectionSFX: {fileID: 8300000, guid: 5f5775a1823f09d4e93f1fe172e4c67c, type: 3}
+  levelCompleteSFX: {fileID: 8300000, guid: d6945231be24c7240a281458fc849e1f, type: 3}
+  buttonSFX: {fileID: 8300000, guid: c5230b845c1250e4fb641b743c1cbac7, type: 3}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1168,9 +1231,9 @@ RectTransform:
   - {fileID: 124575499}
   m_Father: {fileID: 967728137}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.13800001, y: 0.15323596}
-  m_AnchorMax: {x: 0.13800001, y: 0.15323596}
-  m_AnchoredPosition: {x: 1, y: 0}
+  m_AnchorMin: {x: 0.1473314, y: 0.14673857}
+  m_AnchorMax: {x: 0.1473314, y: 0.14673857}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012014525
@@ -1220,6 +1283,18 @@ MonoBehaviour:
       - m_Target: {fileID: 527333978}
         m_TargetAssemblyTypeName: StarGameManager, Assembly-CSharp
         m_MethodName: TogglePreviewState
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 824701287}
+        m_TargetAssemblyTypeName: StarAudioManager, Assembly-CSharp
+        m_MethodName: PlayButtonClickedSFX
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1353,6 +1428,18 @@ MonoBehaviour:
       - m_Target: {fileID: 527333978}
         m_TargetAssemblyTypeName: StarGameManager, Assembly-CSharp
         m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 824701287}
+        m_TargetAssemblyTypeName: StarAudioManager, Assembly-CSharp
+        m_MethodName: PlayButtonClickedSFX
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1625,6 +1712,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1246181979}
   m_CullTransparentMesh: 1
+--- !u!1001 &1307314316
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3737520032635173945, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314769018566417943, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3e656ce859a5d444ca6e3b088c090da8, type: 3}
 --- !u!1 &1377863549
 GameObject:
   m_ObjectHideFlags: 0
@@ -1868,6 +2012,7 @@ Transform:
   - {fileID: 859162636}
   - {fileID: 469839757}
   - {fileID: 584767001}
+  - {fileID: 824701286}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1667204505
@@ -1971,6 +2116,7 @@ MonoBehaviour:
   gameCamera: {fileID: 330585545}
   graphVisualiser: {fileID: 859162637}
   gameManager: {fileID: 527333978}
+  audioManager: {fileID: 824701287}
 --- !u!4 &1812004397
 Transform:
   m_ObjectHideFlags: 0
@@ -2216,7 +2362,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2343,6 +2489,7 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1307314316}
   - {fileID: 1623594841}
   - {fileID: 819642621}
   - {fileID: 330585546}
