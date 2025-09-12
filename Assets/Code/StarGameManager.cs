@@ -7,6 +7,7 @@ public class StarGameManager : MonoBehaviour
     [SerializeField] private StarGraphVisualiser visualiser;
     [SerializeField] private StarInputManager inputManager;
     [SerializeField] private StarUIManager uiManager;
+    [SerializeField] private StarAudioManager audioManager;
 
     private StarGameState gameState;
     private GameState currentState;
@@ -123,12 +124,14 @@ public class StarGameManager : MonoBehaviour
     {
         uiManager.LevelCompleteShow(gameState.CurrentLevel);
         uiManager.SetPreviewButtonVisibility(false);
+        audioManager.PlayLevelCompleteSFX();
     }
 
     private void GameComplete()
     {
         uiManager.ShowGameCompleteScreen();
         uiManager.SetPreviewButtonVisibility(false);
+        audioManager.PlayLevelCompleteSFX();
     }
 
     public void TransitionLevel()
@@ -152,7 +155,7 @@ public class StarGameManager : MonoBehaviour
             StarEdgeVisual edge = visualiser.DrawEdge(nodeA, nodeB);
             if (edge == null) return;
             UpdateEdgeVisualState(edge, nodeAId, nodeBId);
-
+            audioManager.PlayConnectionSFX();
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
             gameState.ValidateSolution();
@@ -167,6 +170,7 @@ public class StarGameManager : MonoBehaviour
         if (gameState.TryRemoveConnection(nodeAId, nodeBId))
         {
             visualiser.RemoveEdge(nodeA, nodeB);
+            audioManager.PlayDisconnectionSFX();
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
             gameState.ValidateSolution();

@@ -6,6 +6,7 @@ public class StarInputManager : MonoBehaviour
     [SerializeField] private Camera gameCamera;
     [SerializeField] private StarGraphVisualiser graphVisualiser;
     [SerializeField] private StarGameManager gameManager;
+    [SerializeField] private StarAudioManager audioManager;
 
     private Node<StarData> startNode = null;
     private bool isDragging = false;
@@ -95,6 +96,7 @@ public class StarInputManager : MonoBehaviour
 
         if (graphVisualiser.nodeVisualDict.TryGetValue(node.id, out var visual))
         {
+            audioManager.PlayNodeClickedSFX();
             visual.SetHighlightedState(true);
         }
 
