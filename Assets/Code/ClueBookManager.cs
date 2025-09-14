@@ -1,17 +1,17 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 [System.Serializable]
 public struct Clue
 {
-    // One spread per element
-    public string leftTitle;        // e.g., "Clues"
-    public string[] clueLines;      // e.g., {"It hovers", "It's tiny", ...}
-
-    public string rightTitle;       // e.g., "Multiple Choice Answers"
-    public string[] options;        // up to 3 options shown as buttons
-    public int correctIndex;        // 0..(options.Length-1) = correct; -1 = no quiz on this spread
+    public string leftTitle;
+    public string[] clueLines;
+    public string rightTitle;
+    public string[] options;
+    public int correctIndex;
+    [TextArea] public string[] wrongFeedback;
+    public Sprite revealSprite;
 }
 
 public class ClueBookManager : MonoBehaviour
@@ -31,7 +31,6 @@ public class ClueBookManager : MonoBehaviour
     public Button answerButton2;
     public Button answerButton3;
 
-    // Optional: assign these if you like; if left null we auto-find the TMP_Text inside each button.
     public TMP_Text answerText1;
     public TMP_Text answerText2;
     public TMP_Text answerText3;
@@ -43,9 +42,14 @@ public class ClueBookManager : MonoBehaviour
     public bool autoAdvanceOnCorrect = true;
     public float advanceDelay = 0.35f;
 
+    [Header("Feedback & Reveal")]
+    public TMP_Text feedbackText;
+    public Image revealImage;
+    public bool hideRevealOnPageChange = true;
+
     private int currentPage = 0;
     private bool isOpen = false;
-    private bool[] solved; // which pages already answered correctly
+    private bool[] solved;
 
     void Awake()
     {
@@ -59,11 +63,13 @@ public class ClueBookManager : MonoBehaviour
         UpdateCluePages();
     }
 
-    // ----- Open / Close / Toggle -----
     public void OpenClueBook()
     {
         currentPage = 0;
         SetPanelVisible(true);
+        if (clues != null) solved = new bool[clues.Length];
+        if (revealImage) revealImage.gameObject.SetActive(false);
+        if (feedbackText) { feedbackText.text = ""; feedbackText.gameObject.SetActive(true); }
         UpdateCluePages();
     }
 
@@ -82,18 +88,11 @@ public class ClueBookManager : MonoBehaviour
     private void SetPanelVisible(bool visible)
     {
         isOpen = visible;
-
-        if (cluePanel != null)
-            cluePanel.SetActive(visible);
-
-        if (openClueBookButton != null)
-            openClueBookButton.gameObject.SetActive(!visible);
-
-        if (closeClueBookButton != null)
-            closeClueBookButton.gameObject.SetActive(visible);
+        if (cluePanel != null) cluePanel.SetActive(visible);
+        if (openClueBookButton != null) openClueBookButton.gameObject.SetActive(!visible);
+        if (closeClueBookButton != null) closeClueBookButton.gameObject.SetActive(visible);
     }
 
-    // ----- Paging: one Clue = one spread -----
     public void NextPage()
     {
         if (clues == null || clues.Length == 0) return;
@@ -114,7 +113,6 @@ public class ClueBookManager : MonoBehaviour
         }
     }
 
-    // ----- Render current spread -----
     void UpdateCluePages()
     {
         if (clues == null || clues.Length == 0)
@@ -125,51 +123,43 @@ public class ClueBookManager : MonoBehaviour
             if (previousPageButton) previousPageButton.gameObject.SetActive(false);
             if (nextPageButton) nextPageButton.gameObject.SetActive(false);
             SetAnswerButtonsActive(false, 0);
+            if (feedbackText) { feedbackText.text = ""; feedbackText.gameObject.SetActive(true); }
+            if (revealImage) revealImage.gameObject.SetActive(false);
             return;
         }
 
-        // Keep solved[] in sync with clues length (in case changed at runtime)
         if (solved == null || solved.Length != clues.Length)
             solved = new bool[clues.Length];
 
         var page = clues[Mathf.Clamp(currentPage, 0, clues.Length - 1)];
 
-        // Left page
+        if (leftPageTitle) leftPageTitle.gameObject.SetActive(true);
+        if (leftPageContent) leftPageContent.gameObject.SetActive(true);
+        if (rightPageTitle) rightPageTitle.gameObject.SetActive(true);
+
         SetText(leftPageTitle, string.IsNullOrEmpty(page.leftTitle) ? "Clues" : page.leftTitle);
         SetText(leftPageContent, BuildNumberedList(page.clueLines));
-
-        // Right title
         SetText(rightPageTitle, string.IsNullOrEmpty(page.rightTitle) ? "Multiple Choice Answers" : page.rightTitle);
 
-        // Quiz detection
+        if (feedbackText) { feedbackText.text = ""; feedbackText.gameObject.SetActive(true); }
+        if (revealImage && hideRevealOnPageChange) revealImage.gameObject.SetActive(false);
+
         int optCount = (page.options != null) ? Mathf.Min(page.options.Length, 3) : 0;
         bool hasQuiz = optCount > 0 && page.correctIndex >= 0 && page.correctIndex < optCount;
 
-        if (hasQuiz)
-        {
-            SetupAnswerButtons(page, optCount); // labels + click handlers
-        }
-        else
-        {
-            // No quiz: hide buttons
-            SetAnswerButtonsActive(false, 0);
-        }
+        if (hasQuiz) SetupAnswerButtons(page, optCount);
+        else SetAnswerButtonsActive(false, 0);
 
-        // Nav buttons
         if (previousPageButton) previousPageButton.gameObject.SetActive(currentPage > 0);
-
         if (nextPageButton)
         {
             nextPageButton.gameObject.SetActive(currentPage < clues.Length - 1);
-            // If there is a quiz, lock Next until solved; otherwise allow Next
             nextPageButton.interactable = (!hasQuiz) || solved[currentPage];
         }
     }
 
-    // ----- Build the 3 answer buttons -----
     void SetupAnswerButtons(Clue page, int count)
     {
-        // Buttons must exist; texts can be auto-found.
         bool buttonsPresent = answerButton1 && answerButton2 && answerButton3;
         SetAnswerButtonsActive(buttonsPresent, count);
         if (!buttonsPresent) return;
@@ -182,7 +172,6 @@ public class ClueBookManager : MonoBehaviour
         SetText(t2, count > 1 ? page.options[1] : "");
         SetText(t3, count > 2 ? page.options[2] : "");
 
-        // Reset visuals / interactability
         ResetButtonVisual(answerButton1);
         ResetButtonVisual(answerButton2);
         ResetButtonVisual(answerButton3);
@@ -192,12 +181,10 @@ public class ClueBookManager : MonoBehaviour
         answerButton2.interactable = !alreadySolved && count > 1;
         answerButton3.interactable = !alreadySolved && count > 2;
 
-        // Clear old listeners
         answerButton1.onClick.RemoveAllListeners();
         answerButton2.onClick.RemoveAllListeners();
         answerButton3.onClick.RemoveAllListeners();
 
-        // Wire new listeners (only for active buttons)
         if (count > 0) answerButton1.onClick.AddListener(() => OnAnswerClicked(0, page.correctIndex, answerButton1));
         if (count > 1) answerButton2.onClick.AddListener(() => OnAnswerClicked(1, page.correctIndex, answerButton2));
         if (count > 2) answerButton3.onClick.AddListener(() => OnAnswerClicked(2, page.correctIndex, answerButton3));
@@ -207,36 +194,62 @@ public class ClueBookManager : MonoBehaviour
     {
         bool isCorrect = (clickedIndex == correctIndex);
 
-        // Simple color feedback (optional)
         var img = clickedButton ? clickedButton.GetComponent<Image>() : null;
-        if (img != null) img.color = isCorrect ? new Color(0.75f, 1f, 0.75f) : new Color(1f, 0.75f, 0.75f);
+        if (img != null)
+            img.color = isCorrect ? new Color(0.75f, 1f, 0.75f)
+                                  : new Color(1f, 0.75f, 0.75f);
+
+        var page = (clues != null && currentPage >= 0 && currentPage < clues.Length) ? clues[currentPage] : default;
 
         if (isCorrect)
         {
             solved[currentPage] = true;
 
-            // Unlock Next
+            if (feedbackText) { feedbackText.text = ""; feedbackText.gameObject.SetActive(false); }
+            if (leftPageTitle) leftPageTitle.gameObject.SetActive(false);
+            if (leftPageContent) leftPageContent.gameObject.SetActive(false);
+            if (rightPageTitle) rightPageTitle.gameObject.SetActive(false);
+            SetAnswerButtonsActive(false, 0);
+
+            if (revealImage && page.revealSprite != null)
+            {
+                revealImage.sprite = page.revealSprite;
+                revealImage.type = Image.Type.Simple;
+                revealImage.preserveAspect = true;
+                revealImage.gameObject.SetActive(true);
+            }
+
             if (nextPageButton)
             {
                 nextPageButton.interactable = true;
                 nextPageButton.gameObject.SetActive(currentPage < clues.Length - 1);
             }
 
-            // Lock all answer buttons so the choice is final
             SetButtonsInteractable(false);
 
-            // Auto-advance to the next spread if enabled
             if (autoAdvanceOnCorrect && currentPage < clues.Length - 1)
                 Invoke(nameof(NextPage), advanceDelay);
         }
         else
         {
-            // Optional: disable the clicked wrong button so they can't spam it
-            // clickedButton.interactable = false;
+            string reason = null;
+            if (page.wrongFeedback != null &&
+                clickedIndex >= 0 &&
+                clickedIndex < page.wrongFeedback.Length &&
+                !string.IsNullOrWhiteSpace(page.wrongFeedback[clickedIndex]))
+            {
+                reason = page.wrongFeedback[clickedIndex];
+            }
+            else
+            {
+                string optText = (page.options != null && clickedIndex < page.options.Length) ? page.options[clickedIndex] : "That";
+                reason = "Oops! " + optText + " isn’t correct.";
+            }
+
+            if (feedbackText) { feedbackText.gameObject.SetActive(true); feedbackText.text = reason; }
         }
     }
 
-    // ----- Utilities -----
     void SetButtonsInteractable(bool interactable)
     {
         if (answerButton1 && answerButton1.gameObject.activeSelf) answerButton1.interactable = interactable;
@@ -258,10 +271,7 @@ public class ClueBookManager : MonoBehaviour
         if (answerButton3) answerButton3.gameObject.SetActive(active && count > 2);
     }
 
-    static void SetText(TMP_Text t, string v)
-    {
-        if (t) t.text = v;
-    }
+    static void SetText(TMP_Text t, string v) { if (t) t.text = v; }
 
     static string BuildNumberedList(string[] lines)
     {
@@ -273,7 +283,7 @@ public class ClueBookManager : MonoBehaviour
             if (string.IsNullOrWhiteSpace(line)) continue;
             sb.Append(num++).Append(") ").Append(line.Trim()).Append('\n');
         }
-        if (sb.Length > 0) sb.Length--; // trim last newline
+        if (sb.Length > 0) sb.Length--;
         return sb.ToString();
     }
 }
