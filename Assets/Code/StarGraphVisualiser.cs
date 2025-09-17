@@ -8,7 +8,7 @@ public class StarGraphVisualiser : MonoBehaviour
     [SerializeField] private StarEdgeVisual edgePrefab;
     [SerializeField] private LineRenderer previewLinePrefab;
 
-    private Color lineColor = Color.yellow;
+    private Color lineColor;
 
     private const float LINE_WIDTH = 0.2f;
 
@@ -20,6 +20,17 @@ public class StarGraphVisualiser : MonoBehaviour
 
 
     private LineRenderer previewLine;
+
+
+    private void Awake()
+    {
+        // Use ColorUtility to parse your hex color string
+        if (!ColorUtility.TryParseHtmlString("#F3F3F3", out lineColor))
+        {
+            // If the hex code is invalid, it will default to white as a fallback
+            lineColor = Color.white;
+        }
+    }
 
     // clears then re-renders all node visuals based on the input graph
     public void VisualizeGraph(Graph<StarData> graph)

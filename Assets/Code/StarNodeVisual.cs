@@ -7,6 +7,10 @@ public class StarNodeVisual : MonoBehaviour
     [SerializeField] private Color invalidColor = Color.red;
     [SerializeField] private Color highlightedColor = Color.cyan;
 
+    [Header("Material Setup")]
+    [SerializeField] private Material baseEmissiveMaterial;
+    [SerializeField] private float emissionIntensity = 2.0f;
+
     private Material starMaterial;
     private bool isActive;
     private bool isSolution;
@@ -18,8 +22,9 @@ public class StarNodeVisual : MonoBehaviour
     void Awake()
     {
         Renderer renderer = GetComponent<Renderer>();
-        starMaterial = new Material(Shader.Find("Unlit/Color"));
+        starMaterial = new Material(baseEmissiveMaterial);
         renderer.material = starMaterial;
+        starMaterial.EnableKeyword("_EMISSION");
     }
 
     // Set node ID and visual state based on data from the graph class
@@ -88,7 +93,8 @@ public class StarNodeVisual : MonoBehaviour
             return;
         }
 
-        starMaterial.color = color;
+        //starMaterial.color = color;
+        starMaterial.SetColor("_EmissionColor", color * emissionIntensity);
     }
 
     // logic to deactivate to prevent updates on destroyed nodes

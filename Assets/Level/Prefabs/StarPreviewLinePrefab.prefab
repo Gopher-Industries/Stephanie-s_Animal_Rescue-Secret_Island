@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4588510744577920036}
   - component: {fileID: 8097114346148127742}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StarPreviewLinePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
