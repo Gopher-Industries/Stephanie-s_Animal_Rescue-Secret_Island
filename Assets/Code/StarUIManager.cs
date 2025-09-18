@@ -1,126 +1,148 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 
 public class StarUIManager : MonoBehaviour
 {
-    [Header("Preview Canvas")]
-    [SerializeField] private Canvas worldSpaceCanvas;
-    [SerializeField] private TextMeshProUGUI shapeLabel;
+    [Header("Level Complete Panel")]
+    [SerializeField] private GameObject levelCompletePanel;
+    [SerializeField] private TextMeshProUGUI levelCompleteText;
 
-    private Vector2 previewAnchor = new Vector2(-21.5f, -9f);
-    private Color lineColor = Color.yellow;
-    private Color cubeColor = Color.yellow;
-    private LineRenderer lineRenderer;
-    private Camera mainCamera;
+    [Header("Game Over Panel")]
+    [SerializeField] private GameObject gameCompletePanel;
 
-    private const float PREVIEW_SCALE = 3f;
-    private const float CUBE_SIZE = 0.5f;
-    private const float LINE_WIDTH = 0.25f;
+    [Header("Shape Preview Panel")]
+    [SerializeField] private GameObject shapePreviewPanel;
+    [SerializeField] private UILineRenderer shapePreview1;
+    [SerializeField] private UILineRenderer shapePreview2;
+    [SerializeField] private GameObject previewNodePrefab;
 
-    private List<GameObject> cubeNodes = new List<GameObject>();
+    [Header("Buttons")]
+    [SerializeField] private GameObject showPreviewButton;
+
+    private List<GameObject> activePreviewNodes = new List<GameObject>();
+
 
     void Awake()
     {
-        mainCamera = Camera.main;
-        if (lineRenderer == null)
+        if (shapePreviewPanel != null)
         {
-            CreateLineRenderer();
-        }
-
-        if (worldSpaceCanvas == null)
-        {
-            worldSpaceCanvas = GetComponent<Canvas>();
+            shapePreviewPanel.SetActive(false);
         }
     }
 
-    // LineRenderer for preview shape
-    private void CreateLineRenderer()
+    public void LevelCompleteShow(int level)
     {
-        GameObject lrObject = new GameObject("ShapePreviewLines");
-        lineRenderer = lrObject.AddComponent<LineRenderer>();
-
-        lineRenderer.useWorldSpace = true;
-        lineRenderer.positionCount = 0;
-        lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
-        lineRenderer.startColor = lineColor;
-        lineRenderer.endColor = lineColor;  
-        lineRenderer.startWidth = LINE_WIDTH;
-        lineRenderer.endWidth = LINE_WIDTH;
-        lrObject.transform.position = new Vector3(0, 0, 0);
-    }
-
-    // displays a visual preview of the given shape type in the corner of the screen
-    public void ShowPreview(ShapeType shapeType)
-    {
-        if (lineRenderer == null)
+        if (levelCompletePanel != null)
         {
-            CreateLineRenderer();
-        }
-
-        ClearPreviousPreview();
-
-        float orthoScale = Camera.main.orthographicSize / 11f;
-        worldSpaceCanvas.transform.localScale = Vector3.one * 0.05f * orthoScale;
-
-        shapeLabel.text = shapeType.ToString();
-        shapeLabel.fontSize = Mathf.RoundToInt(36 * orthoScale);
-
-        StarShapeData shape = ShapeLibrary.GetShape(shapeType);
-        Vector3[] vertices = CalculatePreviewVertices(shape.normalisedVertices);
-
-        lineRenderer.positionCount = vertices.Length + 1;
-        lineRenderer.SetPositions(vertices);
-        lineRenderer.SetPosition(vertices.Length, vertices[0]);
-
-
-        foreach (Vector3 vertex in vertices)
-        {
-            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.localPosition = new Vector3(vertex.x, vertex.y, 0);
-            cube.transform.localScale = Vector3.one * CUBE_SIZE;
-
-
-            Material cubeMat = new Material(Shader.Find("Unlit/Color"));
-            cubeMat.color = cubeColor;
-            cube.GetComponent<Renderer>().material = cubeMat;
-
-            Destroy(cube.GetComponent<BoxCollider>());
-
-            cubeNodes.Add(cube);
+            levelCompletePanel.SetActive(true);
+            if (levelCompleteText != null)
+            {
+                levelCompleteText.text = $"Level {level} Complete!";
+            }
         }
     }
 
-    // Converts normalised shape positions to world space positons anchored to the previewAnchor
-    private Vector3[] CalculatePreviewVertices(Vector2[] normalisedVertices)
+    public void LevelCompleteHide()
     {
-        Vector3[] vertices = new Vector3[normalisedVertices.Length];
-        for (int i = 0; i < normalisedVertices.Length; i++)
+        if (levelCompletePanel != null)
         {
-            vertices[i] = new Vector3(
-                previewAnchor.x + normalisedVertices[i].x * PREVIEW_SCALE,
-                previewAnchor.y + normalisedVertices[i].y * PREVIEW_SCALE,
-                0
-            );
+            levelCompletePanel.SetActive(false);
         }
-        return vertices;
     }
 
-    // Clears the shape preview
-    private void ClearPreviousPreview()
+    public void ShowGameCompleteScreen()
     {
-        lineRenderer.positionCount = 0;
-
-        foreach (GameObject cube in cubeNodes)
+        if (gameCompletePanel != null)
         {
-            Destroy(cube);
+            gameCompletePanel.SetActive(true);
         }
-        cubeNodes.Clear();
     }
 
-    public void HidePreview()
+    public void ToggleShapePreview()
     {
-        ClearPreviousPreview();
+        if (shapePreviewPanel != null)
+        {
+            shapePreviewPanel.SetActive(!shapePreviewPanel.activeSelf);
+        }
+    }
+
+    public void DisplayShapePreviews(List<(ShapeType type, bool rotated)> shapes)
+    {
+        if (shapePreviewPanel == null) return;
+        // clear old nodes
+        ClearPreviewNodes();
+
+        // Hide both previews initially
+        shapePreview1.gameObject.SetActive(false);
+        shapePreview2.gameObject.SetActive(false);
+
+        // Configure the first shape preview
+        if (shapes.Count > 0)
+        {
+            ConfigurePreview(shapePreview1, shapes[0].type);
+        }
+
+        // Configure the second shape preview if it exists
+        if (shapes.Count > 1)
+        {
+            ConfigurePreview(shapePreview2, shapes[1].type);
+        }
+    }
+
+    private void ConfigurePreview(UILineRenderer previewRenderer, ShapeType shapeType)
+    {
+        // Get the container's RectTransform
+        RectTransform containerRect = previewRenderer.GetComponent<RectTransform>();
+        if (containerRect == null) return;
+
+        // Determine the available space (use the smaller of width or height)
+        float fitSize = Mathf.Min(containerRect.rect.width, containerRect.rect.height);
+
+        // Calculate the scale with some padding so it's not touching the edges
+        // 90% of the container size
+        float padding = 0.9f; 
+        float scale = fitSize * padding;
+
+        StarShapeData shapeData = ShapeLibrary.GetShape(shapeType); 
+        Vector2[] scaledPoints = new Vector2[shapeData.normalisedVertices.Length]; 
+
+        for (int i = 0; i < shapeData.normalisedVertices.Length; i++)
+        {
+            // Apply scale based on container size
+            scaledPoints[i] = shapeData.normalisedVertices[i] * scale; 
+        }
+
+        previewRenderer.points = scaledPoints;
+        previewRenderer.gameObject.SetActive(true);
+
+        previewRenderer.SetVerticesDirty();
+
+        if (previewNodePrefab != null)
+        {
+            foreach (Vector2 point in scaledPoints)
+            {
+                GameObject nodeInstance = Instantiate(previewNodePrefab, previewRenderer.transform);
+                nodeInstance.GetComponent<RectTransform>().anchoredPosition = point;
+                activePreviewNodes.Add(nodeInstance);
+            }
+        }
+    }
+
+    public void SetPreviewButtonVisibility(bool isVisible)
+    {
+        if (showPreviewButton != null)
+        {
+            showPreviewButton.SetActive(isVisible);
+        }
+    }
+
+    private void ClearPreviewNodes()
+    {
+        foreach (GameObject node in activePreviewNodes)
+        {
+            Destroy(node);
+        }
+        activePreviewNodes.Clear();
     }
 }

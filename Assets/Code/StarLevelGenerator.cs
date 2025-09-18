@@ -1,11 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 
 public class StarLevelGenerator : MonoBehaviour
 {
-    // Max number of stars per level (solution + filler stars)
+    [Tooltip("The JSON file containing the star level data.")]
+    [SerializeField] private TextAsset levelDataJson;
+
+    // Max number of filler stars per level 
     private const int NUM_STARS = 15;
     // Max distance from center for star placement
     private const float RADIUS = 10f;
@@ -14,46 +18,56 @@ public class StarLevelGenerator : MonoBehaviour
     // Size multiplier for shape generation
     private const float SHAPE_SIZE = 3f;
 
+    private LevelCollection levelCollection;
+
+    private void Awake()
+    {
+#if UNITY_EDITOR
+        if (levelDataJson == null)
+        {
+            Debug.LogError("Star Level Data JSON is not assigned in the Inspector to the Star Level Generator!", this);
+            return;
+        }
+#endif
+        levelCollection = LevelCollection.CreateFromJSON(levelDataJson.text);
+    }
+
     // Generates the graph and caches solution edges
     // TODO: Refactor when you figure out a better level system.
-    public (Graph<StarData>, List<(int, int)>) GenerateLevel(int level)
+    public (Graph<StarData>, List<(int, int)>, List<(ShapeType type, bool rotated)>) GenerateLevel(int level)
     {
         Graph<StarData> starGraph = new Graph<StarData>();
         List<(int, int)> solutionEdges = new List<(int, int)>();
         List<Node<StarData>> solutionNodes = new List<Node<StarData>>();
+        List<(ShapeType type, bool rotated)> shapesForLevel = new List<(ShapeType type, bool rotated)>();
 
 
-        (solutionNodes, solutionEdges) = CreateSolutionShapes(starGraph, level);
+        (solutionNodes, solutionEdges, shapesForLevel) = CreateSolutionShapes(starGraph, level);
         CreateFillerStars(starGraph, solutionNodes);
 
-        return (starGraph, solutionEdges);
+        return (starGraph, solutionEdges, shapesForLevel);
     }
-    
-    // TODO: Refactor when you figure out a better level system as this function became extremely bloated
+
+
     // TODO: Increase/decrease filler stars based on amount of shapes
-    private (List<Node<StarData>>, List<(int, int)>) CreateSolutionShapes(Graph<StarData> starGraph, int level)
+    private (List<Node<StarData>>, List<(int, int)>, List<(ShapeType type, bool rotated)>) CreateSolutionShapes(Graph<StarData> starGraph, int level)
     {
         List<Node<StarData>> allSolutionNodes = new();
         List<Vector3> occupiedPositions = new();
         List<(int, int)> solutionEdges = new List<(int, int)>();
+        List<(ShapeType type, bool rotated)> shapesForLevel = new List<(ShapeType type, bool rotated)>();
 
-        // Hardcoded shapes for each level
-        Dictionary<int, List<(ShapeType type, bool rotated)>> levelShapes = new()
-        {
-        { 1, new() { (ShapeType.Triangle, false) } },
-        { 2, new() { (ShapeType.Triangle, true) } },
-        { 3, new() { (ShapeType.Square, false) } },
-        { 4, new() { (ShapeType.Square, true) } },
-        { 5, new() { (ShapeType.Triangle, false), (ShapeType.Square, false) } },
-        { 6, new() { (ShapeType.Triangle, true), (ShapeType.Square, true) } }
-        // Add more levels as needed
-         };
+        LevelData levelData = levelCollection.levels.FirstOrDefault(l => l.levelNumber == level);
 
-        // Triggers when game is out of levels
-        if (!levelShapes.TryGetValue(level, out var shapesForLevel))
+        if (levelData != null)
         {
-            shapesForLevel = new() { (ShapeType.Triangle, false) }; // TODO: this should transition to exit game
+            shapesForLevel = levelData.shapes.Select(s => (s.TypeEnum, s.rotated)).ToList();
         }
+        else
+        {
+            shapesForLevel = new() { (ShapeType.Triangle, false) };
+        }
+
 
         foreach (var (shapeType, applyRotation) in shapesForLevel)
         {
@@ -75,7 +89,7 @@ public class StarLevelGenerator : MonoBehaviour
             }
         }
 
-        return (allSolutionNodes, solutionEdges);
+        return (allSolutionNodes, solutionEdges, shapesForLevel);
     }
 
     // Ensures the shapes don't overlap by bruteforce
@@ -121,7 +135,7 @@ public class StarLevelGenerator : MonoBehaviour
     private void CreateFillerStars(Graph<StarData> graph, List<Node<StarData>> avoidNodes)
     {
         var avoidPositions = new List<Vector3>();
-        int numFillerStars = NUM_STARS - avoidNodes.Count;
+        int numFillerStars = NUM_STARS;
 
         foreach (var node in avoidNodes)
             avoidPositions.Add(node.position);
@@ -145,11 +159,11 @@ public class StarLevelGenerator : MonoBehaviour
         const float SAFE_ZONE_RADIUS = 9f;
 
         if (applyRotation)
-            rotation = Random.Range(0f, 360f); 
+            rotation = UnityEngine.Random.Range(0f, 360f); 
         else
             rotation = 0f;
 
-        Vector2 offset = Random.insideUnitCircle * SAFE_ZONE_RADIUS;
+        Vector2 offset = UnityEngine.Random.insideUnitCircle * SAFE_ZONE_RADIUS;
 
         return shape.GetTransformedVertices(SHAPE_SIZE, offset, rotation);
     }
@@ -165,7 +179,7 @@ public class StarLevelGenerator : MonoBehaviour
 
         while (result.Count < count && attempts < maxAttempts)
         {
-            Vector3 candidate = Random.insideUnitCircle * RADIUS;
+            Vector3 candidate = UnityEngine.Random.insideUnitCircle * RADIUS;
 
             if (IsPositionValid(candidate, result, avoidPoints))
                 result.Add(candidate);

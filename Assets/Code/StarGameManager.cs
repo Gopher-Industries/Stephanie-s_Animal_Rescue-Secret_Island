@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class StarGameManager : MonoBehaviour
 {
@@ -8,84 +7,142 @@ public class StarGameManager : MonoBehaviour
     [SerializeField] private StarGraphVisualiser visualiser;
     [SerializeField] private StarInputManager inputManager;
     [SerializeField] private StarUIManager uiManager;
+    [SerializeField] private StarAudioManager audioManager;
 
-    private StarGameState gameState; 
+    private StarGameState gameState;
+    private GameState currentState;
 
+    private const int MAX_LEVELS = 8;
+
+    private enum GameState
+    {
+        None = 0,
+        GameInitialise,
+        Playing,
+        ShowPreview,
+        LevelComplete,
+        GameComplete
+    }
+
+#if UNITY_EDITOR
     private void Awake()
     {
         if (levelGenerator == null) Debug.LogError("Level Generator not assigned to Star Game Manager!");
         if (visualiser == null) Debug.LogError("Visualiser not assigned to Star Game Manager!");
         if (inputManager == null) Debug.LogError("Input Manager not assigned to Star Game Manager!");
         if (uiManager == null) Debug.LogError("UI Manager not assigned to Star Game Manager!");
-
-        InitializeGame();
     }
+#endif
 
-    private void InitializeGame()
+    private void Start()
     {
         gameState = new StarGameState();
-        StartNewLevel();
+        StateSet(GameState.GameInitialise);
     }
 
-    public void StartNewLevel()
+    private void Update()
+    {
+        if (currentState == GameState.Playing)
+        {
+            GameRun();
+        }
+    }
+
+    // This runs the initialisation logic for each state
+    private void StateSet(GameState newState)
+    {
+        if (currentState == newState) return;
+
+        currentState = newState;
+
+        switch (currentState)
+        {
+            case GameState.GameInitialise:
+                GameLevelInitialise();
+                break;
+            case GameState.Playing:
+                // No setup needed handled in update
+                break;
+            case GameState.LevelComplete:
+                GameLevelComplete(); 
+                break;
+            case GameState.GameComplete:
+                GameComplete();
+                break;
+        }
+    }
+
+
+    private void GameLevelInitialise()
     {
         visualiser.ClearVisuals();
         inputManager.ClearSelection();
-
-        // gives graph and solution edges to gamestate
-        var (newGraph, solutionEdges) = levelGenerator.GenerateLevel(gameState.CurrentLevel);
+        var (newGraph, solutionEdges, shapes) = levelGenerator.GenerateLevel(gameState.CurrentLevel);
         gameState.Initialize(newGraph, solutionEdges);
         visualiser.VisualizeGraph(newGraph);
-        //uiManager.ShowPreview(GetShapeForLevel(gameState.CurrentLevel));
+        uiManager.DisplayShapePreviews(shapes);
+        uiManager.SetPreviewButtonVisibility(true);
 
         Debug.Log($"Started Level {gameState.CurrentLevel}");
+        StateSet(GameState.Playing);
+
     }
 
-    private ShapeType GetShapeForLevel(int level)
+    // This runs every frame
+    private void GameRun()
     {
-        switch(level)
-        {
-            case 1:
-                return ShapeType.Triangle;
-            case 2:
-                return ShapeType.Triangle;
-            case 3:
-                return ShapeType.Square;
-            case 4:
-                return ShapeType.Square;
-            default:
-                return ShapeType.Triangle;
-        }
-    }
-    
-    // delay level transition by 1 frame to prevent node colour state updates during the transation
-    // potentially fixed when there is a transition/reward between each level.
-    private void ValidateCurrentLevel()
-    {
+        inputManager.HandleInput();
+
         if (gameState.isSolutionValid)
         {
-            Debug.Log($"Level {gameState.CurrentLevel} Complete!");
-
-            foreach (var node in gameState.solutionNodes)
+            if (gameState.CurrentLevel == MAX_LEVELS)
             {
-                UpdateNodeVisualState(node.id);
+                StateSet(GameState.GameComplete);
             }
-
-
-            StartCoroutine(TransitionLevel());
+            else
+            {
+                StateSet(GameState.LevelComplete);
+            }
         }
     }
 
-    private IEnumerator TransitionLevel()
+    public void TogglePreviewState()
     {
-        yield return null; 
+        if (currentState == GameState.Playing)
+        {
+            StateSet(GameState.ShowPreview);
+            uiManager.ToggleShapePreview();
+        }
+        else if (currentState == GameState.ShowPreview)
+        {
+            StateSet(GameState.Playing);
+            uiManager.ToggleShapePreview();
+        }
+    }
 
+    private void GameLevelComplete()
+    {
+        uiManager.LevelCompleteShow(gameState.CurrentLevel);
+        uiManager.SetPreviewButtonVisibility(false);
+        audioManager.PlayLevelCompleteSFX();
+    }
+
+    private void GameComplete()
+    {
+        uiManager.ShowGameCompleteScreen();
+        uiManager.SetPreviewButtonVisibility(false);
+        audioManager.PlayLevelCompleteSFX();
+    }
+
+    public void TransitionLevel()
+    {
         inputManager.ClearSelection();
         visualiser.ClearVisuals();
-        //uiManager.HidePreview();
+        uiManager.LevelCompleteHide();
+        uiManager.SetPreviewButtonVisibility(false);
 
         gameState.AdvanceLevel();
-        StartNewLevel();
+        StateSet(GameState.GameInitialise);
     }
 
     public void CreateConnection(int nodeAId, int nodeBId)
@@ -98,11 +155,10 @@ public class StarGameManager : MonoBehaviour
             StarEdgeVisual edge = visualiser.DrawEdge(nodeA, nodeB);
             if (edge == null) return;
             UpdateEdgeVisualState(edge, nodeAId, nodeBId);
-
+            audioManager.PlayConnectionSFX();
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
             gameState.ValidateSolution();
-            ValidateCurrentLevel();
         }
     }
 
@@ -114,10 +170,10 @@ public class StarGameManager : MonoBehaviour
         if (gameState.TryRemoveConnection(nodeAId, nodeBId))
         {
             visualiser.RemoveEdge(nodeA, nodeB);
+            audioManager.PlayDisconnectionSFX();
             UpdateNodeVisualState(nodeAId);
             UpdateNodeVisualState(nodeBId);
             gameState.ValidateSolution();
-            ValidateCurrentLevel();
         }
 
     }

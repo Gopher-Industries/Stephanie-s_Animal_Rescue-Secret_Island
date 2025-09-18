@@ -161,7 +161,7 @@ public class NPCStoryDialogue : MonoBehaviour
     // Detect when player enters NPC bubble
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "3D Character")
+        if (other.CompareTag("Player"))
         {
             player_detection = true;
         }

@@ -1,5 +1,7 @@
-﻿
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 
 public class NumberLinksLevel : MonoBehaviour
@@ -9,9 +11,10 @@ public class NumberLinksLevel : MonoBehaviour
     private int startX = -1, startY = -1;
     private int endX = -1, endY = -1;
     private Material dragMaterial;
-    private HashSet<Vector2Int> currentDragCells;
+    private HashSet<(Vector2Int, int)> currentDragCells;
+    private HashSet<(Vector2Int, int)> visitedCells;
     private Dictionary<Vector2Int, bool> occupiedCells;
-
+    private int currentId = -1;
 
     [Header("Grid Settings")]
     public Vector3 gridOriginPosition = new Vector3(0, 0, 0);
@@ -31,17 +34,21 @@ public class NumberLinksLevel : MonoBehaviour
 
     private Dictionary<Vector2Int, int> cellToPairId;
 
-    void Start()
+    IEnumerator Start()
     {
+        yield return null;
+
         grid = new GridClass(gridWidth, gridHeight, cellWidth, cellHeight, gridOriginPosition, gridZPosition);
         grid.imageWidth = imageWidth;
         grid.imageHeight = imageHeight;
-        currentDragCells = new HashSet<Vector2Int>();
+        currentDragCells = new HashSet<(Vector2Int, int)>();
+        visitedCells = new HashSet<(Vector2Int, int)>();
         cellToPairId = new Dictionary<Vector2Int, int>();
         occupiedCells = new Dictionary<Vector2Int, bool>();
 
 
         SetupLevel();
+        visitedCells.Clear();
     }
 
     void Update()
@@ -60,8 +67,21 @@ public class NumberLinksLevel : MonoBehaviour
         {
             HandleMouseUp();
         }
+
+        if (AllPairsVisited())
+        {
+            Debug.Log("🎉 All pairs connected! Level Complete!");
+            //TO-DO implement level complete logic
+        }
     }
 
+    // Returns true if every pairId in cellToPairId has at least one cell in visitedCells
+    bool AllPairsVisited()
+    {
+        var allPairIds = cellToPairId.Values.Distinct();
+        var visitedPairIds = visitedCells.Select(cell => cell.Item2).Distinct();
+        return allPairIds.All(id => visitedPairIds.Contains(id));
+    }
     private void HandleMouseDown()
     {
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -91,16 +111,56 @@ public class NumberLinksLevel : MonoBehaviour
         int x, y;
         grid.GetXY(mouseWorldPosition, out x, out y);
         Vector2Int currentCell = new Vector2Int(x, y);
+        Vector2Int startingCell = new Vector2Int(startX, startY);
+        currentId = cellToPairId.ContainsKey(currentCell) ? cellToPairId[currentCell] : -1;
+        bool cellVisited = visitedCells.Any(cell => cell.Item1 == currentCell);
+        //int currentId = cellToPairId[currentCell] : cellToPairId[currentCell] != null ? -1;
 
-        if (x >= 0 && y >= 0 && x < gridWidth && y < gridHeight && !currentDragCells.Contains(currentCell))
+        if (x >= 0 && y >= 0 && x < gridWidth && y < gridHeight && !currentDragCells.Contains((currentCell, currentId)) && !cellVisited)
         {
             grid.ToggleCellMaterial(x, y, dragMaterial);
-            currentDragCells.Add(currentCell);
+            currentDragCells.Add((currentCell, currentId));
+            if (currentId != -1)
+            {
+                Debug.Log($"Dragging over cell: {x}, {y} with ID: {currentId}");
+            }
+        }
+        else if (cellVisited)
+        {
+
+            Debug.Log("Touched existing path, invalid");
+            ResetTouchedPath(currentCell);
+            ResetCurrentDragCells();
+        }
+        else if (currentId != cellToPairId[startingCell] && currentId!=-1)
+        {
+            Debug.Log($"Hit another image, invalid, reset");
+            HandleMouseUp();
         }
     }
 
 
+    private void ResetTouchedPath(Vector2Int touchedCell)
+    {
+        int touchedCellId = -1;
+        foreach ((Vector2Int pos, int id) in visitedCells)
+        {
+            if (pos == touchedCell)
+            {
+                touchedCellId = id;
+                break;
+            }
+        }
 
+        foreach ((Vector2Int pos, int id) in visitedCells)
+        {
+            if (id == touchedCellId)
+            {
+                grid.ResetCell(pos.x, pos.y);
+            }
+        }
+        visitedCells.RemoveWhere(cell => cell.Item2 == touchedCellId);
+    }
     private void HandleMouseUp()
     {
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -111,6 +171,19 @@ public class NumberLinksLevel : MonoBehaviour
         if (IsValidEndingCell(startX, startY, endX, endY))
         {
             Debug.Log("Successful match!");
+            int startId = -1;
+            foreach((Vector2Int pos, int id) in currentDragCells)
+            {
+                if (id != -1)
+                {
+                    visitedCells.Add((pos, id));
+                    startId = id;
+                }
+                else
+                {
+                    visitedCells.Add((pos, startId));
+                }
+            }
         }
         else
         {
@@ -369,9 +442,14 @@ public class NumberLinksLevel : MonoBehaviour
 
     private void ResetCurrentDragCells()
     {
-        foreach (Vector2Int cell in currentDragCells)
+        //foreach ((Vector2Int, int) cell in currentDragCells)
+        //{
+        //    grid.ResetCell(cell.first.x, cell.second.y);
+        //}
+        //currentDragCells.Clear();
+        foreach ((Vector2Int pos, int id) in currentDragCells)
         {
-            grid.ResetCell(cell.x, cell.y);
+            grid.ResetCell(pos.x, pos.y);
         }
         currentDragCells.Clear();
     }
