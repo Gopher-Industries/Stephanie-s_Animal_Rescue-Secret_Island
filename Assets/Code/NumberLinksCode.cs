@@ -268,7 +268,7 @@ public class NumberLinksLevel : MonoBehaviour
                 pairIndex++;
             }
 
-            if (pairIndex == numPairs)
+            if (pairIndex == numPairs && occupiedCells.Count == gridWidth * gridHeight)
             {
                 Debug.Log("✅ Successfully placed all pairs without crossing.");
                 Debug.Log("🎉 All pairs are connected. Puzzle is ready!");
