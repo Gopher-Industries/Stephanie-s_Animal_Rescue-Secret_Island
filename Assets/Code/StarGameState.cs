@@ -150,13 +150,25 @@ public class StarGameState
         // Each node must have exactly 2 solution node connections to form a loop
         foreach (var node in shapeNodes)
         {
-            foreach (var neighbour in node.neighbours)
-            {
-                if (!neighbour.data.IsSolutionNode)
-                    return false;
-            }
             if (node.neighbours.Count != 2)
                 return false;
+        }
+
+        // verify that every single connection is a valid "solution edge".
+        foreach (var node in shapeNodes)
+        {
+            foreach (var neighbour in node.neighbours)
+            {
+                // To avoid checking each edge twice, we only check one direction.
+                if (node.id < neighbour.id)
+                {
+                    if (!IsEdgeValid(node.id, neighbour.id))
+                    {
+                        // If we find even one connection that isn't part of the solution, the shape is invalid.
+                        return false;
+                    }
+                }
+            }
         }
 
         return true;

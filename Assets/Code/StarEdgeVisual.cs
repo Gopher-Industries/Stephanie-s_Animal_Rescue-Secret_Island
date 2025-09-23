@@ -54,6 +54,6 @@ public class StarEdgeVisual : MonoBehaviour
         //line.startColor = colour;
         //line.endColor = colour;
 
-        edgeMaterial.SetColor("_EmissionColor", colour);
+        edgeMaterial.SetColor("_EmissionColor", colour * 2f);
     }
 }

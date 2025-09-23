@@ -156,7 +156,7 @@ public class StarLevelGenerator : MonoBehaviour
     {
         StarShapeData shape = ShapeLibrary.GetShape(type);
         float rotation;
-        const float SAFE_ZONE_RADIUS = 9f;
+        const float SAFE_ZONE_RADIUS = 8f;
 
         if (applyRotation)
             rotation = UnityEngine.Random.Range(0f, 360f); 

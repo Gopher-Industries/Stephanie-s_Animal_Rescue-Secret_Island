@@ -10,7 +10,7 @@ public class StarAmbientSpawner : MonoBehaviour
 
     [Header("Ambient Static Stars")]
     [SerializeField] private GameObject staticStarPrefab;
-    [SerializeField] private const int staticStarCount = 20;
+    [SerializeField] private int staticStarCount = 20;
 
     private Camera mainCamera;
 

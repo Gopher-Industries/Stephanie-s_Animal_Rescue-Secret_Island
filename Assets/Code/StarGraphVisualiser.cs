@@ -45,8 +45,8 @@ public class StarGraphVisualiser : MonoBehaviour
     {
         foreach (var node in graph.Nodes)
         {
-            var starVisual = Instantiate(starPrefab, node.position, Quaternion.identity, transform);
-            starVisual.Initialize(node.id, node.data);
+            StarNodeVisual starVisual = Instantiate(starPrefab, node.position, Quaternion.identity, transform);
+            starVisual.Initialise(node.id, node.data);
             nodeVisualDict[node.id] = starVisual;
         }
     }
@@ -98,17 +98,6 @@ public class StarGraphVisualiser : MonoBehaviour
         {
             Destroy(previewLine.gameObject);
             previewLine = null;
-        }
-    }
-
-    public void UpdateNodeColour(int nodeId, bool hasConnections)
-    {
-        if (nodeVisualDict == null || nodeVisualDict.Count == 0)
-            return;
-
-        if (nodeVisualDict.TryGetValue(nodeId, out var nodeVisual))
-        {
-            nodeVisual.UpdateColourState(hasConnections);
         }
     }
 
