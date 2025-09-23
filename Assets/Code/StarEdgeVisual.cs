@@ -13,6 +13,7 @@ public class StarEdgeVisual : MonoBehaviour
         polygonCollider = GetComponent<PolygonCollider2D>();
         edgeMaterial = new Material(line.material);
         line.material = edgeMaterial;
+        edgeMaterial.EnableKeyword("_EMISSION");
 
         line.positionCount = 2;
         line.SetPositions(new Vector3[] { start, end });
@@ -50,7 +51,9 @@ public class StarEdgeVisual : MonoBehaviour
         if (edgeMaterial == null) 
             return;
 
-        line.startColor = colour;
-        line.endColor = colour;
+        //line.startColor = colour;
+        //line.endColor = colour;
+
+        edgeMaterial.SetColor("_EmissionColor", colour * 2f);
     }
 }

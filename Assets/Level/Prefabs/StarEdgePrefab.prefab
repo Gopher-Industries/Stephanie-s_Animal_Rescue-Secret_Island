@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3411699448019434361}
   - component: {fileID: 1742731777868417480}
   - component: {fileID: 7477258323753509542}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StarEdgePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9bfa4540de02e274e957a843dd7bf836, type: 2}
+  - {fileID: 2100000, guid: 701731a7642f8cc4da6c0feb9cc2cbdb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -78,7 +78,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}

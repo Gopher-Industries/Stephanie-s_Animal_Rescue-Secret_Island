@@ -97,7 +97,7 @@ public class StarInputManager : MonoBehaviour
         if (graphVisualiser.nodeVisualDict.TryGetValue(node.id, out var visual))
         {
             audioManager.PlayNodeClickedSFX();
-            visual.SetHighlightedState(true);
+            visual.SetState(StarNodeVisual.NodeState.Highlighted);
         }
 
         graphVisualiser.ClearPreviewLine();
@@ -116,12 +116,7 @@ public class StarInputManager : MonoBehaviour
         if (startNode == null)
             return;
 
-        if (graphVisualiser.nodeVisualDict.TryGetValue(startNode.id, out var nodeVisual))
-        {
-            nodeVisual.SetHighlightedState(false);
-            nodeVisual.UpdateColourState(startNode.neighbours.Count > 0);
-        }
-
+        gameManager.UpdateNodeVisualState(startNode.id);
         graphVisualiser.ClearPreviewLine();
 
     }
@@ -130,10 +125,9 @@ public class StarInputManager : MonoBehaviour
     // resets the isDragging state and visual highlight
     public void ClearSelection()
     {
-        if (startNode != null && graphVisualiser.nodeVisualDict.TryGetValue(startNode.id, out var visual))
+        if (startNode != null)
         {
-            visual.SetHighlightedState(false);
-            visual.UpdateColourState(startNode.neighbours.Count > 0);
+            gameManager.UpdateNodeVisualState(startNode.id);
         }
 
         graphVisualiser.ClearPreviewLine();

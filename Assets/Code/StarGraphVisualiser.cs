@@ -8,7 +8,7 @@ public class StarGraphVisualiser : MonoBehaviour
     [SerializeField] private StarEdgeVisual edgePrefab;
     [SerializeField] private LineRenderer previewLinePrefab;
 
-    private Color lineColor = Color.yellow;
+    private Color lineColor;
 
     private const float LINE_WIDTH = 0.2f;
 
@@ -20,6 +20,17 @@ public class StarGraphVisualiser : MonoBehaviour
 
 
     private LineRenderer previewLine;
+
+
+    private void Awake()
+    {
+        // Use ColorUtility to parse your hex color string
+        if (!ColorUtility.TryParseHtmlString("#F3F3F3", out lineColor))
+        {
+            // If the hex code is invalid, it will default to white as a fallback
+            lineColor = Color.white;
+        }
+    }
 
     // clears then re-renders all node visuals based on the input graph
     public void VisualizeGraph(Graph<StarData> graph)
@@ -34,8 +45,8 @@ public class StarGraphVisualiser : MonoBehaviour
     {
         foreach (var node in graph.Nodes)
         {
-            var starVisual = Instantiate(starPrefab, node.position, Quaternion.identity, transform);
-            starVisual.Initialize(node.id, node.data);
+            StarNodeVisual starVisual = Instantiate(starPrefab, node.position, Quaternion.identity, transform);
+            starVisual.Initialise(node.id, node.data);
             nodeVisualDict[node.id] = starVisual;
         }
     }
@@ -87,17 +98,6 @@ public class StarGraphVisualiser : MonoBehaviour
         {
             Destroy(previewLine.gameObject);
             previewLine = null;
-        }
-    }
-
-    public void UpdateNodeColour(int nodeId, bool hasConnections)
-    {
-        if (nodeVisualDict == null || nodeVisualDict.Count == 0)
-            return;
-
-        if (nodeVisualDict.TryGetValue(nodeId, out var nodeVisual))
-        {
-            nodeVisual.UpdateColourState(hasConnections);
         }
     }
 

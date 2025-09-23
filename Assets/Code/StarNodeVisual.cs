@@ -1,34 +1,54 @@
 using UnityEngine;
+using System.Collections;
+using UnityEngine.Rendering.Universal;
 
 public class StarNodeVisual : MonoBehaviour
 {
-    [SerializeField] private Color normalColor = Color.yellow;
-    [SerializeField] private Color solutionColor = Color.green;
-    [SerializeField] private Color invalidColor = Color.red;
-    [SerializeField] private Color highlightedColor = Color.cyan;
+    [SerializeField] private Color normalColor;
+    [SerializeField] private Color solutionColor;
+    [SerializeField] private Color invalidColor;
+    [SerializeField] private Color highlightedColor;
+
+    [Header("Hint Effect")]
+    [SerializeField] private GameObject rippleEffectPrefab;
+    private ParticleSystem hintParticleSystem;
+
+    [Header("Material Setup")]
+    [SerializeField] private Material baseEmissiveMaterial;
+    // Controls the intensity of the glow effect
+    [SerializeField] private float emissionIntensity = 2.0f;
 
     private Material starMaterial;
     private bool isActive;
     private bool isSolution;
-    private bool hasConnections;
-    private bool isHighlighted;
 
     public int nodeId { get; private set; }
+    public enum NodeState
+    {
+        None = 0,
+        Idle,
+        Highlighted,
+        ConnectedSolution,
+        InvalidConnection,
+        Blinking
+    }
+
+    public NodeState CurrentState { get; private set; }
 
     void Awake()
     {
         Renderer renderer = GetComponent<Renderer>();
-        starMaterial = new Material(Shader.Find("Unlit/Color"));
+        starMaterial = new Material(baseEmissiveMaterial);
         renderer.material = starMaterial;
+        starMaterial.EnableKeyword("_EMISSION");
     }
 
     // Set node ID and visual state based on data from the graph class
-    public void Initialize(int nodesId, StarData data)
+    public void Initialise(int nodesId, StarData data)
     {
         nodeId = nodesId;
         isSolution = data.IsSolutionNode;
         isActive = true;
-        isHighlighted = false;
 
         if (starMaterial == null)
         {
@@ -36,7 +56,15 @@ public class StarNodeVisual : MonoBehaviour
             starMaterial = renderer.material;
         }
 
-        UpdateColourState();
+        if (rippleEffectPrefab != null && isSolution)
+        {
+            GameObject rippleInstance = Instantiate(rippleEffectPrefab, transform);
+            rippleInstance.transform.localPosition = Vector3.zero;
+            hintParticleSystem = rippleInstance.GetComponent<ParticleSystem>();
+            hintParticleSystem.Stop();
+        }
+
+        SetState(NodeState.Idle);
 
         if (isSolution)
             name = $"SolutionStar_{nodeId}";
@@ -44,39 +72,56 @@ public class StarNodeVisual : MonoBehaviour
             name = $"Star_{nodeId}";
     }
 
-    public void SetHighlightedState(bool highlighted)
+    public void SetState(NodeState newState)
     {
-        isHighlighted = highlighted;
-        UpdateColourState();
+        if (CurrentState == newState && newState != NodeState.Blinking) return;
+        CurrentState = newState;
+        UpdateVisuals();
     }
 
     // Updates node colours based on interaction and game state based on priority
     // highlighted node: turns cyan when player is clicking and dragging a node
-    // connected solution node: turns green
+    // connected solution node: turns yellow
     // connected non-soltuon node: turns red
-    // no connections: default colour yellow
-    public void UpdateColourState(bool hasConnections = false)
+    // no connections: default idle colour white
+    private void UpdateVisuals()
     {
-        if (this == null || !isActive)
-            return;
+        if (this == null || !isActive) return;
 
-        this.hasConnections = hasConnections;
+        // apply all properties for the new state.
+        switch (CurrentState)
+        {
+            case NodeState.Idle:
+                SetColor(normalColor);
+                break;
+            case NodeState.Highlighted:
+                SetColor(highlightedColor);
+                break;
+            case NodeState.ConnectedSolution:
+                SetColor(solutionColor);
+                break;
+            case NodeState.InvalidConnection:
+                SetColor(invalidColor);
+                break;
+            default:
+                SetColor(normalColor);
+                break;
+        }
+    }
 
-        if (isHighlighted)
+    public void StartHint()
+    {
+        if (hintParticleSystem != null)
         {
-            SetColor(highlightedColor);
+            hintParticleSystem.Play();
         }
-        else if (isSolution && hasConnections)
+    }
+
+    public void StopHint()
+    {
+        if (hintParticleSystem != null)
         {
-            SetColor(solutionColor);
-        }
-        else if (hasConnections)
-        {
-            SetColor(invalidColor);
-        }
-        else
-        {
-            SetColor(normalColor);
+            hintParticleSystem.Stop();
         }
     }
 
@@ -88,7 +133,8 @@ public class StarNodeVisual : MonoBehaviour
             return;
         }
 
-        starMaterial.color = color;
+        //starMaterial.SetColor("_Color",  color);
+        starMaterial.SetColor("_EmissionColor", color * emissionIntensity);
     }
 
     // logic to deactivate to prevent updates on destroyed nodes
