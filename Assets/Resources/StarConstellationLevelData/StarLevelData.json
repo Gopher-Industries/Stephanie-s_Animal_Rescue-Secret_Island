@@ -2,6 +2,7 @@
   "levels": [
     {
       "levelNumber": 1,
+      "fillerStarCount": 6,
       "shapes": [
         {
           "shapeType": "Triangle",
@@ -11,6 +12,7 @@
     },
     {
       "levelNumber": 2,
+      "fillerStarCount": 8,
       "shapes": [
         {
           "shapeType": "Triangle",
@@ -20,6 +22,7 @@
     },
     {
       "levelNumber": 3,
+      "fillerStarCount": 10,
       "shapes": [
         {
           "shapeType": "Square",
@@ -29,6 +32,7 @@
     },
     {
       "levelNumber": 4,
+      "fillerStarCount": 12,
       "shapes": [
         {
           "shapeType": "Square",
@@ -38,6 +42,7 @@
     },
     {
       "levelNumber": 5,
+      "fillerStarCount": 12,
       "shapes": [
         {
           "shapeType": "Triangle",
@@ -51,6 +56,7 @@
     },
     {
       "levelNumber": 6,
+      "fillerStarCount": 14,
       "shapes": [
         {
           "shapeType": "Triangle",
@@ -64,6 +70,7 @@
     },
     {
       "levelNumber": 7,
+      "fillerStarCount": 15,
       "shapes": [
         {
           "shapeType": "Pentagon",
@@ -73,6 +80,7 @@
     },
     {
       "levelNumber": 8,
+      "fillerStarCount": 16,
       "shapes": [
         {
           "shapeType": "Hexagon",

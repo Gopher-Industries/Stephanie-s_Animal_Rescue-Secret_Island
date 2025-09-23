@@ -16,6 +16,7 @@ public class ShapeInstanceData
 public class LevelData
 {
     public int levelNumber;
+    public int fillerStarCount;
     public List<ShapeInstanceData> shapes;
 }
 

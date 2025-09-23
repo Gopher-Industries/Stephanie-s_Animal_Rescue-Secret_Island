@@ -15,7 +15,7 @@ public class StarGameManager : MonoBehaviour
     private GameState currentState;
 
     private const int MAX_LEVELS = 8;
-    private const float IDLE_THRESHOLD = 5f;
+    private const float IDLE_THRESHOLD = 15f;
     private float lastInteractionTime;
     private List<StarNodeVisual> activeHintNodes = new List<StarNodeVisual>();
 

@@ -9,8 +9,6 @@ public class StarLevelGenerator : MonoBehaviour
     [Tooltip("The JSON file containing the star level data.")]
     [SerializeField] private TextAsset levelDataJson;
 
-    // Max number of filler stars per level 
-    private const int NUM_STARS = 15;
     // Max distance from center for star placement
     private const float RADIUS = 10f;
     // Min distance between any two stars
@@ -40,16 +38,28 @@ public class StarLevelGenerator : MonoBehaviour
         List<(int, int)> solutionEdges = new List<(int, int)>();
         List<Node<StarData>> solutionNodes = new List<Node<StarData>>();
         List<(ShapeType type, bool rotated)> shapesForLevel = new List<(ShapeType type, bool rotated)>();
+        LevelData levelData = null;
 
+        foreach (LevelData data in levelCollection.levels)
+        {
+            if (data.levelNumber == level)
+            {
+                levelData = data;
+                break; 
+            }
+        }
+        
+        if (levelData == null)
+        {
+            return (null, null, null);
+        }
 
         (solutionNodes, solutionEdges, shapesForLevel) = CreateSolutionShapes(starGraph, level);
-        CreateFillerStars(starGraph, solutionNodes);
+        CreateFillerStars(starGraph, solutionNodes, levelData.fillerStarCount);
 
         return (starGraph, solutionEdges, shapesForLevel);
     }
 
-
-    // TODO: Increase/decrease filler stars based on amount of shapes
     private (List<Node<StarData>>, List<(int, int)>, List<(ShapeType type, bool rotated)>) CreateSolutionShapes(Graph<StarData> starGraph, int level)
     {
         List<Node<StarData>> allSolutionNodes = new();
@@ -132,10 +142,9 @@ public class StarLevelGenerator : MonoBehaviour
 
     // Generates filler stars surrounding the solution nodes
     // Avoids positions where solution nodes were already pre placed
-    private void CreateFillerStars(Graph<StarData> graph, List<Node<StarData>> avoidNodes)
+    private void CreateFillerStars(Graph<StarData> graph, List<Node<StarData>> avoidNodes, int numFillerStars)
     {
         var avoidPositions = new List<Vector3>();
-        int numFillerStars = NUM_STARS;
 
         foreach (var node in avoidNodes)
             avoidPositions.Add(node.position);
