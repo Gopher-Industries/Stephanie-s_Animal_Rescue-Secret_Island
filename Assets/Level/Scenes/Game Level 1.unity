@@ -639,6 +639,12 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 433d16b08f5f39c4988a0ab7f5a425d5, type: 2}
   - {fileID: 2100000, guid: a644fc832546f1b47abcff08273654d4, type: 2}
   - {fileID: 2100000, guid: 36cb5a40a5a8f714aad3fa422615934d, type: 2}
+  secondsBeforeFullPath: 60
+  hintSortingLayer: Default
+  hintSortingOrder: 2
+  hintLineMaterial: {fileID: 2100000, guid: b3277a7cd7fe26c4db3b1ee91b258a42, type: 2}
+  hintLineColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.4}
+  hintLineWidth: 0.6
 --- !u!1 &1525257470
 GameObject:
   m_ObjectHideFlags: 0
