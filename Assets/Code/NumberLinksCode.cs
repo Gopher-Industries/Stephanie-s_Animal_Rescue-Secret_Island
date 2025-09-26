@@ -32,6 +32,21 @@ public class NumberLinksLevel : MonoBehaviour
     public Texture2D[] pairImages;      // Images displayed on the grid
     public Material[] dragMaterials;    // Materials used during dragging
 
+    [Header("Hint Settings")]
+    public float secondsBeforeFullPath = 60f;
+
+    [Header("Hint Line Settings")]
+    public string hintSortingLayer = "Default";
+    public int hintSortingOrder = 2;
+    public Material hintLineMaterial;
+    public Color hintLineColor = new Color(0.5f, 0.5f, 0.5f, 0.4f);
+    public float hintLineWidth = 0.6f;
+
+    private float _noProgressTimer = 0f;
+    private bool _fullPathHintRunning = false;
+    private GameObject _activeHintLine;
+    private int _lastVisitedCount = 0;
+
     private Dictionary<Vector2Int, int> cellToPairId;
 
     IEnumerator Start()
@@ -132,7 +147,7 @@ public class NumberLinksLevel : MonoBehaviour
             ResetTouchedPath(currentCell);
             ResetCurrentDragCells();
         }
-        else if (currentId != cellToPairId[startingCell] && currentId!=-1)
+        else if (currentId != cellToPairId[startingCell] && currentId != -1)
         {
             Debug.Log($"Hit another image, invalid, reset");
             HandleMouseUp();
@@ -172,7 +187,7 @@ public class NumberLinksLevel : MonoBehaviour
         {
             Debug.Log("Successful match!");
             int startId = -1;
-            foreach((Vector2Int pos, int id) in currentDragCells)
+            foreach ((Vector2Int pos, int id) in currentDragCells)
             {
                 if (id != -1)
                 {
@@ -475,4 +490,180 @@ public class NumberLinksLevel : MonoBehaviour
         if (currentDragCells != null) currentDragCells.Clear();
     }
 
+    void OnEnable()
+    {
+        InvokeRepeating(nameof(HintTick), 0.25f, 0.25f);
+    }
+
+    void OnDisable()
+    {
+        CancelInvoke(nameof(HintTick));
+        ClearHintLine();
+    }
+
+    private void HintTick()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            ClearHintLine();
+        }
+
+        int currentCount = visitedCells != null ? visitedCells.Count : 0;
+        if (currentCount != _lastVisitedCount)
+        {
+            _lastVisitedCount = currentCount;
+            _noProgressTimer = 0f;
+            ClearHintLine();
+        }
+
+        _noProgressTimer += 0.25f;
+
+        if (!_fullPathHintRunning && _noProgressTimer >= secondsBeforeFullPath)
+        {
+            StartCoroutine(ShowFullPathHintRoutine());
+        }
+    }
+
+    private System.Collections.IEnumerator ShowFullPathHintRoutine()
+    {
+        _fullPathHintRunning = true;
+
+        var endpoints = BuildEndpointsFromCells();
+
+        foreach (var kv in endpoints)
+        {
+            int pairId = kv.Key;
+
+            if (IsPairLikelySolved(pairId, kv.Value.a, kv.Value.b))
+                continue;
+
+            var route = FindPathBetweenEndpoints(kv.Value.a, kv.Value.b, pairId);
+            if (route != null && route.Count >= 2)
+            {
+                ClearHintLine();
+                _activeHintLine = BuildHintLine(route);
+                break;
+            }
+        }
+
+        _noProgressTimer = 0f;
+        _fullPathHintRunning = false;
+        yield break;
+    }
+
+    private bool IsPairLikelySolved(int pairId, Vector2Int a, Vector2Int b)
+    {
+        if (visitedCells == null || visitedCells.Count == 0) return false;
+        return visitedCells.Any(t => t.Item1 == b && t.Item2 == pairId);
+    }
+
+    private Dictionary<int, (Vector2Int a, Vector2Int b)> BuildEndpointsFromCells()
+    {
+        var dict = new Dictionary<int, (Vector2Int a, Vector2Int b)>();
+        if (cellToPairId == null || cellToPairId.Count == 0) return dict;
+
+        var groups = cellToPairId.GroupBy(kv => kv.Value);
+        foreach (var g in groups)
+        {
+            var positions = g.Select(kv => kv.Key).Take(2).ToList();
+            if (positions.Count == 2)
+            {
+                dict[g.Key] = (positions[0], positions[1]);
+            }
+        }
+        return dict;
+    }
+
+    private List<Vector2Int> FindPathBetweenEndpoints(Vector2Int start, Vector2Int goal, int pairId)
+    {
+        Queue<Vector2Int> q = new Queue<Vector2Int>();
+        Dictionary<Vector2Int, Vector2Int> came = new Dictionary<Vector2Int, Vector2Int>();
+        HashSet<Vector2Int> vis = new HashSet<Vector2Int>();
+
+        q.Enqueue(start);
+        vis.Add(start);
+
+        Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+
+        while (q.Count > 0)
+        {
+            var cur = q.Dequeue();
+            if (cur == goal) break;
+
+            foreach (var d in dirs)
+            {
+                var nxt = cur + d;
+                if (!IsInBounds(nxt)) continue;
+                if (vis.Contains(nxt)) continue;
+
+                if (cellToPairId.ContainsKey(nxt) && nxt != start && nxt != goal)
+                {
+                    if (cellToPairId[nxt] != pairId) continue;
+                }
+
+                vis.Add(nxt);
+                came[nxt] = cur;
+                q.Enqueue(nxt);
+            }
+        }
+
+        if (!came.ContainsKey(goal)) return null;
+
+        var path = new List<Vector2Int>();
+        var t = goal;
+        path.Add(t);
+        while (t != start)
+        {
+            t = came[t];
+            path.Add(t);
+        }
+        path.Reverse();
+        return path;
+    }
+
+    private Vector3 CellCenter(Vector2Int cell)
+    {
+        return new Vector3(
+            gridOriginPosition.x + cell.x * cellWidth + cellWidth * 0.5f,
+            gridOriginPosition.y + cell.y * cellHeight + cellHeight * 0.5f,
+            gridZPosition
+        );
+    }
+
+    private GameObject BuildHintLine(List<Vector2Int> route)
+    {
+        if (route == null || route.Count < 2) return null;
+
+        var go = new GameObject("__PathHint_Line");
+        var lr = go.AddComponent<LineRenderer>();
+
+        if (hintLineMaterial != null) lr.material = hintLineMaterial;
+        lr.startColor = hintLineColor;
+        lr.endColor = hintLineColor;
+
+        lr.widthMultiplier = Mathf.Min(cellWidth, cellHeight) * hintLineWidth;
+
+        lr.numCornerVertices = 8;
+        lr.numCapVertices = 8;
+
+        lr.positionCount = route.Count;
+        lr.useWorldSpace = true;
+        lr.alignment = LineAlignment.View;
+        lr.textureMode = LineTextureMode.Stretch;
+
+        var rend = lr.GetComponent<Renderer>();
+        rend.sortingLayerName = hintSortingLayer;
+        rend.sortingOrder = hintSortingOrder;
+
+        for (int i = 0; i < route.Count; i++)
+            lr.SetPosition(i, CellCenter(route[i]));
+
+        return go;
+    }
+
+    private void ClearHintLine()
+    {
+        if (_activeHintLine != null) Destroy(_activeHintLine);
+        _activeHintLine = null;
+    }
 }
